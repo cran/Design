@@ -8,7 +8,7 @@
 \alias{scored}
 \alias{strat}
 \alias{matrx}
-\alias{%ia%}
+\alias{\%ia\%}
 \title{
 Design Special Transformation Functions
 }

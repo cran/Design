@@ -363,6 +363,12 @@ Stat in Med 5:421--433.
 
 Cox DR, Snell EJ (1968):A general definition of residuals (with
 discussion).  JRSSB 30:248--275.
+
+
+May M, Royston P, Egger M, Justice AC, Sterne JAC (2004):Development and
+validation of a prognostic model for survival time data: application to
+prognosis of HIV positive patients treated with antiretroviral therapy.
+Stat in Med 23:2375--2398.
 }
 \seealso{
 \code{\link{validate.lrm}}, \code{\link{lrm.fit}}, \code{\link{lrm}}, \code{\link[Hmisc]{labcurve}}, \code{\link[Hmisc]{wtd.rank}},

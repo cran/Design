@@ -11,11 +11,11 @@ It provides bias-corrected Somers' \eqn{D_{xy}} rank correlation,
 R-squared index, the intercept and slope of an overall logistic
 calibration equation, the maximum absolute difference in predicted and
 calibrated probabilities \eqn{E_{max}}, the discrimination index \eqn{D}
-(model L.R. \eqn{(\chi^2 - 1)/n}{(chi-square - 1)/n}, the unreliability
+(model L.R. \eqn{(\chi^2 - 1)/n}{(chi-square - 1)/n}), the unreliability
 index \eqn{U}  = 
 difference in -2 log likelihood between un-calibrated \eqn{X\beta}{X
   beta} and \eqn{X\beta}{X beta} with overall intercept and slope
-calibrated to test sample) / n},  
+calibrated to test sample / n,  
 the overall quality index (logarithmic probability score) \eqn{Q = D - U},
 and the Brier or quadratic probability score, \eqn{B} (the last 3 are not
 computed for ordinal models).  The

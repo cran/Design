@@ -1,3 +1,4 @@
+# $Id: AFirst.lib.s,v 1.2 2004/07/11 14:39:08 harrelfe Exp $
 #under.unix   <- !(version$os=='Microsoft Windows' ||
 #                  version$os=='Win32' || version$os=='mingw32')
 .R.          <- TRUE
@@ -6,8 +7,9 @@
 
 .noGenenerics <- TRUE  # faster loading as new methods not used
 
-.First.lib <- function(lib, pkg, verbose=TRUE, ...) {
-  if(verbose)
+.First.lib <- function(lib, pkg, ...) {
+  verbose <- .Options$Hverbose
+  if(!length(verbose) || verbose)
     cat("Design library by Frank E Harrell Jr\n\n",
         "Type library(help='Design'), ?Overview, or ?Design.Overview')\n",
         "to see overall documentation.\n\n",

@@ -15,6 +15,7 @@ Call <- if(length(fit$call))fit$call else
   if(length(attr(fit,'call')))attr(fit,'call') else attr(fit,'formula')
 
 tl <- attr(fit$terms, "term.labels")
+if(!length(tl)) tl <- attr(terms(formula(fit)), 'term.labels')
 ass <- fit$assign
 strata <- fit$strata
 if(is.null(fit$assume)) {
