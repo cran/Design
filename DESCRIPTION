@@ -1,6 +1,6 @@
 Package: Design
-Version: 2.0-7
-Date: 2004-03-22
+Version: 2.0-8
+Date: 2004-05-31
 Title: Design Package
 Author: Frank E Harrell Jr <f.harrell@vanderbilt.edu>
 Maintainer: Frank E Harrell Jr <f.harrell@vanderbilt.edu>
@@ -21,5 +21,4 @@ Description: Regression modeling, testing, estimation, validation,
 License: GPL version 2 or newer
 URL: http://biostat.mc.vanderbilt.edu/s/Design,
 	http://biostat.mc.vanderbilt.edu/rms
-
-
+Packaged: Wed Jun  2 20:36:53 2004; harrelfe

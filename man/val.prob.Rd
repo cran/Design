@@ -45,9 +45,9 @@ estimated.  The statistics computed are the average predicted
 probability, the observed proportion of events, a 1 d.f. chi-square
 statistic for testing for overall mis-calibration (i.e., a test of the
 observed vs. the overall average predicted probability of the event)
-(\code{ChiSq2}), and a 2 d.f. chi-square statistic for testing
+(\code{ChiSq}), and a 2 d.f. chi-square statistic for testing
 simultaneously that the intercept of a linear logistic calibration curve
-is zero and the slope is one (\code{B ChiSq}), average absolute
+is zero and the slope is one (\code{ChiSq2}), average absolute
 calibration error (average absolute difference between the
 \code{lowess}-estimated calibration curve and the line of identity,
 labeled \code{Eavg}), \code{Eavg} divided by the difference between the
@@ -56,7 +56,7 @@ labeled \code{Eavg}), \code{Eavg} divided by the difference between the
 difference between predicted and calibrated predicted log odds of the
 event (\code{Med OR}), the C-index (ROC area), the Brier quadratic error
 score (\code{B}), a chi-square test of goodness of fit based on the
-Brier score, and the Brier score computed on calibrated rather than raw
+Brier score (\code{B ChiSq}), and the Brier score computed on calibrated rather than raw
 predicted probabilities (\code{B cal}).  The first chi-square test is a
 test of overall calibration accuracy ("calibration in the large"), and
 the second will also detect errors such as slope shrinkage caused by

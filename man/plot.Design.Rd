@@ -1,3 +1,4 @@
+% $Id: plot.Design.Rd,v 1.2 2004/05/21 19:54:06 harrelfe Exp $
 \name{plot.Design}
 \alias{plot.Design}
 \alias{print.plot.Design}
@@ -43,7 +44,8 @@ perimeter(x, y, xinc=diff(range(x))/10,
 \method{plot}{Design}(x, \dots, xlim, ylim, fun, xlab, ylab, 
      conf.int=.95, conf.type=c('mean','individual'),
      add=FALSE, label.curves=TRUE,
-     eye, lty, col=1, lwd=par('lwd'), lwd.conf=1, pch=1, 
+     eye, theta=0, phi=15, perspArgs=NULL,
+     lty, col=1, lwd=par('lwd'), lwd.conf=1, pch=1, 
      adj.zero=FALSE, ref.zero=FALSE, adj.subtitle, cex.adj,
      non.slopes, time=NULL, loglog=FALSE, val.lev=FALSE,
      digits=4, log="", perim,
@@ -201,8 +203,12 @@ here.
 }
 \item{eye}{
 Argument to S \code{persp} function for defining perspective in 3-d plots.
-Default is \code{(-6, -6, 9)}.
+Default is \code{(-6, -6, 9)}.  This is for S-Plus only.
 }
+\item{theta}{}
+\item{phi}{}
+\item{perspArgs}{a list containing other named arguments to be passed to
+  \code{persp}}
 \item{lty}{
 Vector of line types to use in plotting separate curves. Default is 1,2, \dots
 }
