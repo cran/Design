@@ -1,0 +1,1 @@
+summary.survfit call to .Fortran(survindex2) does not jive with R
