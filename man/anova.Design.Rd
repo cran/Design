@@ -45,7 +45,7 @@ lines, and constructs a caption.  Then it passes the result to
 \method{plot}{anova.Design}(x, 
      what=c("chisqminusdf","chisq","aic","P","partial R2","remaining R2",
             "proportion R2"), 
-     xlab, pch=16, 
+     xlab=NULL, pch=16, 
      rm.totals=TRUE, rm.ia=FALSE, rm.other=NULL, newnames,
      sort=c("descending","ascending","none"), pl=TRUE, \dots)
 
@@ -322,6 +322,6 @@ Dotplot(predictor ~ Cbind(Rank, lim), pch=3, xlab='Rank',
 \keyword{regression}
 \keyword{htest}
 \keyword{aplot}
-\keyword{bootstrap}
+\concept{bootstrap}
 
 

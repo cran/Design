@@ -18,12 +18,14 @@ the most empty portion of the plot.
 }
 \usage{
 survplot(fit, \dots)
-\method{survplot}{Design}(fit, \dots, xlim, ylim=if(loglog) c(-5, 1.5) else c(0, 1), 
+\method{survplot}{Design}(fit, \dots, xlim,
+         ylim=if(loglog) c(-5, 1.5) else if
+                 (what == "survival" & missing(fun)) c(0, 1),
          xlab, ylab, time.inc,
          what=c("survival","hazard"),
          type=c("tsiatis","kaplan-meier"),
          conf.type=c("log-log","log","plain","none"),
-         conf.int=FALSE, conf=c("bars","bands","none"),
+         conf.int=FALSE, conf=c("bars","bands"),
          add=FALSE, label.curves=TRUE,
          abbrev.label=FALSE, lty, lwd=par("lwd"), col=1,
          adj.subtitle, loglog=FALSE, fun,

@@ -94,6 +94,7 @@ groupkm(age, Surv(d.time, e), g=10, u=5, pl=TRUE)
 #decile of age.  If omit g=10, will have >= 50 obs./group.
 }
 \keyword{survival}
-\keyword{grouping}
 \keyword{nonparametric}
-% Converted by Sd2Rd version 1.21.
+\concept{grouping}
+\concept{stratification}
+\concept{aggregation}

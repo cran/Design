@@ -153,7 +153,7 @@ f3 <- lrm(y ~ rcs(x1) + rcs(x2) + x1 \%ia\% x2)
 \keyword{math}
 \keyword{manip}
 \keyword{methods}
-\keyword{lrm}
 \keyword{survival}
 \keyword{smooth}
-
+\concept{logistic regression model}
+\concept{transformation}

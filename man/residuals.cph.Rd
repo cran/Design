@@ -120,5 +120,4 @@ plot(cox.zph(f))    # invokes plot.cox.zph
 par(mfrow=c(1,1))
 }
 \keyword{survival}
-\keyword{validate}
-
+\concept{model validation}

@@ -8,12 +8,13 @@ Cox Survival Estimates
 Compute survival probabilities and optional confidence limits for
 Cox survival models.  If \code{x=TRUE, y=TRUE} were specified to \code{cph},
 confidence limits use the correct formula for any combination of
-predictors. Otherwise, if \code{surv=TRUE} was specified to \code{cph}, confidence
-limits are based only on standard errors of \code{log(-log S(t))} at
-the mean value of \eqn{X\beta}{X beta}. If the model contained only stratification
-factors, or if predictions are being requested near the mean of each
-covariable, this approximation will be accurate. Unless \code{times}
-is given, at most one observation may be predicted.
+predictors. Otherwise, if \code{surv=TRUE} was specified to \code{cph},
+confidence limits are based only on standard errors of \code{log(-log
+  S(t))} at the mean value of \eqn{X\beta}{X beta}. If the model
+contained only stratification factors, or if predictions are being
+requested near the mean of each covariable, this approximation will be
+accurate. Unless \code{times} is given, at most one observation may be
+predicted.
 }
 \usage{
 survest(fit, \dots)
@@ -37,11 +38,11 @@ are desired. If the model is stratified, the "strata" attribute
 must be attached to this vector (see example).
 }
 \item{x}{
-a design matrix at which to compute estimates, with any strata
-attached as a "strata" attribute. Only one of \code{newdata}, \code{linear.predictors},
-or \code{x} may be specified.  If none is specified, but \code{times} is specified,
-you will get survival predictions at all subjects' linear predictor
-and strata values.
+ a design matrix at which to compute estimates, with any strata attached
+ as a "strata" attribute. Only one of \code{newdata},
+ \code{linear.predictors}, or \code{x} may be specified.  If none is
+ specified, but \code{times} is specified, you will get survival
+ predictions at all subjects' linear predictor and strata values.
 }
 \item{times}{
 a vector of times at which to get predictions. If omitted, predictions
@@ -90,16 +91,22 @@ probability at the ith value of \code{times} (or at the scalar value of \code{ti
 \item{\dots}{unused}
 }
 \value{
-If \code{times} is omitted, returns a list with the elements \code{time}, \code{n.risk},
-\code{n.event}, \code{surv}, \code{call} (calling statement), and optionally
-\code{std.err}, \code{upper}, \code{lower}, \code{conf.type}, \code{conf.int}. The estimates in
-this case correspond to one subject. If \code{times} is specified, the
-returned list has possible components \code{time}, \code{surv}, \code{std.err}, \code{lower},
-and \code{upper}. These will be matrices (except for \code{time}) if more than one subject is being
-predicted, with rows representing subjects and columns representing
-\code{times}.  If \code{times} has only one time, these are reduced to vectors
-with the number of elements equal to the number of subjects.
-}
+  If \code{times} is omitted, returns a list with the elements
+  \code{time}, \code{n.risk}, \code{n.event}, \code{surv}, \code{call}
+  (calling statement), and optionally \code{std.err}, \code{upper},
+  \code{lower}, \code{conf.type}, \code{conf.int}. The estimates in this
+  case correspond to one subject. If \code{times} is specified, the
+  returned list has possible components \code{time}, \code{surv},
+  \code{std.err}, \code{lower}, and \code{upper}. These will be matrices
+  (except for \code{time}) if more than one subject is being predicted,
+  with rows representing subjects and columns representing \code{times}.
+  If \code{times} has only one time, these are reduced to vectors with
+  the number of elements equal to the number of subjects.  }
+\details{
+  The result is passed through \code{naresid} if \code{newdata},
+  \code{linear.predictors}, and \code{x} are not specified, to restore
+  placeholders for \code{NA}s.
+  }
 \author{
 Frank Harrell\cr
 Department of Biostatistics\cr

@@ -22,20 +22,17 @@ a fragment of SAS code for computing X beta from the fitted model, along
 with assignment statements that initialize predictors to reference values.
 }
 \usage{
-\method{Function}{Design}(fit, intercept, digits=max(8,
-.Options$digits))
-\method{Function}{cph}(fit, intercept=-fit$center, \dots)
+\method{Function}{Design}(object, intercept=NULL, digits=max(8,
+.Options$digits), \dots)
+\method{Function}{cph}(object, intercept=-object$center, \dots)
 
 # Use result as fun(predictor1=value1, predictor2=value2, \dots)
 
 sascode(object, file='', append=FALSE)
 }
 \arguments{
-\item{fit}{
-a fit created with \code{Design} in effect
-}
 \item{object}{
-an object created by \code{Function}
+a fit created with \code{Design} in effect
 }
 \item{intercept}{
 an intercept value to use (not allowed to be specified to \code{Function.cph}).
@@ -107,7 +104,6 @@ surv(c(2,5), g(age=50, sex='male'))
 \keyword{methods}
 \keyword{interface}
 \keyword{models}
-\keyword{lrm}
 \keyword{survival}
 \keyword{math}
-% Converted by Sd2Rd version 1.21.
+\concept{logistic regression model}

@@ -17,8 +17,8 @@ called internally by \code{latex.Design} (which is called by
 \code{latex.cph}, \code{latex.ols}, etc.).
 }
 \synopsis{
-latexDesign(object, file=paste(first.word(expr=substitute(object)),".tex",sep=""),
-             append=FALSE, which=1:p, varnames, columns=65, prefix, inline=FALSE,
+latexDesign(object, file=paste(first.word(deparse(substitute(object))),".tex",sep=""),
+             append=FALSE, which=1:p, varnames, columns=65, prefix=NULL, inline=FALSE,
              before=if(inline)"" else "& &", intercept, pretrans=TRUE,
              digits=.Options$digits)
 

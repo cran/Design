@@ -198,6 +198,6 @@ Efron B, Tibshirani R (1997). Improvements on cross-validation: The .632+ bootst
 # predab.resample
 }
 \keyword{models}
-\keyword{validate}
-\keyword{bootstrap}
-\keyword{accuracy}
+\concept{model validation}
+\concept{bootstrap}
+\concept{predictive accuracy}

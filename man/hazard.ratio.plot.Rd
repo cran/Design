@@ -15,8 +15,8 @@ Cox regression coefficients (using \code{coxph.fit}).  In the case of
 tied failure times, some intervals may have a point in common.
 }
 \usage{
-hazard.ratio.plot(x, Srv, which, times=, e=30, subset=,
-                  conf.int=.95, legendloc=, smooth=TRUE, pr=FALSE, pl=FALSE,
+hazard.ratio.plot(x, Srv, which, times=, e=30, subset,
+                  conf.int=.95, legendloc=NULL, smooth=TRUE, pr=FALSE, pl=TRUE,
                   add=FALSE, ylim, cex=.5, xlab="t", ylab, antilog=FALSE, \dots)
 }
 \arguments{

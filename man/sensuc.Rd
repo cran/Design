@@ -62,14 +62,14 @@ significance of the \eqn{Z} statistic.
 sensuc(fit,  
        or.xu=seq(1, 6, by = 0.5), or.u=or.xu, 
        prev.u=0.5, constrain.binary.sample=TRUE, 
-       or.method=c("x:u y:u","u|x, y"),
+       or.method=c("x:u y:u","u|x,y"),
        event=function(y) if(is.matrix(y))y[,ncol(y)] else 1*y)
 
-\method{plot}{sensuc}(x,  ylim=c((1+trunc(min(obj$effect.u)-.01))/
+\method{plot}{sensuc}(x,  ylim=c((1+trunc(min(x$effect.u)-.01))/
                    ifelse(type=='numbers',2,1),
-                   1+trunc(max(obj$effect.u)-.01)),
+                   1+trunc(max(x$effect.u)-.01)),
      xlab='Odds Ratio for X:U',
-     ylab=if(obj$type=='lrm')'Odds Ratio for Y:U' else
+     ylab=if(x$type=='lrm')'Odds Ratio for Y:U' else
           'Hazard Ratio for Y:U',
      digits=2, cex.effect=.75, cex.z=.6*cex.effect,
      delta=diff(par('usr')[3:4])/40, 
@@ -237,11 +237,12 @@ plot(g)
 # Event = failed, with event time before 1 year
 # Note: Analysis uses f$y which is a 2-column Surv object
 }
-\keyword{lrm}
 \keyword{regression}
-\keyword{sampling}
 \keyword{htest}
 \keyword{models}
 \keyword{survival}
-\keyword{validate}
-% Converted by Sd2Rd version 1.21.
+\concept{model validation}
+\concept{sampling}
+\concept{logistic regression model}
+\concept{sensitivity analysis}
+

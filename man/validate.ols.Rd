@@ -92,8 +92,8 @@ validate(f, B=20, subset=x1 < .75)   # normally B=150
 #Validate stepwise model with typical (not so good) stopping rule
 validate(f, B=20, bw=TRUE, rule="p", sls=.1, type="individual")
 }
-\keyword{validate}
-\keyword{bootstrap}
-\keyword{accuracy}
 \keyword{models}
 \keyword{regression}
+\concept{model validation}
+\concept{bootstrap}
+\concept{predictive accuracy}

@@ -38,12 +38,12 @@ function of interacting factors) see \code{contrast.Design} and \code{summary.De
 }
 \usage{
 perimeter(x, y, xinc=diff(range(x))/10, 
-          n=10, lowess.=FALSE)
+          n=10, lowess.=TRUE)
 
 \method{plot}{Design}(x, \dots, xlim, ylim, fun, xlab, ylab, 
      conf.int=.95, conf.type=c('mean','individual'),
      add=FALSE, label.curves=TRUE,
-     eye=c(-6,-6,9), lty, col=1, lwd, lwd.conf=1, pch=1, 
+     eye, lty, col=1, lwd=par('lwd'), lwd.conf=1, pch=1, 
      adj.zero=FALSE, ref.zero=FALSE, adj.subtitle, cex.adj,
      non.slopes, time=NULL, loglog=FALSE, val.lev=FALSE,
      digits=4, log="", perim,
@@ -132,7 +132,7 @@ at least 2\eqn{n} \code{y} values in the \code{x} interval, no \code{y} ranges a
 for that interval.
 }
 \item{lowess.}{
-set to \code{TRUE} to have \code{lowess} smooth the data perimeters
+set to \code{FALSE} to not have \code{lowess} smooth the data perimeters
 }
 \item{xlim}{
 This parameter is seldom used, as limits are usually controlled with the

@@ -129,8 +129,10 @@ cal <- calibrate(g, cluster=u$subs, subset=cohort=='all')
 # Predicted Prob(pain.severity=0) to be checked for calibration
 }
 }
-\keyword{lrm}
 \keyword{category}
 \keyword{models}
 \keyword{regression}
-% Converted by Sd2Rd version 1.21.
+\concept{logistic regression model}
+\concept{continuation ratio model}
+\concept{ordinal logistic model}
+\concept{ordinal response}

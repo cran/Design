@@ -57,7 +57,8 @@ maximum survival time in the data used in model fitting. Otherwise,
 the \code{times} vector controls the time points used.
 }
 \details{
-Confidence intervals are based on asymptotic normality of the linear predictors.
+Confidence intervals are based on asymptotic normality of the linear
+predictors.
 The intervals account for the fact that a scale parameter may have been
 estimated jointly with beta.
 }

@@ -205,6 +205,10 @@ clinical trials with truncation of patient data.  Stat in Med
 
 Rubin D, Shenker N: Multiple imputation in health-care data bases: An
 overview and some applications.  Stat in Med 10:585--598, 1991.
+
+
+Engels JM, Diehr P: Imputation of missing longitudinal data: a
+comparison of methods.  J Clin Epi 56:968--976, 2003.
 }
 \seealso{
 \code{\link[Hmisc]{transcan}}, \code{\link[Hmisc]{fit.mult.impute}}, \code{\link{lrm}}, \code{\link[Hmisc]{rm.boot}}, \code{\link[Hmisc]{reShape}}
@@ -405,11 +409,7 @@ f <- rm.impute(~treatment + pol(age,2)*sex,
 \keyword{regression}
 \keyword{htest}
 \keyword{multivariate}
-\keyword{bootstrap}
-\keyword{rm}
 \keyword{array}
-% Converted by Sd2Rd version 1.21.
-
-
-
-
+\concept{bootstrap}
+\concept{repeated measures}
+\concept{longitudinal data}

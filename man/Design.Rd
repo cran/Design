@@ -127,8 +127,7 @@ nomogram(f, interact=list(x2=c(.2,.7)))
 \keyword{models}
 \keyword{regression}
 \keyword{survival}
-\keyword{lrm}
 \keyword{math}
 \keyword{manip}
 \keyword{methods}
-
+\concept{logistic regression model}

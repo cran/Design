@@ -233,7 +233,9 @@ following:
 \bold{\code{cph}}         \tab Cox proportional hazards regression     \tab \code{coxph}\cr
 \bold{\code{bj}}          \tab Buckley-James censored least squares    \tab \code{survreg}\cr
             \tab linear model                            \tab \cr
-\bold{\code{glmD}}        \tab Version of glm for use with Design \tab \cr}
+\bold{\code{glmD}}        \tab Version of glm for use with Design \tab \cr
+\bold{\code{glsD}}        \tab Version of gls for use with Design \tab \cr
+}
 }
 
 \section{Methods in Design}{
@@ -1032,16 +1034,16 @@ may want to create a \code{.First} function such as
 The primary resource for the Design library is
 \emph{Regression Modeling Strategies} by
    FE Harrell (Springer-Verlag, 2001) and the web pages
-   \url{http://hesweb1.med.virginia.edu/biostat/rms} and
-   \url{http://hesweb1.med.virginia.edu/biostat/s/Design.html}.  See also
+   \url{http://biostat.mc.vanderbilt.edu/rms} and
+   \url{http://biostat.mc.vanderbilt.edu/s/Design.html}.  See also
    the Statistics in Medicine articles by Harrell \emph{et al} listed
    below for case studies of modeling and model validation using Design.
    Also see the free book by Alzola and Harrell at
-   \url{http://hesweb1.med.virginia.edu/biostat/s/doc/splus.pdf}.
+   \url{http://biostat.mc.vanderbilt.edu}.
 
 Several datasets useful for multivariable modeling with
 Design are found at
-\url{http://hesweb1.med.virginia.edu/biostat/s/data}.
+\url{http://biostat.mc.vanderbilt.edu/s/data}.
 }
 
 \section{Published Applications of Design and Regression Splines}{
@@ -1095,6 +1097,9 @@ prediction rules using point tables
 histology in testicular cancer: development and
 validation of a clinical prediction rule.  \emph{Stat in Med}
 2001;20:3847-3859.
+\item van Gorp MJ, Steyerberg EW, \emph{et al} (2003): Clinical
+prediction rule for 30-day mortality in Bjork-Shiley convexo-concave
+valve replacement.  \emph{J Clinical Epidemiology} 2003;56:1006-1012.
 }
 
 \item Model fitting, bootstrap validation, missing value
@@ -1132,6 +1137,10 @@ nomograms
   with an abnormal digital rectal examination and a
   prostate specific antigen between 0 and 4
   ng/ml. \emph{Urology}. (In press).
+  
+  \item Kattan MW, Heller G, Brennan MF.  A competing-risk
+  nomogram fir sarcoma-specific death following local recurrence.
+  \emph{Stat in Med} 2003; 22; 3515-3525.
 }
 
 \item Nomogram with 2- and 5-year survival probability and median survival
@@ -1258,7 +1267,7 @@ Harrell FE (2003): Design: S functions for
 biostatistical/epidemiologic modeling, testing,
 estimation, validation, graphics, and prediction.
 Programs available from
-\url{hesweb.med.virginia.edu/biostat/s/Design.html}.
+\url{biostat.mc.vanderbilt.edu/s/Design.html}.
 Be sure to reference other libraries used as well as S-Plus
 or \R itself.
 }
@@ -1277,4 +1286,5 @@ Vanderbilt University School of Medicine\cr
 Nashville, Tennessee\cr
 \email{f.harrell@vanderbilt.edu}
 }
-\keyword{overview}
+\keyword{models}
+\concept{overview}

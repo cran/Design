@@ -12,10 +12,11 @@ Creates a file containing a LaTeX representation of
 the fitted model. 
 }
 \usage{
-\method{latex}{cph}(object, title, file=paste(first.word(expr=substitute(object)),".tex",sep=""),
-      append=FALSE, surv=TRUE, maxt=FALSE, which=1:p, varnames, columns=65, 
+\method{latex}{cph}(object, title,
+      file=paste(first.word(deparse(substitute(object))),".tex",sep=""),
+      append=FALSE, surv=TRUE, maxt=FALSE, which, varnames, columns=65, 
       inline=FALSE, before=if(inline)"" else "& &", dec=3,
-pretrans=TRUE, caption, \dots) # for cph fit
+      pretrans=TRUE, caption, \dots) # for cph fit
 
 \method{latex}{lrm}(object, title, file, append, which, varnames,
 columns, inline, before, pretrans, caption, \dots) # for lrm fit

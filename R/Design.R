@@ -22,13 +22,14 @@
 
 .noGenenerics <- TRUE  # faster loading as new methods not used
 
-.First.lib <- function(lib, pkg) {
-  cat("Design library by Frank E Harrell Jr\n\n",
-      "Type library(help='Design'), ?Overview, or ?Design.Overview')\n",
-      "to see overall documentation.\n\n",
-      sep='')
+.First.lib <- function(lib, pkg, verbose=TRUE, ...) {
+  if(verbose)
+    cat("Design library by Frank E Harrell Jr\n\n",
+        "Type library(help='Design'), ?Overview, or ?Design.Overview')\n",
+        "to see overall documentation.\n\n",
+        sep='')
   library.dynam("Design", pkg, lib)
-  require('Hmisc')
+  require('Hmisc') || stop('Hmisc package not available')
   invisible()
 }
 
@@ -638,36 +639,36 @@ if(.SV4.) {
 #    do.call(f, list(fit, ...))
   }
 
-  Survival.Design <- function(fit, ...) {
-    fitter <- fit$fitFunction
+  Survival.Design <- function(object, ...) {
+    fitter <- object$fitFunction
     if(!length(fitter)) stop(
       "fit's main class is 'Design' but no fitFunction element is present")
-    oldClass(fit) <- fitter[1]
-    Survival(fit, ...)
+    oldClass(object) <- fitter[1]
+    Survival(object, ...)
   }
 
-  Quantile.Design <- function(fit, ...) {
-    fitter <- fit$fitFunction
+  Quantile.Design <- function(object, ...) {
+    fitter <- object$fitFunction
     if(!length(fitter)) stop(
       "fit's main class is 'Design' but no fitFunction element is present")
-    oldClass(fit) <- fitter[1]
-    Quantile(fit, ...)
+    oldClass(object) <- fitter[1]
+    Quantile(object, ...)
   }
 
-  Mean.Design <- function(fit, ...) {
-    fitter <- fit$fitFunction
+  Mean.Design <- function(object, ...) {
+    fitter <- object$fitFunction
     if(!length(fitter)) stop(
       "fit's main class is 'Design' but no fitFunction element is present")
-    oldClass(fit) <- fitter[1]
-    Mean(fit, ...)
+    oldClass(object) <- fitter[1]
+    Mean(object, ...)
   }
 
-  Hazard.Design <- function(fit, ...) {
-    fitter <- fit$fitFunction
+  Hazard.Design <- function(object, ...) {
+    fitter <- object$fitFunction
     if(!length(fitter)) stop(
       "fit's main class is 'Design' but no fitFunction element is present")
-    oldClass(fit) <- fitter[1]
-    Hazard(fit, ...)
+    oldClass(object) <- fitter[1]
+    Hazard(object, ...)
   }
 
   latex.Design <- function(object, title,
@@ -798,7 +799,7 @@ NULL
 }
 
 # The following makes formula(Design fit) work - ols was using formula.lm
-if(.R.) formula.Design <- formula.default
+# if(.R.) formula.Design <- formula.default  16dec03
 
 oldDesignFit2R <- function(f) {
   for(u in Cs(coefficients,residuals,fitted.values,linear.predictors,
@@ -825,8 +826,6 @@ univarLR <- function(fit) {
 data.frame(LR=stats, 'd.f.'=dof, P=P, N=nobs,
            row.names=w[-1], check.names=FALSE)
 }
-
-  
 # Design  FEH 1Aug90, re-written 21Oct91
 #
 # Augments S formula language to include:
@@ -858,8 +857,9 @@ Design <- function(mf, allow.offset=TRUE, intercept=1)   			{
 
 Terms <- attr(mf, "terms")
 Term.labels <- attr(Terms,'term.labels')
-iscluster <- if(length(Term.labels)) substring(Term.labels,1,8)=='cluster('
-	else FALSE
+#iscluster <- if(length(Term.labels)) substring(Term.labels,1,8)=='cluster('
+#	else FALSE    5jan04
+# Problem: offsets not included in term.labels in R
 
 #For some reason, model frame sometimes has a blank name if using %ia%
 
@@ -918,7 +918,8 @@ options(Design.attr=NULL, TEMPORARY=FALSE)	#Used internally by asis, rcs, ...
 anyfactors <- ncol(mf) > 1*response.pres #3Jun99
 i1.noia <- 0
 if(anyfactors)for(i in (response.pres+1):ncol(mf)) {
-	if(i!=offs && i!=wts && !iscluster[i-response.pres]) {  #3Jun99
+##	if(i!=offs && i!=wts && !iscluster[i-response.pres]) {  #3Jun99 5jan04
+  if(i != offs && i !=wts) {
 	i1 <- i - response.pres   #3Jun99
 	xi <- mf[[i]]
 	z <- attributes(xi)
@@ -1004,9 +1005,16 @@ which.ia <- (1:length(asm))[asm==9]
 
 #Add automatically created interaction terms
 if(anyfactors) {
-  if((nrow(factors)-(offs>0)-sum(iscluster))!=length(fname.incl.dup))
+#  if((nrow(factors)-(offs>0)-sum(iscluster))!=length(fname.incl.dup))5jan04
+  nrf <- if(!length(factors)) 0 else if(.R.) nrow(factors) else
+   nrow(factors) * (ncol(factors) > 0)
+
+  ## S-Plus, if only offset in model, has factors as 2 rows 0 cols 5jan04
+if(nrf || length(fname.incl.dup))
+  if((nrf-(offs > 0)) != length(fname.incl.dup))
 	stop("program logic error 1")
-for(i in 1:ncol(factors)) {
+  ## added length(factors) 5jan04
+if(length(factors)) for(i in 1:ncol(factors)) {
 	f <- factors[,i]  #3Jun99 was -1,i
 	j <- (1:length(f))[f>0]
 	nia <- length(j)
@@ -1710,18 +1718,23 @@ x
 }
 
 
-Function.Design <- function(fit, intercept, digits=max(8,.Options$digits))
+Function.Design <- function(object, intercept=NULL,
+                            digits=max(8,.Options$digits), ...)
 {
 
 # .Options$digits <- digits  14Sep00
 oldopt <- options(digits=digits)
 on.exit(options(oldopt))
-at <- fit$Design
-if(!length(at)) at <- getOldDesign(fit)
+
+if(.SV4. && ('cph' %in% object$fitFunction) && !length(intercept))
+  intercept <- -object$center   # 7feb04
+
+at <- object$Design
+if(!length(at)) at <- getOldDesign(object)
 name <- at$name
 ac <- at$assume.code
 p <- length(name)
-nrp <- num.intercepts(fit)
+nrp <- num.intercepts(object)
 name.main <- name[ac!=9]  #non-intercepts
 pm <- length(name.main)
 adj.to <- Getlim(at, allow.null=TRUE, need.all=TRUE)$limits['Adjust to',]
@@ -1735,7 +1748,7 @@ z <- paste('function(',paste(name.main,'=',adj.to,collapse=','), ') {', sep='')
 
 
 #f$term.labels does not include strat
-TL <- attr(terms(fit),"term.labels")
+TL <- attr(terms(object),"term.labels")
 #Get inner transformations
 #from <- c("asis","pol","lsp","rcs","catg","scored","strat","matrx","I")
 #from <- paste(from,"(\\(.*\\))",sep="")
@@ -1837,15 +1850,15 @@ Three.Way <- function(prm,Nam,nam.coef,cof,coef,f,at,digits){
 }
 
 
-Coef <- fit$coef
-if(nrp==1 | !missing(intercept))	{
-  cof <- if(missing(intercept))format.sep(Coef[1],digits) else 
+Coef <- object$coef
+if(nrp==1 | length(intercept))	{
+  cof <- if(!length(intercept))format.sep(Coef[1],digits) else 
           format.sep(intercept,digits)
   z <- paste(z, cof, sep='')
 }
 
 Nam <- list();  nam.coef <- list()
-assig <- fit$assign  #DesignAssign(at, f$non.slopes, formula(f))  ## 10Apr02
+assig <- object$assign  #DesignAssign(at, f$non.slopes, formula(f))  ## 10Apr02
 
 for(i in (1:p)) {
    ass <- ac[i]
@@ -1930,8 +1943,8 @@ for(i in (1:p)) {
 
 	 {  
 	     if(prm[3,1]==0) 
-              q <- Two.Way(prm,Nam,nam.coef,cof,coef,fit,	name, at, digits)
-              else q <- Three.Way(prm,Nam,nam.coef,cof,coef,fit,at, digits)
+              q <- Two.Way(prm,Nam,nam.coef,cof,coef,object,	name, at, digits)
+              else q <- Three.Way(prm,Nam,nam.coef,cof,coef,object,at, digits)
             
 	 }, 
          {  nam <- names(coef)
@@ -1947,12 +1960,13 @@ for(i in (1:p)) {
 }
 z <- paste(z, '}')
 eval(parse(text=z))
-									}
+}
 
-Function.cph <-
-  function(fit, intercept=-fit$center, ...)
-  Function.Design(fit, intercept=intercept, ...)
-
+if(!.SV4.) {
+  Function.cph <-
+    function(object, intercept=-object$center, ...)
+      Function.Design(object, intercept=intercept, ...)
+}
 
 sascode <- function(object, file="", append=FALSE) {
 
@@ -2584,23 +2598,26 @@ invisible(k)
 plot.anova.Design <- function(x,
     what=c("chisqminusdf","chisq","aic","P","partial R2","remaining R2",
       "proportion R2"),
-	xlab=switch(what, chisq=if(.R.)expression(chi^2) else "Chi-square", 
-      chisqminusdf=if(.R.)expression(chi^2~-~df) else
-       "Chi-Square Minus Degrees of Freedom", 
-      aic="Akaike Information Criterion",
-      P="P-value",
-      "partial R2"=if(.R.)expression(paste("Partial",~R^2)) else "Partial R^2",
-      "remaining R2"=if(.R.)expression(paste("Remaining~",R^2,
-          "~After Removing Variable")) else
-      "Remaining R^2 After Removing Variable",
-      "proportion R2"=
-      if(.R.)expression(paste("Proportion of Overall",~R^2))
-      else "Proportion of Overall R^2"),
-	pch=if(FALSE)183 else 16, rm.totals=TRUE, rm.ia=FALSE, rm.other=NULL, newnames,
+	xlab=NULL,
+	pch=16, rm.totals=TRUE, rm.ia=FALSE, rm.other=NULL, newnames,
 	sort=c("descending","ascending","none"), pl=TRUE, ...) {
 
 what <- match.arg(what)
 sort <- match.arg(sort)
+
+if(!length(xlab)) xlab <-
+  switch(what, chisq=if(.R.)expression(chi^2) else "Chi-square", 
+         chisqminusdf=if(.R.)expression(chi^2~-~df) else
+         "Chi-Square Minus Degrees of Freedom", 
+         aic="Akaike Information Criterion",
+         P="P-value",
+         "partial R2"=if(.R.)expression(paste("Partial",~R^2)) else "Partial R^2",
+         "remaining R2"=if(.R.)expression(paste("Remaining~",R^2,
+             "~After Removing Variable")) else
+         "Remaining R^2 After Removing Variable",
+         "proportion R2"=
+         if(.R.)expression(paste("Proportion of Overall",~R^2))
+         else "Proportion of Overall R^2")
 
 if(.SV4.) x <- matrix(oldUnclass(x), nrow=nrow(x),
                           dimnames=dimnames(x))  ##14Nov00
@@ -2651,7 +2668,7 @@ bj <- function(formula=formula(data), data,
 
     call <- match.call()
     m <- match.call(expand=FALSE)
-    if(.R.) library(survival)
+    if(.R.) require('survival') || stop('survival package not available')
     m$x <- m$y <- m$control <- m$method <- m$link <- m$time.inc <- NULL
     m$na.action <- na.action
     if(.R.) m$drop.unused.levels <- TRUE  ## 31jul02
@@ -2744,6 +2761,9 @@ bj <- function(formula=formula(data), data,
     }
 
 bj.fit <- function(x, y, control = NULL) {
+  if(.R. && !existsFunction('survfit.km'))
+    survfit.km <- getFromNamespace('survfit.km','survival')
+  
   if(ncol(y) != 2)
 	stop("y is not a right-censored Surv object")
   status <- y[, 2]
@@ -4061,10 +4081,15 @@ cph <- function(formula=formula(data),
                   "model.frame", "model.matrix"),
                 singular.ok=FALSE, robust=FALSE,
                 model=FALSE, x=FALSE, y=FALSE, se.fit=FALSE,
-                eps=.0001, init, iter.max=10, tol=1e-9,
+                eps=1e-4, init, iter.max=10, tol=1e-9,
                 surv=FALSE, time.inc, type, vartype, conf.type, ...) {
 
   if(.R.) require('survival')
+  getN <- if(.R.) function(obj) {
+    if(existsFunction(obj)) get(obj) else
+       getFromNamespace(obj,'survival')
+ } else function(obj) get(obj)
+
   method <- match.arg(method)
   call <- match.call()
   m <- match.call(expand=FALSE)
@@ -4227,12 +4252,12 @@ cph <- function(formula=formula(data),
     {
       ytype <- attr(Y, "type")
       if( method=="breslow" || method =="efron") {
-        if (ytype== 'right')  fitter <- get("coxph.fit")
-        else if (ytype=='counting') fitter <- get("agreg.fit")
+        if (ytype== 'right')  fitter <- getN("coxph.fit")
+        else if (ytype=='counting') fitter <- getN("agreg.fit")
         else stop(paste("Cox model doesn't support \"", ytype,
                         "\" survival data", sep=''))
       }
-      else if (method=='exact') fitter <- get("agexact.fit")
+      else if (method=='exact') fitter <- getN("agexact.fit")
       else stop(paste ("Unknown method", method))
       if (missing(init)) init <- NULL
 
@@ -4247,7 +4272,7 @@ cph <- function(formula=formula(data),
         f <- fitter(X, Y, strata=Strata, offset=offset,
                     weights=weights, init=init,
                     method=method, rownames=rnam,
-                    control=coxph.control(eps=eps, toler.chol=tol,
+                    control=getN('coxph.control')(eps=eps, toler.chol=tol,
                       toler.inf=1, iter.max=iter.max)) else
       f <- fitter(X, Y, strata=Strata, offset=offset, iter.max=iter.max,
                   eps=eps, weights=weights, init=init,
@@ -4431,7 +4456,10 @@ cph <- function(formula=formula(data),
 coxphFit <- if(.R. || .SV4.)
   function(..., strata=NULL, rownames=NULL, offset=NULL,
            init=NULL, toler.chol=1e-9, eps=.0001, iter.max=10) {
-
+    if(!existsFunction('coxph.fit'))
+      coxph.fit <- getFromNamespace('coxph.fit','survival')
+    if(!existsFunction('coxph.control'))
+      coxph.control <- getFromNamespace('coxph.control', 'survival')
     res <- coxph.fit(..., strata=strata, rownames=rownames,
                      offset=offset, init=init,
                      control=coxph.control(toler.chol=toler.chol, toler.inf=1,
@@ -4466,8 +4494,8 @@ coxphFit <- if(.R. || .SV4.)
     res
   }
 
-Survival.cph <- function(fit, ...) {
-if(!length(fit$time) || !length(fit$surv))
+Survival.cph <- function(object, ...) {
+if(!length(object$time) || !length(object$surv))
   stop("did not specify surv=T with cph")
 f <- function(times, lp=0, stratum=1, type=c("step","polygon"),
               time, surv) {
@@ -4496,12 +4524,12 @@ f <- function(times, lp=0, stratum=1, type=c("step","polygon"),
 }
 formals(f) <- list(times=NULL, lp=0, stratum=1,
                    type=c("step","polygon"),
-                   time=fit$time, surv=fit$surv)
+                   time=object$time, surv=object$surv)
 f
 }
 
-Quantile.cph <- function(fit, ...) {
-if(!length(fit$time) || !length(fit$surv))
+Quantile.cph <- function(object, ...) {
+if(!length(object$time) || !length(object$surv))
   stop("did not specify surv=T with cph")
 f <- function(q=.5, lp=0, stratum=1, type=c("step","polygon"), time, surv) {
   type <- match.arg(type)
@@ -4520,17 +4548,17 @@ f <- function(q=.5, lp=0, stratum=1, type=c("step","polygon"), time, surv) {
 }
 formals(f) <- list(q=.5, lp=0, stratum=1,
                    type=c('step','polygon'),
-                   time=fit$time, surv=fit$surv)
+                   time=object$time, surv=object$surv)
 f
 }
 
 
-Mean.cph <- function(fit, method=c("exact","approximate"),
+Mean.cph <- function(object, method=c("exact","approximate"),
 type=c("step","polygon"), n=75, tmax, ...) {
 method <- match.arg(method)
 type   <- match.arg(type)
 
-if(!length(fit$time) || !length(fit$surv))
+if(!length(object$time) || !length(object$surv))
   stop("did not specify surv=T with cph")
 
 if(method=="exact") {
@@ -4560,14 +4588,14 @@ if(method=="exact") {
   formals(f) <- list(lp=0, stratum=1,
                      type=if(!missing(type))type else c("step","polygon"),
                      tmax=tmax,
-                     time=fit$time, surv=fit$surv)
+                     time=object$time, surv=object$surv)
 ##    if(!missing(tmax)) f$tmax <- tmax ??
 } else {
-  lp     <- fit$linear.predictors
+  lp     <- object$linear.predictors
   lp.seq <- if(length(lp)) lp.seq <- seq(min(lp), max(lp), length=n) else 0
   
-  time   <- fit$time
-  surv   <- fit$surv
+  time   <- object$time
+  surv   <- object$surv
   nstrat <- if(is.list(time)) length(time) else 1
   areas  <- list()
 
@@ -4621,10 +4649,12 @@ cox.zph <- function(fit, transform = "km", global = TRUE)
     clas <- c(oldClass(fit), fit$fitFunction)  ##FEH
 	if(!any(c('coxph','cph') %in% clas))       ##FEH
 		stop("Argument must be the result of coxph or cph")
-      if('coxph.null' %in% clas)               ##FEH
+      if('coxph.null' %in% clas)               ##FEH + next 5
 		stop("The are no score residuals for a Null model")
-	sresid <- if(any(clas=='cph')) residuals.cph(fit, "schoenfeld") else
-     residuals.coxph(fit, 'schoenfeld')        ##FEH
+	sresid <- if('cph' %in% clas) residuals.cph(fit, "schoenfeld") else
+      if('coxph.penal' %in% clas)
+      residuals.coxph.penal(fit,'schoenfeld') else
+      residuals.coxph(fit, 'schoenfeld') ## coxph.penal 18mar04
 	varnames <- names(fit$coef)
 	nvar <- length(varnames)
 	ndead <- length(sresid)/nvar
@@ -4640,7 +4670,10 @@ cox.zph <- function(fit, transform = "km", global = TRUE)
 			rank = rank(times),
 			log = log(times),
 			km = {
-				temp <- survfit.km(factor(rep(1, nrow(fit$
+              if(.R. && !existsFunction('survfit.km'))
+                survfit.km <-
+                  getFromNamespace('survfit.km','survival')
+              temp <- survfit.km(factor(rep(1, nrow(fit$
 					y))), fit$y, se.fit = FALSE)
 				# A nuisance to do left cont KM
 				t1 <- temp$surv[temp$n.event > 0]
@@ -4680,11 +4713,11 @@ cox.zph <- function(fit, transform = "km", global = TRUE)
 }
 
 predict.cph <- 
-  function(object, newdata,
+  function(object, newdata=NULL,
            type=c("lp","x","data.frame","terms","adjto","adjto.data.frame",
              "model.frame"),
            se.fit=FALSE, conf.int=FALSE, conf.type=c('mean','individual'),
-           incl.non.slopes, non.slopes, kint=1,
+           incl.non.slopes=NULL, non.slopes=NULL, kint=1,
            na.action=na.keep, expand.na=TRUE, center.terms=TRUE, ...)
   predictDesign(object, newdata, type, se.fit, conf.int, conf.type,
                 incl.non.slopes, non.slopes, kint,
@@ -5789,7 +5822,11 @@ groupkm <- function(x, Srv, m=50, g,
                     cuts, u, pl=FALSE, loglog=FALSE, conf.int=.95, xlab, ylab,
                     lty=1, add=FALSE,
                     cex.subtitle=.7, ...) {
-  if(.R.) library(survival)
+  if(.R.) {
+    require('survival')
+    if(!existsFunction('survfit.km'))
+      survfit.km <- getFromNamespace('survfit.km','survival')
+  }
   if(missing(u))stop("u (time point) must be given")
   if(missing(xlab)) xlab <- label(x)
   if(xlab=="") xlab <- as.character(sys.call())[2]
@@ -6152,7 +6189,7 @@ list(S=S, ie.status=ie.status, subs=subs, reps=reps)
 }
 
 latexDesign <- function(object,
-		file=paste(first.word(deparse(substitute(f))),".tex",sep=""),
+		file=paste(first.word(deparse(substitute(object))),".tex",sep=""),
 		append=FALSE, which=1:p, varnames, columns=65, prefix=NULL, 
 		inline=FALSE, before=if(inline)"" else "& &", intercept, 
 		pretrans=TRUE, digits=.Options$digits)
@@ -8563,7 +8600,7 @@ ols <- function(formula, data, weights, subset, na.action=na.delete,
 	n <- length(Y)
 	if(model) m <- X
 	X <- model.matrix(Terms, X)
-	if(!.R.) storage.mode(X) <- "single"
+	## if(!.R.) storage.mode(X) <- "single"  removed 3mar04
 	if(length(atr$colnames)) 
 	   dimnames(X)[[2]] <- c("Intercept",atr$colnames)
 	else dimnames(X)[[2]] <- c("Intercept",dimnames(X)[[2]][-1])
@@ -10183,17 +10220,17 @@ res
 ## Renamed from predict.Design 6dec02; let predict.Design be
 ## dispatcher (see Design.Misc.s)
 
-predictDesign <- function(fit, newdata,
+predictDesign <- function(fit, newdata=NULL,
    type=c("lp","x","data.frame","terms","adjto","adjto.data.frame",
     "model.frame"),
    se.fit=FALSE, conf.int=FALSE, conf.type=c('mean','individual'),
-   incl.non.slopes, non.slopes, kint=1,
+   incl.non.slopes=NULL, non.slopes=NULL, kint=1,
    na.action=na.keep, expand.na=TRUE, center.terms=TRUE, ...)	{
 
 type <- match.arg(type)
 conf.type <- match.arg(conf.type)
 ## R does not preserve missing(x):   31jul02
-mnon.slopes <- missing(non.slopes)
+mnon.slopes <- missing(non.slopes) || !length(non.slopes)  # was missing( ) 6jan04
 
 
 at <- fit$Design
@@ -10216,6 +10253,7 @@ parms <- at$parms
 name <- at$name
 coeff <- fit$coefficients
 nrp <- num.intercepts(fit)
+
 if(mnon.slopes) {
    non.slopes <- rep(0,nrp)
    non.slopes[kint] <- 1   #13Sep94
@@ -10225,7 +10263,8 @@ stop("length of non.slopes incompatible with fit")
 
 int.pres <- nrp>0  # was !(cox|lrm)
 if(somex) cov <- Varcov(fit,regcoef.only=TRUE)    #remove scale params
-if(missing(incl.non.slopes)) 
+# if(missing(incl.non.slopes))   6jan04
+  if(missing(incl.non.slopes) || !length(incl.non.slopes))
    incl.non.slopes <- !mnon.slopes | (!missing(kint)) | 
                       int.pres | type!="x"
 ##added 12Feb93   !missing() added 18Feb93, 2nd one 13Sep94
@@ -10286,7 +10325,7 @@ if(conf.int) {
 
 if(type!="adjto" & type!="adjto.data.frame") {
   X <- NULL
-  if(missing(newdata)) {
+  if(missing(newdata) || !length(newdata)) {
     if(type=="lp" && length(fit$linear.predictors)) {
       LP <- naresid(naa, fit$linear.predictors)   #changed 8June94
       if(kint>1) LP <- LP-fit$coef[1]+fit$coef[kint]  #added 13Sep94
@@ -10424,7 +10463,6 @@ if(type!="adjto" & type!="adjto.data.frame") {
     if(!somex) X <- NULL
     else if(int.pres && nrp==1) X <- model.matrix(Terms.ns, X) #nrp Jan94
     else X <- model.matrix(Terms.ns, X)[,-1,drop=FALSE]		#12Feb93
-  
     if(nstrata>0)	{
       names(strata) <- paste("S",1:nstrata,sep="")
       strata <- factor(interaction(as.data.frame(strata),drop=TRUE),
@@ -10577,8 +10615,15 @@ if(type=="terms") {
 addOffset4ModelFrame <- function(Terms, newdata, offset=0) {
   offs <- attr(Terms,'offset')
   if(!length(offs)) return(newdata)
-  offsetVarname <- all.names(attr(Terms,'variables')[offs+1])[1]
-  offsetVarname <- offsetVarname[offsetVarname != 'offset']
+##  offsetVarname <- all.names(attr(Terms,'variables')[offs+1])[1] 12mar04
+  offsetVarname <- setdiff(all.names(attr(Terms,'variables')[offs+1]),
+                           'offset')
+  if(length(offsetVarname) > 1) {
+    warning(paste(c('More than one offset variable, only first used:',
+                    offsetVarname),  collapse=' '))
+    offsetVarname <- offsetVarname[1]
+  }
+##  offsetVarname <- offsetVarname[offsetVarname != 'offset']
   if(offsetVarname %nin% names(newdata)) {
     newdata[[offsetVarname]] <- rep(offset, length=nrow(newdata))
     warning(paste('offset variable set to',
@@ -10946,6 +10991,8 @@ print.psm <- function(x, correlation = FALSE, ...)
     cat("\n")
 
     if(new) {
+      if(.R. && !existsFunction('summary.survreg'))
+        summary.survreg <- getFromNamespace('summary.survreg','survival')
       if(!x$fail) x$fail <- NULL    # summary.survreg uses NULL for OK
       s <- if(!.R.) summary.survReg(x, correlation=correlation) else
                     summary.survreg(x, correlation=correlation)
@@ -11093,7 +11140,11 @@ psm <- if(.newSurvival.)
            control=if(!.R.)survReg.control() else survreg.control(),
            parms=NULL, model=FALSE, x=FALSE, y=TRUE, time.inc, ...) {
 
-    if(.R.) require('survival')
+    if(.R.) {
+      require('survival')
+      if(!existsFunction('survreg.fit'))
+        survreg.fit <- getFromNamespace('survreg.fit','survival')
+    }
     call <- match.call()
     m <- match.call(expand=FALSE)
     if(dist=='extreme')
@@ -11525,65 +11576,65 @@ warning('Unlike earlier versions of survreg, dist="extreme" does not fit\na Weib
     fit
     }
 
-Hazard   <- function(fit, ...) UseMethod("Hazard")
-Survival <- function(fit, ...) UseMethod("Survival")
+Hazard   <- function(object, ...) UseMethod("Hazard")
+Survival <- function(object, ...) UseMethod("Survival")
 
-Hazard.psm <- if(.newSurvival.) function(fit, ...) {
- dist <- fit$dist
+Hazard.psm <- if(.newSurvival.) function(object, ...) {
+ dist <- object$dist
  g <- survreg.auxinfo[[dist]]$hazard
- formals(g) <- list(times=NA, lp=NULL, parms=logb(fit$scale))
+ formals(g) <- list(times=NA, lp=NULL, parms=logb(object$scale))
  g
-} else function(fit) {
-  fam <- fit$family
+} else function(object) {
+  fam <- object$family
   dist <- fam["name"]
   transform <- fam[2]
   g <- survreg.auxinfo[[dist]]$hazard
   formals(g) <- list(times=NULL, lp=NULL,
-                     parms=fit$parms, transform=transform)
+                     parms=object$parms, transform=transform)
   g
 }
 
-Survival.psm <- if(.newSurvival.) function(fit, ...) {
- dist <- fit$dist
+Survival.psm <- if(.newSurvival.) function(object, ...) {
+ dist <- object$dist
  g <- survreg.auxinfo[[dist]]$survival
- formals(g) <- list(times=NULL, lp=NULL, parms=logb(fit$scale))
+ formals(g) <- list(times=NULL, lp=NULL, parms=logb(object$scale))
  g
-} else function(fit) {
-  fam <- fit$family
+} else function(object) {
+  fam <- object$family
   dist <- fam["name"]
   transform <- fam[2]
   g <- survreg.auxinfo[[dist]]$survival
   formals(g) <- list(times=NULL, lp=NULL,
-                     parms=fit$parms, transform=transform)
+                     parms=object$parms, transform=transform)
   g
 }
 
-Quantile.psm <- if(.newSurvival.) function(fit, ...) {
-  dist <- fit$dist
+Quantile.psm <- if(.newSurvival.) function(object, ...) {
+  dist <- object$dist
   g <- survreg.auxinfo[[dist]]$Quantile
-  formals(g) <- list(q=.5, lp=NULL, parms=logb(fit$scale))
+  formals(g) <- list(q=.5, lp=NULL, parms=logb(object$scale))
   g
-} else function(fit, ...) {
-  fam <- fit$family
+} else function(object, ...) {
+  fam <- object$family
   dist <- fam["name"]
   transform <- fam[2]
   g <- survreg.auxinfo[[dist]]$quantile
   formals(g) <- list(q=.5, lp=NULL,
-                     parms=fit$parms, transform=transform)
+                     parms=object$parms, transform=transform)
   g
 }
 
-Mean.psm <- if(.newSurvival.) function(fit, ...) {
- dist <- fit$dist
+Mean.psm <- if(.newSurvival.) function(object, ...) {
+ dist <- object$dist
  g <- survreg.auxinfo[[dist]]$mean
- formals(g) <- list(lp=NULL, parms=logb(fit$scale))
+ formals(g) <- list(lp=NULL, parms=logb(object$scale))
  g
-} else function(fit, ...) {
-  fam <- fit$family
+} else function(object, ...) {
+  fam <- object$family
   dist <- fam["name"]
   transform <- fam[2]
   g <- survreg.auxinfo[[dist]]$mean
-  formals(g) <- list(lp=NULL, parms=fit$parms,
+  formals(g) <- list(lp=NULL, parms=object$parms,
                      transform=transform)
   g
 }
@@ -13129,6 +13180,7 @@ cll <- paste(signif(as.single(conf.int),3))
 
 jf <- 0
 if(nf>0) for(i in jw)						{
+  prn(i)
 	jf <- jf+1
 	z <- value.chk(at, i, factors[[jf]], 0, Limval)
 	lz <- length(z)
@@ -13141,6 +13193,7 @@ if(nf>0) for(i in jw)						{
 								}
 adj <- lims[2,,drop=FALSE]
 isna <- sapply(adj, is.na)
+
 
 if(any(isna)) stop(
    paste("adjustment values not defined here or with datadist for",
@@ -13159,7 +13212,6 @@ if(m)
 }
 
 xadj <- oldUnclass(Design.levels(adj, at))	# unclass 28jul03
-
 m <- length(k)
 if(m)							{
    adj <- xadj
@@ -13199,10 +13251,12 @@ if(m)							{
 		}
 							}
 
+for(j in 1:length(xadj)) xadj[[j]] <- rep(xadj[[j]], 2)
+
 for(i in which[assume[which]==5 | ucat[which]])		{
 		#All comparisons with reference category
 #		xadj[2,] <- xadj[1,]  		#duplicate row 28jul03
-  for(j in 1:length(xadj)) xadj[[j]] <- rep(xadj[[j]], 2)
+#  for(j in 1:length(xadj)) xadj[[j]] <- rep(xadj[[j]], 2) moved above22nov03
   
 		parmi <- if(ucat[i]) values[[name[i]]] else parms[[name[i]]]
 		parmi.a <- if(abbrev) abbreviate(parmi) else parmi
@@ -13583,6 +13637,9 @@ survest.cph <- function(fit, newdata, linear.predictors, x, times, fun,
   what <- match.arg(what)
   if(what=='parallel') {conf.int <- FALSE; conf.type <- 'none'}
 
+  inputData <- !(missing(newdata) && missing(linear.predictors) &&
+                 missing(x))
+    
   if(!se.fit) conf.int <- 0
   ##stype <- attr(fit$surv,"type")
   ##if(length(stype)==0)stype <- "tsiatis"
@@ -13619,7 +13676,6 @@ survest.cph <- function(fit, newdata, linear.predictors, x, times, fun,
       if(length(vartype)) g$vartype <- vartype
       do.call(if(cphnull)'survfit.cph.null' else 'survfit.cph', g)
     }
-    
     if(f==0) {
       g <- sf(fit, se.fit=se.fit, conf.int=conf.int, conf.type=conf.type,
               type=type, vartype=vartype, cphnull=TRUE)
@@ -13733,7 +13789,7 @@ survest.cph <- function(fit, newdata, linear.predictors, x, times, fun,
     if(nf>0) retlist$strata <- naresid(naa,sreq)
     return(retlist)
   }
-
+  
 #  strata.levels <- fit$strata  7may02
   asnum.strata <- function(str, strata.levels) {
     if(!length(str)) return(NULL)  # 4Aug01; thanks Mike Kattan
@@ -13927,11 +13983,13 @@ survest.cph <- function(fit, newdata, linear.predictors, x, times, fun,
 
   srv <- fun(srv); srv[is.infinite(srv)] <- NA
   if(!.R.) storage.mode(srv) <- "single"
+  nar <- if(inputData) function(naa,w) w else function(...) naresid(...)
+  ## 15mar04 nar            
   if(conf.int==0)
-    return(list(time=times, surv=naresid(naa,srv))) #was return(srv)
-  retlist <- list(time=times, surv=naresid(naa,srv), lower=naresid(naa,lower),
-                  upper=naresid(naa,upper), std.err=naresid(naa,serr))
-  if(nf>0) retlist$requested.strata <- naresid(naa,oldUnclass(strata))
+    return(list(time=times, surv=nar(naa,srv))) #was return(srv)
+  retlist <- list(time=times, surv=nar(naa,srv), lower=nar(naa,lower),
+                  upper=nar(naa,upper), std.err=nar(naa,serr))
+  if(nf>0) retlist$requested.strata <- nar(naa,oldUnclass(strata))
   retlist
 }
 #Use x= if input is a design matrix, newdata= if a data frame or data matrix
@@ -14189,21 +14247,41 @@ survfit.cph.null <-
          as.integer(1),
          double(1),
          newrisk= as.double(1), PACKAGE="survival") else
-      .C(if(.SV4.)'S_agsurv2' else 'agsurv2', ##14Nov00
-         as.integer(n),
-         as.integer(0),
-         y = y[ord,],
-         as.double(score[ord]),
-         strata = as.integer(newstrat),
-         surv = double(n),
-         varhaz = double(n),
-         double(1),
-         as.double(0),  ##14Nov00
-         nsurv = as.integer(if(s5) c(method,vartype) else km),
-         double(2),
-         as.integer(1),
-         double(1),
-         newrisk= as.double(1))
+    if(.SV4. && (version$major > 6 || (version$major == 6 &&
+                                       version$minor >= 2))) {
+      weights <- if(length(object$weights)) object$weights[ord] else rep(1,n)
+           .C('S_agsurv2',
+              as.integer(n),
+              as.integer(0),
+              y = y[ord,],
+              as.double(score[ord]),
+              strata = as.integer(newstrat),
+              wt = as.double(weights),
+              surv = double(n),
+              varhaz = double(n),
+              double(1),
+              as.double(0),
+              nsurv = as.integer(if(s5) c(method,vartype) else km),
+              double(2),
+              as.integer(1),
+              double(1),
+              newrisk= as.double(1))
+         } else
+    .C(if(.SV4.)'S_agsurv2' else 'agsurv2', ##14Nov00
+       as.integer(n),
+       as.integer(0),
+       y = y[ord,],
+       as.double(score[ord]),
+       strata = as.integer(newstrat),
+       surv = double(n),
+       varhaz = double(n),
+       double(1),
+       as.double(0),  ##14Nov00
+       nsurv = as.integer(if(s5) c(method,vartype) else km),
+       double(2),
+       as.integer(1),
+       double(1),
+       newrisk= as.double(1))
 
     nsurv <- surv$nsurv[1]
     ntime <- 1:nsurv
@@ -14268,8 +14346,10 @@ survfit.cph <-
     ## Sense whether survival5 is in effect and if so use this later version
     s5 <- exists('coxpenal.fit')
 
-	if(length(object$weights) || length(object$call$weights)) 
-      stop('survfit cannot yet handle a weighted model')
+	if(.R. || (version$major < 6 || (version$major == 6 &&
+                                     version$minor < 2)))
+      if(length(object$weights) || length(object$call$weights)) 
+        stop('survfit cannot yet handle a weighted model')
 
     nvar <- length(object$coef)
     score <- exp(object$linear.predictors)
@@ -14411,22 +14491,43 @@ survfit.cph <-
     else {
       if(!s5) temp <- ifelse(km, 1, 2+as.integer(coxmethod=="efron"))
 
-      surv <- .C(if(.SV4.)'S_agsurv2' else 'agsurv2',  ##14Nov00
-                 as.integer(n),
-                 as.integer(nvar* se.fit),
-                 y = y[ord,],
-                 as.double(score[ord]),
-                 strata = as.integer(newstrat),
-                 surv   = double(ndead*n2),   # was bug in surv4
-                 varhaz = double(ndead*n2),   # was bug in surv4
-                 x,
-                 as.double(object$var),
-                 nsurv = if(s5) as.integer(c(method,vartype))
-                         else as.integer(temp),
-                 double(3*nvar),
-                 as.integer(n2),
-                 as.double(x2),
-                 as.double(newrisk))
+      ## 8feb04
+      if(.SV4. && (version$major > 6 || (version$major == 6 &&
+                                         version$minor >= 2)))
+        surv <- .C('S_agsurv2',
+                   as.integer(n),
+                   as.integer(nvar* se.fit),
+                   y = y[ord,],
+                   as.double(score[ord]),
+                   strata = as.integer(newstrat),
+                   wt = as.double(weights),
+                   surv   = double(ndead*n2),
+                   varhaz = double(ndead*n2),
+                   x,
+                   as.double(object$var),
+                   nsurv = if(s5) as.integer(c(method,vartype))
+                   else as.integer(temp),
+                   double(3*nvar),
+                   as.integer(n2),
+                   as.double(x2),
+                   as.double(newrisk))
+      else
+        surv <- .C(if(.SV4.)'S_agsurv2' else 'agsurv2',  ##14Nov00
+                   as.integer(n),
+                   as.integer(nvar* se.fit),
+                   y = y[ord,],
+                   as.double(score[ord]),
+                   strata = as.integer(newstrat),
+                   surv   = double(ndead*n2),   # was bug in surv4
+                   varhaz = double(ndead*n2),   # was bug in surv4
+                   x,
+                   as.double(object$var),
+                   nsurv = if(s5) as.integer(c(method,vartype))
+                           else as.integer(temp),
+                   double(3*nvar),
+                   as.integer(n2),
+                   as.double(x2),
+                   as.double(newrisk))
 
       nsurv <- surv$nsurv[1]
       ntime <- 1:nsurv
@@ -14498,7 +14599,11 @@ survfit <- function (formula, data, weights, subset, na.action=na.delete,
                      conf.type=c("log-log","log","plain","none"),...) {
   call <- match.call()
   conf.type <- match.arg(conf.type)
-  if(.R.) require('survival')
+  if(.R.) {
+    require('survival')
+    if(!existsFunction('survfit.km'))
+      survfit.km <- getFromNamespace('survfit.km','survival')
+  }
   ## Real tricky -- find out if the first arg is "Surv(...)" without
   ##  evaluating it.  If this is so, or it is a survival object, turn it
   ##  into a formula
@@ -15869,7 +15974,11 @@ val.surv <- function(fit, newdata, S, est.surv, censor) {
 plot.val.surv <- function(x, group, g.group=4,
                           what=c('difference','ratio'),
                           type=c('l','b','p'),
-                          xlab, ylab, xlim, ylim, datadensity=TRUE, ...) {
+                          xlab, ylab, xlim, ylim, datadensity=TRUE,
+                          ...) {
+  if(.R. && !existsFunction('survfit.km'))
+    survfit.km <- getFromNamespace('survfit.km','survival')
+  
   S <- x$S
   est.surv <- x$est.surv
   censor.est.surv <- x$censor.est.surv
@@ -16361,12 +16470,15 @@ survreg.fit2 <- function(x,y,iter=0,dist,parms=NULL,tol,maxiter=15,
                   controlvals=survReg.control(maxiter=maxiter,
                     rel.tolerance=rel.tolerance,
                     failure=2),
-                  offset=rep(0,length(e)),init=init) else
+                  offset=rep(0,length(e)),init=init) else {
+                    if(.R. && !existsFunction('survreg.fit'))
+                      survreg.fit <- getFromNamespace('survreg.fit','survival')
     survreg.fit(as.matrix(x),y,dist=dlist,parms=parms,
                 controlvals=survreg.control(maxiter=maxiter,
                   rel.tolerance=rel.tolerance,
                   failure=2),
                 offset=rep(0,length(e)),init=init)
+                  }
 	if(is.character(f)) { warning(f); return(list(fail=TRUE)) }
 	f$fail <- FALSE
     
@@ -16469,6 +16581,9 @@ survreg.fit2 <- function(x,y,iter=0,dist,fixed=NULL,family,tol,maxiter=15,
 	e <- y[,2]
 	if(sum(e)<5)return(list(fail=TRUE))
 	x <- x	#Get around lazy evaluation creating complex expression
+    if(.R. && !existsFunction('survreg.fit'))
+      survreg.fit <- getFromNamespace('survreg.fit','survival')
+    
 	f <- survreg.fit(as.matrix(x),y,dist=dist,
 		fixed=fixed,
 		controlvals=survreg.control(maxiter=maxiter,

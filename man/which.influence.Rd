@@ -88,6 +88,5 @@ show.influence(w, d)  # better way to show results
 }
 \keyword{models}
 \keyword{regression}
-\keyword{lrm}
 \keyword{survival}
-% Converted by Sd2Rd version 1.21.
+\concept{logistic regression model}

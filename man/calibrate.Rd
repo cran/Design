@@ -202,10 +202,12 @@ plot(cal)
 #thing for calibrate
 }
 \keyword{methods}
-\keyword{bootstrap}
-\keyword{validate}
-\keyword{accuracy}
 \keyword{models}
 \keyword{regression}
 \keyword{survival}
 \keyword{hplot}
+\concept{bootstrap}
+\concept{model validation}
+\concept{calibration}
+\concept{model reliability}
+\concept{predictive accuracy}

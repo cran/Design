@@ -26,7 +26,8 @@ into account overfitting.
 # fit <- lrm(formula=response ~ terms, x=TRUE, y=TRUE)
 \method{validate}{lrm}(fit, method="boot", B=40,
          bw=FALSE, rule="aic", type="residual", sls=0.05, aics=0, 
-         pr=FALSE,  kint, Dxy.method=c("somers2","lrm"), emax.lim=c(0,1), \dots)
+         pr=FALSE,  kint, Dxy.method=if(k==1) 'somers2' else 'lrm',
+         emax.lim=c(0,1), \dots)
 }
 \arguments{
 \item{fit}{
@@ -139,10 +140,9 @@ validate(f, cluster=u$subs, subset=cohort=='all')
 #see predab.resample for cluster and subset
 }
 }
-\keyword{validate}
-\keyword{accuracy}
-\keyword{bootstrap}
 \keyword{models}
 \keyword{regression}
-\keyword{lrm}
-% Converted by Sd2Rd version 1.21.
+\concept{logistic regression model}
+\concept{model validation}
+\concept{predictive accuracy}
+\concept{bootstrap}

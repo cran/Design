@@ -52,15 +52,15 @@ nomogram(fit, \dots)
          fun, fun.at, fun.lp.at,
          funlabel="Predicted Value", fun.side, 
          interact=NULL, intercept=1, conf.int=FALSE, 
-         col.conf=if(under.unix)c(1,.3) else c(1,12), 
+         col.conf=c(1, if(under.unix).3 else 12), 
          conf.space=c(.08,.2),
          conf.lp=c("representative","all", "none"),
          est.all=TRUE, abbrev=FALSE, minlength=4, 
-         maxscale=100, nint=10, label.every=1, force.label=TRUE,
+         maxscale=100, nint=10, label.every=1, force.label=FALSE,
          xfrac=0.35, cex.axis=0.85, cex.var=1, col.grid=FALSE, 
          vnames=c("labels","names"), varname.label=TRUE, 
          varname.label.sep="=",
-         ia.space=.7, tck=-.009, lmgp=.4, omit, naxes,
+         ia.space=.7, tck=-.009, lmgp=.4, omit=NULL, naxes,
          points.label='Points', total.points.label='Total Points',
          total.sep.page=FALSE, total.fun, verbose=FALSE)
 

@@ -86,10 +86,9 @@ par(mfrow=c(1,2))
 plot.xmean.ordinaly(y ~ age + blood.pressure, cr=TRUE)
 par(mfrow=c(1,1))
 }
-\keyword{lrm}
 \keyword{category}
 \keyword{models}
 \keyword{regression}
-\keyword{validate}
 \keyword{hplot}
-
+\concept{model validation}
+\concept{logistic regression model}

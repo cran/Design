@@ -6,13 +6,14 @@
 
 .noGenenerics <- TRUE  # faster loading as new methods not used
 
-.First.lib <- function(lib, pkg) {
-  cat("Design library by Frank E Harrell Jr\n\n",
-      "Type library(help='Design'), ?Overview, or ?Design.Overview')\n",
-      "to see overall documentation.\n\n",
-      sep='')
+.First.lib <- function(lib, pkg, verbose=TRUE, ...) {
+  if(verbose)
+    cat("Design library by Frank E Harrell Jr\n\n",
+        "Type library(help='Design'), ?Overview, or ?Design.Overview')\n",
+        "to see overall documentation.\n\n",
+        sep='')
   library.dynam("Design", pkg, lib)
-  require('Hmisc')
+  require('Hmisc') || stop('Hmisc package not available')
   invisible()
 }
 

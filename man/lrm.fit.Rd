@@ -127,8 +127,6 @@ f.harrell@vanderbilt.edu
 #
 # fit <- lrm.fit(cbind(age,blood.pressure,sex), death)
 }
-\keyword{lrm}
 \keyword{models}
 \keyword{regression}
-
-
+\concept{logistic regression model}

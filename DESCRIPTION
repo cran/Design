@@ -1,10 +1,10 @@
 Package: Design
-Version: 2.0-2
-Date: 2003-10-08
+Version: 2.0-7
+Date: 2004-03-22
 Title: Design Package
-Author: Frank E Harrell Jr <fharrell@virginia.edu>
-Maintainer: Frank E Harrell Jr <fharrell@virginia.edu>
-Depends: R (>= 1.6), Hmisc (>= 2.0-0), survival
+Author: Frank E Harrell Jr <f.harrell@vanderbilt.edu>
+Maintainer: Frank E Harrell Jr <f.harrell@vanderbilt.edu>
+Depends: R (>= 1.8), Hmisc (>= 2.0-8), survival
 Description: Regression modeling, testing, estimation, validation,
 	graphics, prediction, and typesetting by storing enhanced model design
 	attributes in the fit.  Design is a collection of about 180 functions
@@ -16,7 +16,10 @@ Description: Regression modeling, testing, estimation, validation,
 	linear models.  Design works with almost any regression model, but it
 	was especially written to work with logistic regression, Cox
 	regression, accelerated failure time models, ordinary linear models,
-	and the Buckley-James model.
+	the Buckley-James model, and generalized least squares for
+	serially or spatially correlated observations.
 License: GPL version 2 or newer
-URL: http://hesweb1.med.virginia.edu/biostat/rms
+URL: http://biostat.mc.vanderbilt.edu/s/Design,
+	http://biostat.mc.vanderbilt.edu/rms
+
 

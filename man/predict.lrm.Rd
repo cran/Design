@@ -82,5 +82,5 @@ predict(f, d, type="fitted.ind")    # Prob(Y=j)
 predict(f, d, type='mean', codes=TRUE) # predicts mean(y) using codes 1,2,3
 }
 \keyword{models}
-\keyword{lrm}
 \keyword{regression}
+\concept{logistic regression model}

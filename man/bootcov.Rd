@@ -472,10 +472,10 @@ var(bootcoef[mono,])   # for constrained estimates
 g$boot.Coef[order(g$boot.loglik[-length(g$boot.loglik)])[1],]
 # Note closeness to MLE
 }
-\keyword{bootstrap}
-\keyword{sampling}
 \keyword{models}
 \keyword{regression}
 \keyword{htest}
 \keyword{methods}
 \keyword{hplot}
+\concept{bootstrap}
+\concept{sampling}

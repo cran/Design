@@ -17,21 +17,21 @@ time.  This function issues a warning if the last follow-up time is uncensored,
 unless a restricted mean is explicitly requested.
 }
 \usage{
-cph(formula = Surv(ftime,event) ~ terms, data, weights,
-    subset, na.action=na.delete, 
+cph(formula = formula(data), data=if(.R.) parent.frame() else sys.parent(),
+    weights, subset, na.action=na.delete, 
     method=c("efron","breslow","exact","model.frame","model.matrix"), 
     singular.ok=FALSE, robust=FALSE,
     model=FALSE, x=FALSE, y=FALSE, se.fit=FALSE, 
-    eps=0.0001, init, iter.max=10, tol=1e-9, surv=FALSE, time.inc,
+    eps=1e-4, init, iter.max=10, tol=1e-9, surv=FALSE, time.inc,
     type, vartype, conf.type, \dots)
 
-\method{Survival}{cph}(fit, \dots)
+\method{Survival}{cph}(object, \dots)
 # Evaluate result as g(times, lp, stratum=1, type=c("step","polygon"))
 
-\method{Quantile}{cph}(fit, \dots)
-# Evaluate lik h(q, lp, stratum=1, type=c("step","polygon"))
+\method{Quantile}{cph}(object, \dots)
+# Evaluate like h(q, lp, stratum=1, type=c("step","polygon"))
 
-\method{Mean}{cph}(fit, method=c("exact","approximate"), type=c("step","polygon"),
+\method{Mean}{cph}(object, method=c("exact","approximate"), type=c("step","polygon"),
           n=75, tmax, \dots)
 # E.g. m(lp, stratum=1, type=c("step","polygon"), tmax, \dots)
 }
@@ -46,7 +46,7 @@ factors may interact with non-stratification factors;
 not all stratification terms need interact with the same modeled
 factors.
 }
-\item{fit}{
+\item{object}{
 an object created by \code{cph} with \code{surv=TRUE}
 }
 \item{data}{

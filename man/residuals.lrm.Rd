@@ -224,7 +224,7 @@ p   <- cbind(1-p12, p12-p2, p2)   # individual class probabilites
 cp  <- matrix(cumsum(t(p)) - rep(0:(n-1), rep(3,n)), byrow=TRUE, ncol=3)
 # simulate multinomial with varying probs:
 y   <- (cp < runif(n)) \%*\% rep(1,3)   
-# Thanks to Dave Krantz <dhk@paradox.psych.columbia.edu> for this trick
+# Thanks to Dave Krantz for this trick
 f <- lrm(y ~ age + blood.pressure, x=TRUE, y=TRUE)
 par(mfrow=c(2,2))
 resid(f, 'score.binary',   pl=TRUE)              #plot score residuals
@@ -310,10 +310,5 @@ resid(f, 'gof')
 }
 \keyword{models}
 \keyword{regression}
-\keyword{lrm}
-\keyword{validate}
-% Converted by Sd2Rd version 1.21.
-
-
-
-
+\concept{logistic regression model}
+\concept{model validation}

@@ -106,9 +106,9 @@ f <- cph(S ~ rcs(age)*strat(sex),
 validate(f, dxy=TRUE, u=2, B=10)   # normally B=150
 # Note u=time.inc
 }
-\keyword{validate}
-\keyword{accuracy}
-\keyword{bootstrap}
 \keyword{models}
 \keyword{regression}
 \keyword{survival}
+\concept{model validation}
+\concept{predictive accuracy}
+\concept{bootstrap}

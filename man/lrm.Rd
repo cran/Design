@@ -476,9 +476,10 @@ for(seed in c(339,777,22,111,3)){
 #The first AIC based on the effective d.f. in Gray's Eq. 2.9
 #(Verweij and Van Houwelingen (1994) Eq. 5 (note typo)) worked best.
 }
-\keyword{lrm}
 \keyword{category}
 \keyword{models}
-% Converted by Sd2Rd version 1.21.
-
-
+\concept{logistic regression model}
+\concept{ordinal logistic model}
+\concept{proportional odds model}
+\concept{continuation ratio model}
+\concept{ordinal response}

@@ -91,8 +91,11 @@ glsD(model, data, correlation, weights, subset, method, na.action,
   Pinheiro J, Bates D (2000): Mixed effects models in S and S-Plus.  New
   York: Springer-Verlag.
 }
-\author{Jose Pinheiro \email{jcp@research.bell-labs.com}, Douglas Bates
-  \email{bates@stat.wisc.edu}, Frank Harrell \email{f.harrell@vanderbilt.edu}} 
+\author{Jose Pinheiro \email{jcp@research.bell-labs.com},
+  Douglas Bates \email{bates@stat.wisc.edu},
+  Frank Harrell \email{f.harrell@vanderbilt.edu},
+  Patrick Aboyoun \email{aboyoun@insightful.com}
+} 
 \seealso{
   \code{\link{gls}}
   \code{\link{glsControl}}, \code{\link{glsObject}},

@@ -110,11 +110,12 @@ plot is obtained by smoothing the (linear predictor, difference or
 ratio) pairs.
 }
 \usage{
-val.prob(p, y, logit, group, weights=NULL, normwt=FALSE, 
+val.prob(p, y, logit, group, weights=rep(1,length(y)), normwt=FALSE, 
          pl=TRUE, smooth=TRUE, logistic.cal=TRUE,
          xlab="Predicted Probability", ylab="Actual Probability",
-         lim=c(0, 1), m, g, cuts, emax.lim=c(0,1), legendloc, 
-         statloc=lim, riskdist="calibrated", cex=.75, mkh=.02,
+         lim=c(0, 1), m, g, cuts, emax.lim=c(0,1),
+         legendloc=lim[1] + c(0.55 * diff(lim), 0.27 * diff(lim)), 
+         statloc=c(0,0.9), riskdist="calibrated", cex=.75, mkh=.02,
          connect.group=FALSE, connect.smooth=TRUE, g.group=4, 
          evaluate=100, nmin=0)
 
@@ -452,13 +453,12 @@ plot(w)
 
 plot(w, group=age, g=3)   # stratify by tertile of age
 }
-\keyword{validate}
 \keyword{models}
 \keyword{regression}
 \keyword{htest}
-\keyword{accuracy}
-\keyword{lrm}
 \keyword{smooth}
-\keyword{sampling}
 \keyword{survival}
-
+\concept{model validation}
+\concept{predictive accuracy}
+\concept{logistic regression model}
+\concept{sampling}

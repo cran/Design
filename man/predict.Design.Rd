@@ -21,37 +21,50 @@ See the \code{Function} function for another method for computing the
 linear predictors.
 }
 \usage{
-\method{predict}{bj}(object, newdata, type="linear.predictors",
+\method{predict}{bj}(object, newdata,
+        type=c("lp", "x", "data.frame",
+                 "terms", "adjto", "adjto.data.frame", "model.frame"),
         se.fit=FALSE, conf.int=FALSE, conf.type=c('mean','individual'),
         incl.non.slopes,
         non.slopes, kint=1, na.action=na.keep, expand.na=TRUE,
         center.terms=TRUE, \dots) # for bj
 
-\method{predict}{cph}(object, newdata, type="linear.predictors",
+\method{predict}{cph}(object, newdata,
+        type=c("lp", "x",
+                 "data.frame", "terms", "adjto", "adjto.data.frame",
+                 "model.frame"),
         se.fit=FALSE, conf.int=FALSE, conf.type=c('mean','individual'),
-        incl.non.slopes,
-        non.slopes, kint=1, na.action=na.keep, expand.na=TRUE,
+        incl.non.slopes=NULL,
+        non.slopes=NULL, kint=1, na.action=na.keep, expand.na=TRUE,
         center.terms=TRUE, \dots) # cph
 
-\method{predict}{glmD}(object, newdata, type="linear.predictors",
+\method{predict}{glmD}(object, newdata,
+        type= c("lp", "x", "data.frame",
+                 "terms", "adjto", "adjto.data.frame", "model.frame"),
         se.fit=FALSE, conf.int=FALSE, conf.type=c('mean','individual'),
         incl.non.slopes,
         non.slopes, kint=1, na.action=na.keep, expand.na=TRUE,
         center.terms=TRUE, \dots) # glmD
 
-\method{predict}{glsD}(object, newdata, type="linear.predictors",
+\method{predict}{glsD}(object, newdata,
+        type=c("lp", "x", "data.frame",
+                 "terms", "adjto", "adjto.data.frame", "model.frame"),
         se.fit=FALSE, conf.int=FALSE, conf.type=c('mean','individual'),
         incl.non.slopes,
         non.slopes, kint=1, na.action=na.keep, expand.na=TRUE,
         center.terms=TRUE, \dots) # glsD
 
-\method{predict}{ols}(object, newdata, type="linear.predictors",
+\method{predict}{ols}(object, newdata,
+        type=c("lp", "x", "data.frame",
+                 "terms", "adjto", "adjto.data.frame", "model.frame"),
         se.fit=FALSE, conf.int=FALSE, conf.type=c('mean','individual'),
         incl.non.slopes,
         non.slopes, kint=1, na.action=na.keep, expand.na=TRUE,
         center.terms=TRUE, \dots) # ols
 
-\method{predict}{psm}(object, newdata, type="linear.predictors",
+\method{predict}{psm}(object, newdata,
+        type=c("lp", "x", "data.frame",
+                 "terms", "adjto", "adjto.data.frame", "model.frame"),
         se.fit=FALSE, conf.int=FALSE, conf.type=c('mean','individual'),
         incl.non.slopes,
         non.slopes, kint=1, na.action=na.keep, expand.na=TRUE,

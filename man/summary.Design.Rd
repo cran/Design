@@ -218,7 +218,7 @@ options(datadist=NULL)
 \keyword{models}
 \keyword{regression}
 \keyword{htest}
-\keyword{lrm}
 \keyword{survival}
 \keyword{hplot}
 \keyword{interface}
+\concept{logistic regression model}

@@ -56,4 +56,4 @@ which.influence(f)
 }
 \keyword{models}
 \keyword{regression}
-\keyword{validate}
+\concept{model validation}

@@ -106,6 +106,3 @@ predict(f, d)
 \keyword{models}
 \keyword{regression}
 \keyword{manip}
-\keyword{survival}
-\keyword{lrm}
-% Converted by Sd2Rd version 1.21.

@@ -18,7 +18,7 @@ objects created by \code{validate.tree}.
 \usage{
 # f <- tree(formula=y ~ x1 + x2 + \dots) # or rpart
 \method{validate}{tree}(fit, method, B, bw, rule, type, sls, aics, pr=TRUE,
-    k, rand, xval=10, FUN=prune.tree, \dots)
+    k, rand, xval=10, FUN, \dots)
 \method{validate}{rpart}(fit, \dots)
 \method{print}{validate.tree}(x, \dots)
 \method{plot}{validate.tree}(x, what=c("mse","dxy"), legendloc=locator, \dots)
@@ -115,7 +115,6 @@ par(mfrow=c(1,1))
 }
 \keyword{models}
 \keyword{tree}
-\keyword{validate}
-\keyword{accuracy}
 \keyword{category}
-% Converted by Sd2Rd version 1.21.
+\concept{model validation}
+\concept{predictive accuracy}

@@ -143,8 +143,8 @@ anova(g2)[,1] / anova(g)[,1]
 # f <- ols(y ~ pol(age,3), x=TRUE, y=TRUE)
 # f.adj <- robcov(f)
 }
-\keyword{sampling}
 \keyword{models}
 \keyword{regression}
 \keyword{robust}
-% Converted by Sd2Rd version 1.21.
+\concept{cluster sampling}
+\concept{intra-class correlation}

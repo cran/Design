@@ -120,10 +120,10 @@ validate(f, B=10)                # usually B=150
 # bw=TRUE does not preserve hierarchy of terms at present
 validate(f, B=10, bw=TRUE, rule="p", sls=.1, type="individual")
 }
-\keyword{validate}
-\keyword{accuracy}
-\keyword{bootstrap}
 \keyword{models}
 \keyword{regression}
 \keyword{methods}
 \keyword{survival}
+\concept{model validation}
+\concept{predictive accuracy}
+\concept{bootstrap}

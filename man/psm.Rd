@@ -46,12 +46,13 @@ Older versions of \code{survreg} used by \code{psm} (e.g., on S-Plus
 \code{psm} passes those arguments to \code{survreg}.
 }
 \usage{
-psm(formula=formula(data), data, weights,
+psm(formula=formula(data),
+    data=if (.R.) parent.frame() else sys.parent(), weights,
     subset, na.action=na.delete, dist="weibull",
     init=NULL, scale=0, 
     control=if(!.R.) survReg.control() else survreg.control(),
     parms=NULL, 
-    model=FALSE, x=FALSE, y=FALSE, time.inc, \dots)
+    model=FALSE, x=FALSE, y=TRUE, time.inc, \dots)
 # dist=c("extreme", "logistic", "gaussian", "exponential", 
 #        "rayleigh", "t")      for S-Plus before 5.0
 # dist=c("extreme", "logistic", "gaussian", "weibull",
@@ -61,18 +62,18 @@ psm(formula=formula(data), data, weights,
 
 \method{print}{psm}(x, correlation=FALSE, \dots)
 
-Hazard(fit, \dots)
-\method{Hazard}{psm}(fit, \dots)   # for psm fit
+Hazard(object, \dots)
+\method{Hazard}{psm}(object, \dots)   # for psm fit
 # E.g. lambda <- Hazard(fit)
 
-Survival(fit, \dots)
-\method{Survival}{psm}(fit, \dots) # for psm
+Survival(object, \dots)
+\method{Survival}{psm}(object, \dots) # for psm
 # E.g. survival <- Survival(fit)
 
-\method{Quantile}{psm}(fit, \dots) # for psm
+\method{Quantile}{psm}(object, \dots) # for psm
 # E.g. quantsurv <- Quantile(fit)
 
-\method{Mean}{psm}(fit, \dots)     # for psm
+\method{Mean}{psm}(object, \dots)     # for psm
 # E.g. meant   <- Mean(fit)
 
 # lambda(times, lp)   # get hazard function at t=times, xbeta=lp
@@ -93,10 +94,11 @@ lwd=3, \dots)
 an S statistical model formula. Interactions up to third order are
 supported. The left hand side must be a \code{Surv} object.
 }
-\item{fit}{a fit created by \code{psm}.  For \code{survplot} with
-  residuals from \code{psm}, \code{fit} is the result of
+\item{object}{a fit created by \code{psm}.  For \code{survplot} with
+  residuals from \code{psm}, \code{object} is the result of
   \code{residuals.psm}.
 }
+\item{fit}{a fit created by \code{psm}}
 \item{data}{}
 \item{subset}{}
 \item{weights}{}
@@ -176,7 +178,6 @@ survival function.  Default is range in normalized residuals.
 \item{lwd}{
 line width for theoretical distribution, default is 3
 }
-\item{object}{an object created by \code{psm}}
 \item{g}{
 number of quantile groups to use for stratifying continuous variables
 having more than 5 levels

@@ -230,5 +230,7 @@ effective.df(f)
 }
 \keyword{models}
 \keyword{regression}
-\keyword{lrm}
-% Converted by Sd2Rd version 1.21.
+\concept{logistic regression model}
+\concept{penalized MLE}
+\concept{ridge regression}
+\concept{shrinkage}
