@@ -213,10 +213,10 @@ This is especially useful in simulation work.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia
+Department of Biostatistics\cr
+Vanderbilt University
 \cr
-fharrell@virginia.edu
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{Design}}, \code{\link{survreg}}, \code{\link{survReg}}, \code{\link{residuals.survreg}}, \code{\link{survreg.object}}, 

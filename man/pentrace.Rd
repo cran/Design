@@ -169,9 +169,9 @@ contains a summary of results for all fits attempted.  When
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \references{
 Gray RJ: Flexible methods for analyzing survival data using splines,

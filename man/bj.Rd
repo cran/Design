@@ -189,9 +189,9 @@ harald.heinzl@akh-wien.ac.at
 
 
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \references{
 Buckley JJ, James IR. Linear regression with censored data. Biometrika 1979; 

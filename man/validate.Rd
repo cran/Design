@@ -85,8 +85,8 @@ prints a summary, and optionally statistics for each re-fit
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{validate.ols}}, \code{\link{validate.cph}}, \code{\link{validate.lrm}}, \code{\link{validate.tree}},

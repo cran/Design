@@ -100,8 +100,8 @@ the coefficients are zero.
 }}
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \references{
 Lawless, J. F. and Singhal, K. (1978): Efficient screening of nonnormal regression models.  Biometrics 34:318--327.

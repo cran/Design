@@ -10027,10 +10027,6 @@ if(method=="crossvalidation")		{
 
 ntest <- 0 #Used in getting weighted average for .632 estimator
 
-## if(exists('.Random.seed'))   28jul03
-##  cat(".Random.seed:",.Random.seed,"in",find(.Random.seed)[1],"\n")
-## exists( ) 8oct02
-
 if(method==".632")
 {
    #Must do assignments ahead of time so can weight estimates
@@ -16662,7 +16658,7 @@ vif <- function(fit) {
 v <- Varcov(fit, regcoef.only=TRUE)
 nam <- dimnames(v)[[1]]
 ns <- num.intercepts(fit)
-v <- solve(v)
+#  v <- solve(v)  this should never have been there   06oct03
 if(ns>0) {v <- v[-(1:ns),-(1:ns),drop=FALSE]; nam <- nam[-(1:ns)]}
 d <- diag(v)^.5
 v <- diag(solve(v/(d %o% d)))

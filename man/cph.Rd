@@ -286,8 +286,8 @@ stored with the fit, the mean for that observation will be \code{NA}.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link[survival]{coxph}}, \code{\link[survival]{coxph.fit}}, \code{\link[survival]{Surv}}, \code{\link{residuals.cph}}, \code{\link[survival]{cox.zph}},

@@ -159,8 +159,8 @@ It requires the \code{latex} function in Hmisc.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{datadist}}, \code{\link{Design}}, \code{\link{Design.trans}}, \code{\link{Design.Misc}},

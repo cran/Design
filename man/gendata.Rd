@@ -71,9 +71,9 @@ as \code{nobs}
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{predict.Design}}, \code{\link{survest.cph}}, \code{\link{survest.psm}}, \code{\link{Design.Misc}}, \code{\link{expand.grid}}, \code{\link{data.entry}}, \code{\link{page}},

@@ -113,8 +113,8 @@ function
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link[Hmisc]{rcspline.eval}}, \code{\link[Hmisc]{rcspline.restate}}, \code{\link{Design}}, \code{\link{cph}}, \code{\link{lrm}}, \code{\link{ols}}, \code{\link{datadist}}

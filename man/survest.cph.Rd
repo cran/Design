@@ -81,7 +81,7 @@ multiple records).
 }
 \item{what}{
 Normally use \code{what="survival"} to estimate survival probabilities at
-times that may not correspond the the subjects' own times.
+times that may not correspond to the subjects' own times.
 \code{what="parallel"} assumes that the length of \code{times} is the number of
 subjects (or one), and causes \code{survest} to estimate the ith subject's survival
 probability at the ith value of \code{times} (or at the scalar value of \code{times}).
@@ -102,9 +102,9 @@ with the number of elements equal to the number of subjects.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{cph}}, \code{\link{survfit.cph}}, \code{\link{survfit.coxph}}, \code{\link{predict.Design}}, \code{\link{survplot}}

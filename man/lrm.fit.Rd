@@ -114,8 +114,8 @@ see above
 }}
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{lrm}}, \code{\link{glm}}, \code{\link{matinv}}, \code{\link[Hmisc]{solvet}}, \code{\link{cr.setup}}

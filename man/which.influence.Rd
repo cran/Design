@@ -54,8 +54,8 @@ a count of influence values
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 \cr
 
 Jens Oehlschlaegel-Akiyoshi\cr

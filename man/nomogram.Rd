@@ -375,9 +375,9 @@ If you omit \code{lp.at}, also negate \code{fit$linear.predictors}.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \references{
 Banks J: Nomograms. Encylopedia of Statistical Sciences, Vol 6.

@@ -56,9 +56,9 @@ from the individual records created by \code{ie.setup}.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{cph}}, \code{\link{coxph}}, \code{\link{Surv}}, \code{\link{cr.setup}}, \code{\link{predab.resample}}

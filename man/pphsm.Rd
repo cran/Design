@@ -26,9 +26,9 @@ a new fit object with transformed parameter estimates
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{psm}}, \code{\link{summary.Design}}, \code{\link{print.pphsm}}

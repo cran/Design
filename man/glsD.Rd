@@ -92,7 +92,7 @@ glsD(model, data, correlation, weights, subset, method, na.action,
   York: Springer-Verlag.
 }
 \author{Jose Pinheiro \email{jcp@research.bell-labs.com}, Douglas Bates
-  \email{bates@stat.wisc.edu}, Frank Harrell \email{fharrell@virginia.edu}} 
+  \email{bates@stat.wisc.edu}, Frank Harrell \email{f.harrell@vanderbilt.edu}} 
 \seealso{
   \code{\link{gls}}
   \code{\link{glsControl}}, \code{\link{glsObject}},

@@ -53,16 +53,16 @@ can set to \code{"efron"} for ols fits (only).  Default is Huber-White
 estimator of the covariance matrix.
 }}
 \value{
-a new fit object with with the same class as the original fit,
+a new fit object with the same class as the original fit,
 and with the element \code{orig.var} added. \code{orig.var} is
 the covariance matrix of the original fit.  Also, the original \code{var}
 component is replaced with the new Huberized estimates.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \references{
 Huber, PJ. Proc Fifth Berkeley Symposium Math Stat 1:221--33, 1967.

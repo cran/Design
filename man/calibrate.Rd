@@ -165,9 +165,9 @@ validation.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{validate}}, \code{\link{predab.resample}}, \code{\link{groupkm}}, \code{\link[Hmisc]{errbar}}, \code{\link{cph}}, \code{\link{psm}},

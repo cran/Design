@@ -203,8 +203,8 @@ the penalty matrix actually used in the estimation
 }}
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \references{
 Le Cessie S, Van Houwelingen JC: Ridge estimators in logistic regression.

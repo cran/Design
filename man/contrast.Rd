@@ -107,10 +107,9 @@ matrix, and contrast names (or \code{NULL}).
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-Department of Health Evaluation Sciences\cr
-University of Virginia Health Sciences Center\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University School of Medicine\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{predict.Design}}, \code{\link{gendata}}, \code{\link{bootcov}}, \code{\link{summary.Design}},

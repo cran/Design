@@ -158,9 +158,9 @@ See the last example.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \references{
 Landwehr, Pregibon, Shoemaker. JASA 79:61--83, 1984.

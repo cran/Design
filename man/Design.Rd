@@ -75,8 +75,8 @@ Design(mf, allow.offset=TRUE, intercept=1)
   }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{Design.trans}}, \code{\link{Design.Misc}}, \code{\link{cph}}, \code{\link{lrm}}, \code{\link{ols}}, \code{\link{specs.Design}}, \code{\link{anova.Design}},

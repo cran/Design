@@ -162,8 +162,8 @@ returned result or for the correct covariance matrix computation).
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{plot.Design}}, \code{\link{summary.Design}}, \code{\link{Design}}, \code{\link{Design.trans}}, \code{\link{predict.lrm}},

@@ -441,8 +441,8 @@ want to plot the effect of a predictor named \code{x}.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{datadist}}, \code{\link{predict.Design}}, \code{\link{contrast.Design}}, \code{\link{summary.Design}}, 

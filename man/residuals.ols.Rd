@@ -37,9 +37,9 @@ deleted by \code{ols} held by \code{NA}s
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{lm.influence}}, \code{\link{ols}}, \code{\link{which.influence}}, \code{\link[Hmisc]{naresid}}

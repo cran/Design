@@ -86,8 +86,8 @@ optional graphical parameters
 }}
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link[survival]{cox.zph}}, \code{\link{residuals.cph}}, \code{\link[survival]{coxph.fit}}, \code{\link{cph}}, \code{\link[survival]{coxph}}, \code{\link[survival]{Surv}}

@@ -34,8 +34,8 @@ a list containing information about the fit and the predictors as elements
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{Design}}, \code{\link{Design.trans}}, \code{\link{latex.Design}}, \code{\link{datadist}}

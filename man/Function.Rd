@@ -66,9 +66,9 @@ All non-scalar argument values must have the same length.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{latex.Design}}, \code{\link[Hmisc]{Function.transcan}}, \code{\link{predict.Design}}, \code{\link{Design}}, \code{\link{Design.trans}}

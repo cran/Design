@@ -4,6 +4,7 @@
 \alias{latex.bj}
 \alias{latex.glmD}
 \alias{latex.glsD}
+\alias{latex}
 \title{LaTeX Representation of a Fitted Model}
 \description{
 Creates a file containing a LaTeX representation of the fitted model.  For
@@ -97,8 +98,8 @@ output to standard output.
 \value{a file name of class \code{"latex"}}
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link[Hmisc]{latex}}, \code{\link[Hmisc]{rcspline.restate}},

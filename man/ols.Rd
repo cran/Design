@@ -140,8 +140,8 @@ diagonal of the matrix \eqn{X'X/(sse/n) \sigma^{2} (X'X + P)^{-1}}.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{Design}}, \code{\link{Design.trans}}, \code{\link{anova.Design}}, \code{\link{summary.Design}}, \code{\link{predict.Design}},

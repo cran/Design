@@ -71,8 +71,8 @@ prints a summary, and optionally statistics for each re-fit (if \code{pr=TRUE})
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{validate}}, \code{\link{predab.resample}}, \code{\link{fastbw}}, \code{\link{Design}}, \code{\link{Design.trans}}, \code{\link{calibrate}},

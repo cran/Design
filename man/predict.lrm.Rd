@@ -53,9 +53,9 @@ a data frame, or a design matrix.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \references{
 Hannah M, Quigley P: Presentation of ordinal regression analysis on the original

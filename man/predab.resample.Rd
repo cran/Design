@@ -184,8 +184,8 @@ can easily be computed.
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology, University of Virginia\cr
-fharrell@virginia.edu
+Department of Biostatistics, Vanderbilt University\cr
+f.harrell@vanderbilt.edu
 }
 \references{
 Efron B, Tibshirani R (1997). Improvements on cross-validation: The .632+ bootstrap method.  JASA 92:548--560.

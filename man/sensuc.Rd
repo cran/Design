@@ -189,10 +189,9 @@ combinations), and \code{type} (\code{"lrm"} or \code{"cph"}).
 \author{
 Frank Harrell\cr
 Mark Conaway\cr
-Division of Biostatistics and Epidemiology\cr
-Department of Health Evaluation Sciences\cr
-University of Virginia Health Sciences Center\cr
-fharrell@virginia.edu, mconaway@virginia.edu
+Department of Biostatistics\cr
+Vanderbilt University School of Medicine\cr
+f.harrell@vanderbilt.edu, mconaway@virginia.edu
 }
 \references{
 Rosenbaum, Paul R (1995): Observational Studies.  New York: Springer-Verlag.

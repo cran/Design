@@ -157,7 +157,7 @@ maximum number of iterations, to pass to \code{fitter}
 \item{group}{
 a grouping variable used to stratify the sample upon bootstrapping.
 This allows one to handle k-sample problems, i.e., each bootstrap
-sample will be forced to selected the same number of observations from
+sample will be forced to select the same number of observations from
 each level of group as the number appearing in the original dataset.
 You may specify both \code{group} and \code{cluster}.
 }
@@ -247,9 +247,9 @@ has this row and column).
 }
 \author{
 Frank Harrell\cr
-Division of Biostatistics and Epidemiology\cr
-University of Virginia\cr
-\email{fharrell@virginia.edu}\cr
+Department of Biostatistics\cr
+Vanderbilt University\cr
+\email{f.harrell@vanderbilt.edu}\cr
 
 Bill Pikounis\cr
 Biometrics Research Department\cr
