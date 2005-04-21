@@ -23,7 +23,7 @@ cph <- function(formula=formula(data),
     m$surv <- m$time.inc <- m$eps <- m$init <- m$iter.max <- m$tol <-
       m$weights <- m$singular.ok <- m$robust <- NULL
   m$na.action <- na.action
-  if(.R.) m$drop.unused.levels <- TRUE  ## 31jul02
+  if(.R.) m$drop.unused.levels <- TRUE
   m[[1]] <- as.name("model.frame")
 
   if (!inherits(formula,"formula")) {
@@ -105,7 +105,7 @@ cph <- function(formula=formula(data),
     offs <- offset<- attr(Terms, "offset")  ## offs 23nov02 moved up 6dec02
     ## 23nov02
     if(length(nact$nmiss)) {
-      jia <- grep('*%ia%*',names(nact$nmiss))  ## 8feb03
+      jia <- grep('%ia%',names(nact$nmiss), fixed=TRUE)
       if(length(jia)) nact$nmiss <- nact$nmiss[-jia]
       s <- if(length(offs)) names(nact$nmiss) !=  atrx$names[offs] else TRUE
       names(nact$nmiss)[s] <- 
@@ -150,7 +150,7 @@ cph <- function(formula=formula(data),
       X <- NULL
       Terms <- terms(formula)
       yy <- attr(terms(formula),"variables")[1]
-      Y <- eval(yy,data=data)     #sys.parent(2))
+      Y <- eval(yy,data=data)
       if(!inherits(Y,"Surv"))stop("response variable should be a Surv object")
       Y <- Y[!is.na(Y)]
       assign <- NULL
@@ -208,7 +208,7 @@ cph <- function(formula=formula(data),
                               class='Design')) else 
     return(structure(list(fail=TRUE),class="cph"))
   }   else {
-    if(length(f$coef) && any(is.na(f$coef))) {  ## length 1may02
+    if(length(f$coef) && any(is.na(f$coef))) {
       vars <- names(f$coef)[is.na(f$coef)]
       msg <- paste("X matrix deemed to be singular; variable",
                    paste(vars, collapse=" "))
@@ -217,11 +217,10 @@ cph <- function(formula=formula(data),
 		cat(msg,"\n")
         if(.SV4.)return(structure(list(fail=TRUE,fitFunction='cph'),
                                   class='Design')) else 
-        return(structure(list(fail=TRUE),class="cph")) ##13Nov00
+        return(structure(list(fail=TRUE),class="cph"))
 	  }
     }
   }
-#  attr(Terms, 'Design') <- atr
   f$terms <- Terms
 
   if(robust) {
@@ -241,7 +240,6 @@ cph <- function(formula=formula(data),
   nvar <-  length(f$coefficients)
 
   temp <- factor(Y[,ny], levels=0:1, labels=c("No Event","Event"))
-  ## was category 30apr02
   n.table <- if(.R.) {
     if(!length(Strata)) table(temp,dnn='Status') else
     table(Strata, temp, dnn=c('Stratum','Status'))
@@ -263,10 +261,10 @@ cph <- function(formula=formula(data),
   }
   else { stats <- c(nnn, nevent); names(stats) <- c("Obs","Events") }
   f$method <- NULL
-  if(xpres) dimnames(f$var) <- list(atr$colnames, atr$colnames)  #2Apr95
+  if(xpres) dimnames(f$var) <- list(atr$colnames, atr$colnames)
   f <- c(f, list(call=call, Design=atr, 
-                 assign=DesignAssign(atr, 0, atrx$terms), # was =assign 1may02
-                 na.action=nact,  #terms=Terms
+                 assign=DesignAssign(atr, 0, atrx$terms),
+                 na.action=nact,
                  fail = FALSE, non.slopes = 0, stats = stats, method=method,
                  maxtime = maxtime, time.inc = time.inc,
                  units = time.units, fitFunction=c('cph','coxph')))
@@ -275,7 +273,7 @@ cph <- function(formula=formula(data),
     f$center <- sum(f$means*f$coef)
     f$scale.pred <- c("log Relative Hazard","Hazard Ratio")
     attr(f$linear.predictors,"strata") <- Strata
-    names(f$linear.predictors) <- rnam	#23Feb93
+    names(f$linear.predictors) <- rnam
     if(se.fit) {
       XX <- X - rep(f$means,rep.int(nnn,nvar))   # see scale() function
       ##  XX <- sweep(X, 2, f$means)	# center   (slower)
@@ -361,13 +359,13 @@ cph <- function(formula=formula(data),
     }
     if(is.character(surv)) f$surv.summary <- s.sum
     else {
-      attr(srv, "type") <- if(missing(type)) method else type #7Jun99
+      attr(srv, "type") <- if(missing(type)) method else type
       if(nstr>1) { names(srv) <- names(tim) <- names(s.e.) <- f$strata }
       f <- c(f, list(time=tim, surv=srv,
                      std.err=s.e., surv.summary=s.sum))		
     }
   }
-  oldClass(f) <- if(.SV4.) 'Design' else c("cph", "Design", "coxph") ##13Nov00
+  oldClass(f) <- if(.SV4.) 'Design' else c("cph", "Design", "coxph")
   f
 }
 
@@ -395,7 +393,7 @@ coxphFit <- if(.R. || .SV4.)
 } else  function(..., strata=NULL, rownames=NULL, offset=NULL,
                      init=NULL, toler.chol=1e-9, eps=.0001, iter.max=10) {
 
-    nf <- names(coxph.fit)  ##13Nov00
+    nf <- names(coxph.fit)
     res <-
       if(any(nf=='control'))
         coxph.fit(..., strata=strata, rownames=rownames,
@@ -466,7 +464,6 @@ f <- function(q=.5, lp=0, stratum=1, type=c("step","polygon"), time, surv) {
     if(type=="polygon") Q[j,] <- approx(s, time, q)$y
     else for(i in 1:length(q))
       if(any(s <= q[i])) Q[j,i] <- min(time[s<=q[i]])  #is NA if none
-    ## if(any()) 20may02
   }
   drop(Q)
 }
@@ -564,7 +561,7 @@ formals(f) <- list(lp=0, stratum=1, lp.seq=lp.seq, areas=areas)
 f
 }
 
-## cox.zph demands that the fit object inherit 'coxph'  14Nov00
+## cox.zph demands that the fit object inherit 'coxph'
 ## The following slightly changed cox.zph also explicitly invokes
 ## residuals.cph
 cox.zph <- function(fit, transform = "km", global = TRUE)

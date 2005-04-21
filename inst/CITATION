@@ -1,0 +1,15 @@
+citHeader("To cite Design in publications use:")
+
+citEntry(entry="book",
+         title = "Regression Modeling Strategies, with Applications to Linear Models, Survival Analysis and Logistic Regression",
+         author = as.person('Frank E. Harrell'),
+         address      = "New York",
+         year         = 2001,
+         note         = "{ISBN} 0-387-95232-2",
+         url          = "http://biostat.mc.vanderbilt.edu/rms",
+         
+         textVersion = 
+         paste("Harrell, F. E. (2001):",
+			    "Regression Modeling Strategies, with Applications to Linear Models, Survival Analysis and Logistic Regression.",
+			   "Springer, New York. ISBN 0-387-95232-2")
+         )

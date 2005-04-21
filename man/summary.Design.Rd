@@ -26,7 +26,8 @@ confidence levels are all shown: .7, .8, .9, .95, and .99, using
 levels of gray scale (colors for Windows).
 }
 \usage{
-\method{summary}{Design}(object, \dots, est.all=TRUE, antilog, conf.int=.95, abbrev=FALSE)
+\method{summary}{Design}(object, \dots, est.all=TRUE, antilog,
+conf.int=.95, abbrev=FALSE, vnames=c("names","labels"))
 
 \method{print}{summary.Design}(x, \dots)
 
@@ -87,9 +88,12 @@ for proportional hazards models.
 Defaults to \code{.95} for \code{95\%} confidence intervals of effects.
 }
 \item{abbrev}{
-Set to \code{TRUE} to use the \code{abbreviate} function to shorten factor levels
-for categorical variables in the model.
+Set to \code{TRUE} to use the \code{abbreviate} function to shorten
+factor levels for categorical variables in the model.
 }
+\item{vnames}{
+  Set to \code{"labels"} to use variable labels to label effects.
+  Default is \code{"names"} to use variable names.}
 \item{x}{result of \code{summary}}
 \item{title}{
 \code{title} to pass to \code{latex}.  Default is name of fit object passed to

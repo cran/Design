@@ -5,8 +5,6 @@
 #  The newest version of survreg, that accepts penalties and strata
 #
 
-# .newSurvival. <- .R. || existsFunction('survReg')
-
 psm <- if(.newSurvival.) 
   function(formula=formula(data),
            data=if(.R.)parent.frame() else sys.parent(),
@@ -27,14 +25,14 @@ warning('Unlike earlier versions of survreg, dist="extreme" does not fit\na Weib
     m$na.action <- na.action  ## FEH
     temp <- c("", "formula", "data", "weights", "subset", "na.action")
     m <- m[ match(temp, names(m), nomatch=0)]
-    if(.R.) m$drop.unused.levels <- TRUE  ## 31jul02
+    if(.R.) m$drop.unused.levels <- TRUE
     m[[1]] <- as.name("model.frame")
     special <- c("strata", "cluster")
     Terms <- if(missing(data)) terms(formula, special)
              else              terms(formula, special, data=data)
     m$formula <- Terms
     ## Start FEH
-    offs <- offset <- attr(Terms, "offset")  ## offs 23nov02 moved 6dec02
+    offs <- offset <- attr(Terms, "offset")
     if(!.R.) survreg.distributions <- survReg.distributions
     if(.R.) {
       dul <- .Options$drop.unused.levels
@@ -49,14 +47,13 @@ warning('Unlike earlier versions of survreg, dist="extreme" does not fit\na Weib
     Terms <- atrx$terms
     atr   <- atrx$Design
     if(length(nact$nmiss)) {
-      jia <- grep('*%ia%*',names(nact$nmiss))  ## 8feb03
+      jia <- grep('%ia%',names(nact$nmiss), fixed=TRUE)
       if(length(jia)) nact$nmiss <- nact$nmiss[-jia]
       s <- if(length(offs)) names(nact$nmiss) !=  atrx$names[offs] else TRUE
-      ## 23nov02
       names(nact$nmiss)[s] <- 
         c(as.character(formula[2]), atr$name[atr$assume.code!=9])
     }
-    ## End FEH    [s] 23nov02
+    ## End FEH
     
     weights <- model.extract(m, 'weights')
     Y <- model.extract(m, "response")
@@ -113,7 +110,7 @@ warning('Unlike earlier versions of survreg, dist="extreme" does not fit\na Weib
     n <- nrow(X)
     nvar <- ncol(X)
 
-    if (length(offset)) offset <- as.numeric(m[[offset]])  ## length 23nov02
+    if (length(offset)) offset <- as.numeric(m[[offset]])
     else                offset <- rep(0, n)
 
     if (is.character(dist)) {
@@ -227,11 +224,8 @@ warning('Unlike earlier versions of survreg, dist="extreme" does not fit\na Weib
 	fit$loglik <- fit$loglik + logcorrect
 	}
 
-    ## na.action <- attr(m, "na.action")
-    ##if (length(na.action)) fit$na.action <- na.action
     if(length(nact)) fit$na.action <- nact  ## FEH
     fit$df.residual <- n - sum(fit$df)
-#   fit$fitted.values <- itrans(fit$linear.predictors)
     fit$terms <- Terms
     fit$formula <- as.vector(attr(Terms, "formula"))
     fit$means <- apply(X,2, mean)
@@ -259,7 +253,7 @@ warning('Unlike earlier versions of survreg, dist="extreme" does not fit\na Weib
       c("log(T)","Survival Time Ratio") else "T"
 
     logtest <- 2*diff(fit$loglik)
-    Nn <- if(length(weights)) sum(weights) else nnn[1]  ## 5jun02
+    Nn <- if(length(weights)) sum(weights) else nnn[1]
     R2.max <- 1 - exp(2*fit$loglik[1]/Nn)
     R2 <- (1 - exp(-logtest/Nn))/R2.max
     df <- length(fit$coef)-1
@@ -294,26 +288,24 @@ warning('Unlike earlier versions of survreg, dist="extreme" does not fit\na Weib
     m$init <- m$fixed <- m$control <- m$time.inc <- NULL
     m$na.action <- na.action
     m[[1]] <- as.name("model.frame")
-    X <- Design(eval(m, sys.parent()))    # 24Apr01
-    atrx <- attributes(X)                 # 24Apr01 + next 4
+    X <- Design(eval(m, sys.parent()))
+    atrx <- attributes(X)
     nact <- atrx$na.action
     if(method=="model.frame") return(X)
     Terms <- atrx$terms
-    offs <- offset <- attr(Terms, "offset")  ## offs 23nov02 moved 6dec02
+    offs <- offset <- attr(Terms, "offset")
     atr   <- atrx$Design
     s <- if(length(offs)) names(nact$nmiss) !=  atrx$names[offs] else TRUE
-    ## 23nov02
     if(length(nact$nmiss))
       names(nact$nmiss)[s] <- 
         c(as.character(formula[2]), atr$name[atr$assume.code!=9])
-    ## [s] 23nov02
     lnames <- if(.R.) c("logit","probit","cloglog","identity","log","sqrt",
       "1/mu^2","inverse") else dimnames(glm.links)[[2]]
     link <- pmatch(link, lnames, 0)
     if(link==0) stop("invalid link function")
     link <- lnames[link]
     Y <- model.extract(X, "response")
-    atY <- attributes(Y)    # 1 Apr 95
+    atY <- attributes(Y)
     ncy <- ncol(Y)
     maxtime <- max(Y[,-ncy])
     nnn <- c(nrow(Y),sum(Y[,ncy]))
@@ -378,8 +370,8 @@ warning('Unlike earlier versions of survreg, dist="extreme" does not fit\na Weib
 
     if (is.character(sfit))  	{
 	cat("Failure in psm:\n",sfit,"\n")
-	fit <- list(fail=TRUE, fitFunction='psm')  #error message; 14Nov00
-	oldClass(fit) <- if(.SV4.)'Design' else "psm" ##14Nov00
+	fit <- list(fail=TRUE, fitFunction='psm')
+	oldClass(fit) <- if(.SV4.)'Design' else "psm"
 	return(fit)
 				}
     else {
@@ -432,11 +424,11 @@ warning('Unlike earlier versions of survreg, dist="extreme" does not fit\na Weib
     fit <- c(fit, list(maxtime=maxtime, units=time.units,
                        time.inc=time.inc,scale.pred=scale.pred,
                        non.slopes=1,
-                       fitFunction=c("psm", "survreg", "glm", "lm"))) ##13Nov00
+                       fitFunction=c("psm", "survreg", "glm", "lm")))
     fit$Design <- atr
     fit$stats  <- stats
     oldClass(fit) <- if(.SV4.)'Design' else
-     c("psm", "Design", "survreg", "glm", "lm")  ##14Nov00
+     c("psm", "Design", "survreg", "glm", "lm")
     fit$terms <- Terms
     fit$formula <- as.vector(attr(Terms, "formula"))
     fit$call <- call
@@ -444,7 +436,7 @@ warning('Unlike earlier versions of survreg, dist="extreme" does not fit\na Weib
     if (model) fit$model <- m
     if (x)     fit$x <- X
     if (y) {
-      oldClass(Y) <- 'Surv'    # 1 Apr 95
+      oldClass(Y) <- 'Surv'
       attr(Y,'type') <- atY$type
       fit$y <- Y
     }
@@ -542,7 +534,7 @@ residuals.psm <- function(object, type = "censored.normalized", ...)
     aty <- attributes(y)
     if(length(y)==0) stop('did not use y=T with fit')
     ncy <- ncol(y)
-    if(.newSurvival.) {  ## 17Apr02
+    if(.newSurvival.) {
       scale <- object$scale
       dist  <- object$dist
     } else {
@@ -561,7 +553,7 @@ residuals.psm <- function(object, type = "censored.normalized", ...)
     oldClass(r) <- c('residuals.psm.censored.normalized','Surv')
     g <- survreg.auxinfo[[dist]]$survival
     formals(g) <- if(.newSurvival.) list(times=NULL, lp=0, parms=0)
-    else list(times=NULL, lp=0, parms=0, transform='identify')  ## 17Apr02
+    else list(times=NULL, lp=0, parms=0, transform='identify')
     attr(r,'theoretical') <- g
     r
     }
@@ -588,7 +580,6 @@ survplot.residuals.psm.censored.normalized <-
   if(missing(x)) {
 	survplot(survfit(r), conf='none', xlab='Residual', 
 			 col=if(missing(col))par('col') else col, ...)
-    ## was survfit(r, data=list(r)) 28apr02
 	if(!missing(main)) title(main)
   } else {
 	if(is.character(x)) x <- as.factor(x)

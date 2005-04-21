@@ -362,17 +362,19 @@ if(!any(sn=='MS') && length(dfe <- attr(stats,'df.residual')))
 invisible()
 }
 
-latex.anova.Design <- function(object,
-  title=if(under.unix) paste('anova',attr(object,'obj.name'),sep='.') else
-   paste("ano",substring(first.word(attr(object,"obj.name")),
-                         1,5),sep=""), 
-  psmall=TRUE, dec.chisq=2, dec.F=2, dec.ss=NA, dec.ms=NA, dec.P=4, ...) {
+latex.anova.Design <-
+ function(object,
+          title=if(under.unix)
+           paste('anova',attr(object,'obj.name'),sep='.') else
+           paste("ano",substring(first.word(attr(object,"obj.name")),
+                                 1,5),sep=""), 
+           psmall=TRUE,
+           dec.chisq=2, dec.F=2, dec.ss=NA, dec.ms=NA, dec.P=4, ...) {
 
 ## expr in first.word 18Nov00 removed 25May01
 
 rowl <- dimnames(object)[[1]]
 #Translate interaction symbol (*) to times symbol
-#rowl <- translate(rowl, "*", "$\\\\times$")
 rowl <- sedit(rowl, "*", "$\\times$", wild.literal=TRUE)
 #Put TOTAL rows in boldface
 rowl <- ifelse(substring(rowl,1,5) %in% c("TOTAL","ERROR"), paste("{\\bf",rowl,"}"),rowl)
@@ -383,13 +385,11 @@ P <- object[,3]
 dstats <- as.data.frame(object)
 attr(dstats, 'row.names') <- rowl
 
-## 4may03
 if(psmall) {
   psml <- !is.na(dstats$P) & dstats$P < 0.00005
   if(any(psml)) dstats$P <- ifelse(is.na(dstats$P),'',ifelse(psml, 
-#if(psmall && any(dstats$P <0.00005)) dstats$P <- ifelse(dstats$P <0.00005,
 				"$<0.0001$",
-				paste("~",format(round(dstats$P,4)),sep="")))
+				paste("~",format(round(dstats$P,dec.P)),sep="")))
 }
 
 digits <- c('Chi-Square'=dec.chisq, F=dec.F, 'd.f.'=0,
@@ -400,8 +400,6 @@ dig <- digits[sn]
 sn[sn=='Chi-Square'] <- '\\chi^2'
 names(dstats) <- paste('$',sn,'$',sep='')
 
-#dstats <- structure(list("$\\chi^2$"=stats[,1],"$d.f.$"=stats[,2],
-#		"$P$"=P), row.names=rowl, class="data.frame")
 #Make LaTeX preserve spaces in heading
 head <- paste(if(any(sn=='F'))"Analysis of Variance" else "Wald Statistics", "for {\\tt",
 	as.character(attr(object,"formula")[2]),"}")

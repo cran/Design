@@ -13,11 +13,11 @@ lrm <- function(formula,data,subset,na.action=na.delete,
       m$tol <- m$var.penalty <- m$normwt <- NULL
 
   m$na.action <- na.action
-  m$formula <- formula  ## 16Dec97
-  if(.R.) m$drop.unused.levels <- TRUE  ## 31jul02
+  m$formula <- formula
+  if(.R.) m$drop.unused.levels <- TRUE
   m[[1]] <- as.name("model.frame")
   nact <- NULL
-  tform <- terms(formula, specials='strat')  ##specials= 16Dec97
+  tform <- terms(formula, specials='strat')
   offs <- attr(tform, "offset")
   nstrata <- 1
   if(!missing(data) || (
@@ -30,25 +30,23 @@ lrm <- function(formula,data,subset,na.action=na.delete,
         options(drop.unused.levels=FALSE)
       }
     }
-    X <- Design(eval(m, sys.parent()))   # 24Apr01
+    X <- Design(eval(m, sys.parent()))
     atrx <- attributes(X)
     nact <- atrx$na.action
     if(method=="model.frame") return(X)
-    Terms <- atrx$terms             # 16Dec97
+    Terms <- atrx$terms
     attr(Terms, "formula") <- formula
-    atr <- atrx$Design              # 24Apr01
-    ## 22nov02
+    atr <- atrx$Design
     if(length(nact$nmiss)) {
-      jia <- grep('*%ia%*',names(nact$nmiss))  ## 8feb03
+      jia <- grep('%ia%',names(nact$nmiss),fixed=TRUE)
       if(length(jia)) nact$nmiss <- nact$nmiss[-jia]
       s <- if(length(offs)) names(nact$nmiss) !=  atrx$names[offs] else TRUE
       names(nact$nmiss)[s] <-
         c(as.character(formula[2]), atr$name[atr$assume.code!=9])
     }
-    ## added [s] 22nov02
 
     Y <- model.extract(X, response)
-    weights <- wt <- model.extract(X, 'weights')  ##6jun02 18jan03
+    weights <- wt <- model.extract(X, 'weights')
     if(length(weights))
       warning('currently weights are ignored in model validation and bootstrapping lrm fits')
     ##   offset <- attr(X,"offset")
@@ -56,7 +54,7 @@ lrm <- function(formula,data,subset,na.action=na.delete,
     if(ofpres) offs <- X[[offs]]  else offs <- 0
     if(!.R.)storage.mode(offs) <- "single"
     if(model) m <- X
-    stra <- attr(tform,'specials')$strat ## 16Dec97 ----
+    stra <- attr(tform,'specials')$strat
     Strata <- NULL
     Terms.ns <- Terms
     if(length(stra)) {
@@ -66,14 +64,14 @@ lrm <- function(formula,data,subset,na.action=na.delete,
       attr(Terms.ns,"factors") <- pmin(attr(Terms.ns,"factors"),1)
       Strata <- X[[stra]]
       nstrata <- length(levels(Strata))
-    }                                    ## 16Dec97 ----
-    X <- model.matrix(Terms.ns, X)  ## 8Apr02
-    ##      ass <- attr(X, 'assign')   ## 9Apr02
-    ##	  X <- model.matrix(Terms.ns, X)[,-1,drop=FALSE]  ## .ns 16Dec97
-    X <- X[,-1,drop=FALSE]   ## 8Apr02  R drops assign with []
+    }
+    X <- model.matrix(Terms.ns, X)
+    ##      ass <- attr(X, 'assign')
+    ##	  X <- model.matrix(Terms.ns, X)[,-1,drop=FALSE]
+    X <- X[,-1,drop=FALSE]
     if(!.R.)storage.mode(X) <- "single"
     dimnames(X)[[2]] <- atr$colnames
-    ##	  oldClass(X) <- c("model.matrix", "Design")   14Sep00
+    ##	  oldClass(X) <- c("model.matrix", "Design")
     xpres <- length(X)>0
 
     p <- length(atr$colnames)
@@ -146,27 +144,22 @@ lrm <- function(formula,data,subset,na.action=na.delete,
 	if(nstrata==1) {
 	## Get improved covariance matrix
 	v <- f$var
-	if(var.penalty=='sandwich') f$var.from.info.matrix <- v  # 25Mar00
+	if(var.penalty=='sandwich') f$var.from.info.matrix <- v
 	f.nopenalty <- if(ofpres) fitter(X,Y,offset=offs,initial=f$coef, maxit=1, tol=tol) else
 	fitter(X,Y,initial=f$coef, maxit=1, tol=tol)
-	##  info.matrix.unpenalized <- solvet(f.nopenalty$var, tol=tol)  ##6May96
+	##  info.matrix.unpenalized <- solvet(f.nopenalty$var, tol=tol)
 	info.matrix.unpenalized <- f.nopenalty$info.matrix
 	dag <- diag(info.matrix.unpenalized %*% v)
 	f$effective.df.diagonal <- dag
 	f$var <- if(var.penalty=='simple')v else
-             v %*% info.matrix.unpenalized %*% v   # 25Mar00
-	df <- sum(dag[-(1:nrp)])   ## 6May96
+             v %*% info.matrix.unpenalized %*% v
+	df <- sum(dag[-(1:nrp)])
 	lr <- f.nopenalty$stats["Model L.R."]
 	pval <- 1-pchisq(lr, df)
 	f$stats[c('d.f.','Model L.R.','P')] <- c(df, lr, pval)  
 }
   }
     ass <- if(xpres) DesignAssign(atr, nrp, Terms) else list()
-    ## 8Apr02
-    ## ass[[1]] <- 1:nrp
-    ## if(length(ass) > 1) for(i in 2:length(ass)) ass[[i]] <- ass[[i]]+nrp
-    ##[,-1 after model.matrix had subtract intercept position, but was
-	## only 1 d.f.
 
   if(xpres) {
 	if(linear.predictors) names(f$linear.predictors) <- names(Y) else
@@ -182,11 +175,11 @@ lrm <- function(formula,data,subset,na.action=na.delete,
 	  names(se) <- names(Y)
 	  f$se.fit <- se	}
   }
-  f <- c(f, list(call=call, Design=if(xpres)atr,  ## 4Apr02
+  f <- c(f, list(call=call, Design=if(xpres)atr,
                  scale.pred=c("log odds","Odds Ratio"),
 				 terms=Terms, assign=ass, na.action=nact, fail=FALSE,
                  nstrata=nstrata, fitFunction=c('lrm','glm')))
   
-  oldClass(f) <- if(.SV4.)'Design' else c("lrm","Design","glm") ##13Nov00
+  oldClass(f) <- if(.SV4.)'Design' else c("lrm","Design","glm")
   f
 }

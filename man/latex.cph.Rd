@@ -14,7 +14,7 @@ the fitted model.
 \usage{
 \method{latex}{cph}(object, title,
       file=paste(first.word(deparse(substitute(object))),".tex",sep=""),
-      append=FALSE, surv=TRUE, maxt=FALSE, which, varnames, columns=65, 
+      append=FALSE, surv=TRUE, maxt=FALSE, which=NULL, varnames, columns=65, 
       inline=FALSE, before=if(inline)"" else "& &", dec=3,
       pretrans=TRUE, caption, \dots) # for cph fit
 
@@ -24,10 +24,10 @@ columns, inline, before, pretrans, caption, \dots) # for lrm fit
 \method{latex}{ols}(object, title, file, append, which, varnames,
 columns, inline, before, pretrans, caption, \dots) # ols fit
 
-\method{latex}{pphsm}(object, title, file, append, which, varnames,
+\method{latex}{pphsm}(object, title, file, append, which=NULL, varnames,
 columns, inline, before, pretrans, caption, \dots) # pphsm fit
 
-\method{latex}{psm}(object, title, file, append, which, varnames,
+\method{latex}{psm}(object, title, file, append, which=NULL, varnames,
 columns, inline, before, pretrans, caption, \dots) # psm fit
 }
 \arguments{

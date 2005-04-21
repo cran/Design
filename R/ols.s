@@ -10,13 +10,12 @@ ols <- function(formula, data, weights, subset, na.action=na.delete,
 		m$linear.predictors <- m$penalty <- 
 		m$penalty.matrix <- m$tol <- m$sigma <- m$var.penalty <- m$... <- NULL
 	m$na.action <- na.action
-    if(.R.) m$drop.unused.levels <- TRUE  ## 31jul02
+    if(.R.) m$drop.unused.levels <- TRUE
 	m[[1]] <- as.name("model.frame")
-    ##	if(!missing(data) || any(attr(terms(formula),"term.labels")!=".")){
     ##X's present) 
 	if(length(attr(terms(formula),"term.labels"))) {
       ## R's model.frame.default gives wrong model frame if [.factor
-      ## removes unused factor levels  31jul02
+      ## removes unused factor levels
       if(.R.) {
         dul <- .Options$drop.unused.levels
         if(!length(dul) || dul) {
@@ -24,13 +23,13 @@ ols <- function(formula, data, weights, subset, na.action=na.delete,
           options(drop.unused.levels=FALSE)
         }
       }
-      X <- Design(eval(m, sys.parent()))   # 17Apr01 + next
+      X <- Design(eval(m, sys.parent()))
       if(.R.) options(drop.unused.levels=dul)
     atrx <- attributes(X)
     atr <- atrx$Design
 	nact <- atrx$na.action
 	Terms <- atrx$terms
-    assig <- DesignAssign(atr, 1, Terms)  ## 11Apr02
+    assig <- DesignAssign(atr, 1, Terms)
     
 	penpres <- !(missing(penalty) && missing(penalty.matrix))
     if(penpres && missing(var.penalty))
@@ -40,7 +39,7 @@ ols <- function(formula, data, weights, subset, na.action=na.delete,
 	scale <- as.character(formula[2])
 	attr(Terms, "formula") <- formula
 	if(length(nact$nmiss)) {
-      jia <- grep('*%ia%*',names(nact$nmiss))  ## 8feb03
+      jia <- grep('%ia%',names(nact$nmiss), fixed=TRUE)
       if(length(jia)) nact$nmiss <- nact$nmiss[-jia]
       names(nact$nmiss) <- 
 		c(scale,atr$name[atr$assume.code!=9])
@@ -53,11 +52,9 @@ ols <- function(formula, data, weights, subset, na.action=na.delete,
 	n <- length(Y)
 	if(model) m <- X
 	X <- model.matrix(Terms, X)
-	## if(!.R.) storage.mode(X) <- "single"  removed 3mar04
 	if(length(atr$colnames)) 
 	   dimnames(X)[[2]] <- c("Intercept",atr$colnames)
 	else dimnames(X)[[2]] <- c("Intercept",dimnames(X)[[2]][-1])
-#	oldClass(X) <- c("model.matrix","Design")   14Sep00
 	if(method=="model.matrix") return(X)				   }
 
 #Model with no covariables:
@@ -85,16 +82,15 @@ else {
   if(x) fit$x <- matrix(1, ncol=1, nrow=n, 
                         dimnames=list(NULL,"Intercept"))
   if(y) fit$y <- Y
-  fit$fitFunction <- c('ols','lm')  ## 13Nov00
+  fit$fitFunction <- c('ols','lm')
   oldClass(fit) <- if(.SV4.)"Design" else c("ols","Design","lm")
-  ## 13Nov00  17Apr01
   return(fit)
 }
 
 	if(!penpres) {
 	  fit <- if(length(weights))
         lm.wfit(X, Y, weights, method=method,  ...) else 
-	    lm.fit(X, Y, method=method, ...)  ## added method=x2 8Apr02
+	    lm.fit(X, Y, method=method, ...)
       if(.R.) cov.unscaled <- chol2inv(fit$qr$qr) else {
         rinv <- solve(fit$R, diag(length(fit$coefficients)))
         cov.unscaled <- rinv %*% t(rinv)
@@ -122,7 +118,7 @@ else {
 	  }
 	  fit <- lm.pfit(X, Y,
 	                 penalty.matrix=penalty.matrix, tol=tol,
-                     var.penalty=var.penalty)  #25Mar00
+                     var.penalty=var.penalty)
 	  fit$penalty <- penalty
 	}
 
@@ -146,8 +142,8 @@ else {
                        non.slopes=1, na.action=nact,
                        scale.pred=scale, fail=FALSE,
                        fitFunction=c('ols','lm')))
-    fit$assign <- assig   ## 11Apr02
-	oldClass(fit) <- if(.SV4.)'Design' else c("ols","Design","lm") ##13Nov00
+    fit$assign <- assig
+	oldClass(fit) <- if(.SV4.)'Design' else c("ols","Design","lm")
 	fit
 }
 
@@ -162,12 +158,12 @@ pm <- rbind(matrix(0, ncol=p+1, nrow=1),
 xpx <- t(X) %*% X
 Z <- solvet(xpx+pm, tol=tol)
 coef <- Z %*% t(X) %*% Y
-if(regcoef.only) return(list(coefficients=coef))  ## 16Oct97
+if(regcoef.only) return(list(coefficients=coef))
 res  <- drop(Y - X %*% coef)
 n <- length(Y)
 sse <- sum(res^2)
 s2 <- drop( (sse + t(coef) %*% pm %*% coef) / n )
-var <- if(var.penalty=='simple') s2 * Z else s2 * Z %*% xpx %*% Z  #25Mar00
+var <- if(var.penalty=='simple') s2 * Z else s2 * Z %*% xpx %*% Z
 cnam <- dimnames(X)[[2]]
 dimnames(var) <- list(cnam, cnam)
 sst <- sum((Y-mean(Y))^2)
@@ -177,7 +173,6 @@ dag <- diag((xpx / s2.unpen) %*% (s2 * Z))
 df <- sum(dag) - 1
 stats <- c(n=n, 'Model L.R.'=lr, 'd.f.'=df, R2=1-sse/sst, Sigma=sqrt(s2))
 
-## was assign=attr(X,'assign') 11Apr01
 list(coefficients=drop(coef), var=var, residuals=res, df.residual=n-1,
      penalty.matrix=penalty.matrix, 
      stats=stats, effective.df.diagonal=dag)

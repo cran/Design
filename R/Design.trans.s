@@ -99,7 +99,8 @@ des.args <- function(x,parms.allowed,call.args) {
     ## Added karg <= length(x) 9Apr02 for R; R doesn't return NULL
     ## like S+
 	if(k>0) x[[k]] else 
-	if(nm[karg]!="") NULL else if(karg <= length(x)) x[[karg]] else NULL
+	if(length(nm) < karg || nm[karg]!="") NULL else
+     if(karg <= length(x)) x[[karg]] else NULL
   }
   if(parms.allowed) parms <- argu(x,2,"parms",pa,nam) else {
 	parms <- NULL

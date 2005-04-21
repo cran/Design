@@ -119,4 +119,6 @@ lm.fit(X[,z$parms.kept], Y)         # least squares fit of reduced model
 \keyword{models}
 \keyword{regression}
 \keyword{htest}
+\concept{stepwise}
+\concept{variable selection}
 

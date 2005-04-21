@@ -198,7 +198,8 @@ if(type!="adjto" & type!="adjto.data.frame") {
           w <- newdata[,i]
           V <- NULL
           if(asj==5 | asj==7 | asj==8 | 
-             (length(V <- Values[[name[j]]]) && is.character(V))) {
+             (name[j] %in% names(Values) &&
+              length(V <- Values[[name[j]]]) && is.character(V))) {
             if(length(Pa <- parms[[name[j]]])) V <- Pa   #added 8Apr94
             ## if(is.null(V)) V <- parms[[name[j]]]  #subtracted 8Apr94
             newdata[,i] <- factor(w, V)
