@@ -31,7 +31,7 @@ fastbw(fit, rule="aic", type="residual", sls=.05, aics=0, eps=1e-9, k.aic=2)
 }
 \arguments{
 \item{fit}{
-fit object with \code{Varcov(fit)} defined (e.g., from \code{ols}, \code{lrm}, \code{cph}, \code{psm}, \code{lm}, \code{glm})
+fit object with \code{Varcov(fit)} defined (e.g., from \code{ols}, \code{lrm}, \code{cph}, \code{psm}, \code{glmD})
 }
 \item{rule}{
 Stopping rule. Defaults to \code{"aic"} for Akaike's information criterion. Use

@@ -225,10 +225,6 @@ if(type=="partial")						{
 	      plot(xi, ri, xlab=xname[i], ylab="Partial Residual",
 		   xlim=if(missing(xlim))range(xi) else xlim,
 		   ylim=if(missing(ylim))range(ri) else ylim)
-          if(.R. && !gotsupsmu && pl!='lowess') {
-            require('modreg')
-            gotsupsmu <- TRUE
-          }
 	      if(pl=="lowess") lines(lowess(xi, ri, iter=0, ...))
 	      else lines(supsmu(xi, ri, ...))
 	   }
@@ -238,10 +234,6 @@ if(type=="partial")						{
 		 smoothed <- vector('list',k)
 		 ymin <- 1e30; ymax <- -1e30
 
-         if(.R. && !gotsupsmu && pl!='lowess') {
-           require('modreg')
-           gotsupsmu <- TRUE
-         }
 		 for(j in 1:k) {
 		   w <- if(pl!='supsmu') lowess(xi, ri[,j], iter=0, ...) else
 		     supsmu(xi, ri[,j], ...)

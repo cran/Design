@@ -51,8 +51,6 @@ bj(formula=formula(data), data, subset, na.action=na.delete,
 
 \method{print}{bj}(x, digits=4, long=FALSE, \dots)
 
-\method{predict}{bj}{\dots}
-
 \method{residuals}{bj}(object, type=c("censored","censored.normalized"),\dots)
 
 bjplot(fit, which=1:dim(X)[[2]])

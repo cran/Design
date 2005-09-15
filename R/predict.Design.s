@@ -333,7 +333,7 @@ if(type=="x") return(
 if(type=="lp") {
   if(somex) {
     ## if( ) 28apr02
-    if(elements.to.delete==9999) cof <- coeff else {
+    if(any(elements.to.delete==9999)) cof <- coeff else {
       cof <- coeff[-elements.to.delete]
       X <- X[,-elements.to.delete,drop=FALSE]
     }

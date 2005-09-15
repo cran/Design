@@ -63,7 +63,7 @@ rcs(x, parms, label, name)
 catg(x, parms, label, name)
 scored(x, parms, label, name)
 strat(x, label, name)
-\%ia\%(x1, x2)
+x1 \%ia\% x2
 }
 \arguments{
 \item{x}{

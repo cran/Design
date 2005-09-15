@@ -2,7 +2,6 @@
 \alias{pentrace}
 \alias{plot.pentrace}
 \alias{print.pentrace}
-\alias{print.pentrace}
 \alias{effective.df}
 \title{
 Trace AIC and BIC vs. Penalty

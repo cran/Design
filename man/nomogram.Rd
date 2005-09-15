@@ -385,7 +385,10 @@ Editors: S Kotz and NL Johnson.  New York: Wiley; 1985.
 
 
 Lubsen J, Pool J, van der Does, E: A practical device for the application
-of a diagnostic or prognostic function.  Meth. Inform. Med. 17:127--129; 1978.
+of a diagnostic or prognostic function.  Meth. Inform. Med. 17:127--129;
+1978.
+
+Wikipedia: Nomogram, \url{http://en.wikipedia.org/wiki/Nomogram}.
 }
 \seealso{
 \code{\link{Design}}, \code{\link{plot.Design}}, \code{\link{plot.summary.Design}}, \code{\link{axis}}, \code{\link{pretty}}, \code{\link{approx}},

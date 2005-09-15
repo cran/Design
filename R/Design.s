@@ -258,7 +258,9 @@ if(length(factors)) for(i in 1:ncol(factors)) {
 
 									}}}
 
-if(!.R.) attr(mf,"names") <- NULL   ## was needed at all?  8Apr02
+# if(!.R.) attr(mf,"names") <- NULL   ## was needed at all?  8Apr02
+# above line removing names on model.frames with NA's removed and nothing
+# on model.frames with no NA's removed 6May05
 if(anyfactors) {
 if(length(XDATADIST))
    limits <- structure(limits, row.names=c("Low:effect","Adjust to",
