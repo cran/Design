@@ -1,8 +1,8 @@
 plot.xmean.ordinaly <- function(x, data, subset, na.action,
-	subn=TRUE, cr=FALSE, ...) {
+                                subn=TRUE, cr=FALSE, topcats=1, ...) {
 
 X <- match.call(expand=FALSE)
-X$subn <- X$cr <- X$... <- NULL
+X$subn <- X$cr <- X$topcats <- X$... <- NULL
 if(missing(na.action)) X$na.action <- na.keep
 Terms <- if(missing(data)) terms(x) else terms(x, data=data)
 X$formula <- Terms
@@ -16,11 +16,9 @@ Y <- X[[resp]]
 nam <- as.character(attr(Terms, 'variables'))
 if(.R.) nam <- nam[-1]
 
-for(i in 1:nx) {
-  x <- X[[resp+i]]
-  if(is.category(x)) stop('categorical predictors not allowed')
+dopl <- function(x, y, cr, xname, yname) {
   s <- !is.na(oldUnclass(Y)+x)
-  y <- Y[s]
+  y <- y[s]
   x <- x[s]
   n <- length(x)
   f <- lrm.fit(x, y)
@@ -53,7 +51,8 @@ for(i in 1:nx) {
     cof <- lrm.fit(cbind(xcohort, xc), yc)$coefficients
     cumprob <- rep(1, n)
     for(j in 1:k) {
-      P[,j] <- cumprob* (if(j==k) 1 else plogis(cof[1] + (if(j>1) cof[j] else 0) + cof[k]*x))
+      P[,j] <- cumprob* (if(j==k) 1 else
+                         plogis(cof[1] + (if(j>1) cof[j] else 0) + cof[k]*x))
       cumprob <- cumprob - P[,j]
     }
     xp <- x*P/n
@@ -61,13 +60,33 @@ for(i in 1:nx) {
     rr <- c(rr, xmean.y.cr)
   }
   plot(yy, xmean.y, type='b', ylim=range(rr),
-       axes=FALSE, xlab=nam[resp], ylab=paste('Mean of',nam[resp+i]), ...)
+       axes=FALSE, xlab=yname, ylab=xname, ...)
   mgp.axis(1, at=yy, labels=names(fy))
   mgp.axis(2)
   lines(yy, xmean.y.po, lty=2, ...)
   if(cr) points(yy, xmean.y.cr, pch='C')
   if(subn) title(sub=paste('n=',n,sep=''),adj=0)
+}
 
+
+for(i in 1:nx) {
+  x <- X[[resp+i]]
+  if(is.category(x)) {
+    f <- table(x)
+    ncat <- length(f)
+    if(ncat < 2) {
+      warning(paste('predictor',
+                    nam[resp+i],'only has one level and is ignored'))
+      next
+    }
+    nc <- min(ncat-1, topcats)
+    cats <- (names(f)[order(-f)])[1:nc]
+    for(wcat in cats) {
+      xx <- 1*(x==wcat)
+      xname <- paste(nam[resp+i], wcat, sep='=')
+      dopl(xx, Y, cr, xname, nam[resp])
+    }
+  } else dopl(x, Y, cr, nam[resp+i], nam[resp])
 }
 invisible()
 }

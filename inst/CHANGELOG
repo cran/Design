@@ -1,0 +1,8 @@
+2.1-1 6/18/2007
+      Made Design work with R 2.5
+
+      Moved src/robcovf.r to src/ratfor/robcovf.r
+
+      Moved src/lrmfit.f.b4weights to src/old_src/lrmfit.f.b4weights
+
+      Removed tabs from src/mlmats.f

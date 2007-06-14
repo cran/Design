@@ -111,7 +111,7 @@ glsD <-
           }
         }
         Nboot[j] <- Nb <- length(s)
-        if(pr) cat(j,'')
+        if(pr) cat(j,'\r')
       }
     attr(glsSt, "conLin") <-
       if(j==0)

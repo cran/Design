@@ -1,16 +1,22 @@
 \name{predict.lrm}
 \alias{predict.lrm}
+\alias{Mean.lrm}
 \title{
 Predicted Values for Binary and Ordinal Logistic Models
 }
 \description{
 Computes a variety of types of predicted values for fits from
 \code{lrm}, either from the original dataset or for new observations.
+The \code{Mean.lrm} function produces an S function to compute the
+predicted mean of a numeric ordered response variable given the linear
+predictor, which is assumed to use the first intercept in its computation.
 }
 \usage{
 \method{predict}{lrm}(object, \dots, type=c("lp", "fitted", "fitted.ind", "mean", "x", 
             "data.frame", "terms", "adjto","adjto.data.frame", 
             "model.frame"), se.fit=FALSE, codes=FALSE)
+
+\method{Mean}{lrm}(object, codes=FALSE, \dots)
 }
 \arguments{
 \item{object}{
@@ -40,7 +46,7 @@ See the Hannah and Quigley reference below for the method of estimating
 applies only to \code{type="lp"}, to get standard errors.
 }
 \item{codes}{
-if \code{TRUE}, \code{type="mean"} uses the integer codes
+if \code{TRUE}, \code{type="mean"} or \code{Mean.lrm} uses the integer codes
 \eqn{1,2,\ldots,k} for the \eqn{k}-level response in computing the
 predicted mean response.
 }
@@ -48,8 +54,9 @@ predicted mean response.
 \value{
 a vector (\code{type="lp"} with \code{se.fit=FALSE}, or \code{type="mean"} or only one
 observation being predicted), a list (with elements \code{linear.predictors}
-and \code{se.fit} if \code{se.fit=TRUE}), a matrix (\code{type="fitted"} or \code{type="fitted.ind"}),
-a data frame, or a design matrix.  
+and \code{se.fit} if \code{se.fit=TRUE}), a matrix (\code{type="fitted"}
+or \code{type="fitted.ind"}), a data frame, or a design matrix.  For
+\code{Mean.lrm} the result is an S function.
 }
 \author{
 Frank Harrell\cr
@@ -58,8 +65,8 @@ Vanderbilt University\cr
 f.harrell@vanderbilt.edu
 }
 \references{
-Hannah M, Quigley P: Presentation of ordinal regression analysis on the original
-scale.  Biometrics 52:771--5; 1996.
+Hannah M, Quigley P: Presentation of ordinal regression analysis on the
+original scale.  Biometrics 52:771--5; 1996.
 }
 \seealso{
 \code{\link{lrm}}, \code{\link{predict.Design}}, \code{\link{naresid}}, \code{\link{contrast.Design}}
@@ -76,10 +83,19 @@ x1 <- runif(400)
 x2 <- runif(400)
 f <- lrm(y ~ rcs(x1,4)*x2)
 predict(f, type="fitted.ind")[1:10,]   #gets Prob(better) and all others
-d <- data.frame(x1=.5,x2=.5)
+d <- data.frame(x1=c(.1,.5),x2=c(.5,.15))
 predict(f, d, type="fitted")        # Prob(Y>=j) for new observation
 predict(f, d, type="fitted.ind")    # Prob(Y=j)
 predict(f, d, type='mean', codes=TRUE) # predicts mean(y) using codes 1,2,3
+m <- Mean(f, codes=TRUE)
+lp <- predict(f, d)
+m(lp)
+# Can use function m as an argument to plot.Design or nomogram to
+# get predicted means instead of log odds or probabilities
+# Don't use non.slopes argument to plot.Design for this
+dd <- datadist(x1,x2); options(datadist='dd')
+m
+plot(f, x1=NA, fun=m, ylab='Predicted Mean')
 }
 \keyword{models}
 \keyword{regression}

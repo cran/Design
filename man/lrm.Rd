@@ -122,7 +122,7 @@ variances estimates that are too low.
   a vector (same length as \code{y}) of possibly fractional case weights
 }
 \item{normwt}{
- set to code{TRUE} to scale \code{weights} so they sum to the length of
+ set to \code{TRUE} to scale \code{weights} so they sum to the length of
  \code{y}; useful for sample surveys as opposed to the default of
  frequency weighting 
  }
@@ -233,13 +233,13 @@ Presentation on UVa Web page, 1998.
 \code{\link{lrm.fit}}, \code{\link{predict.lrm}}, \code{\link{Design.trans}}, \code{\link{Design}}, \code{\link{glm}}, \code{\link{latex.lrm}},
 \code{\link{residuals.lrm}}, \code{\link[Hmisc]{na.delete}}, \code{\link[Hmisc]{na.detail.response}}, \code{\link{naresid}},
 \code{\link{pentrace}}, \code{\link{Design.Misc}}, \code{\link{vif}}, \code{\link{cr.setup}}, \code{\link{predab.resample}},
-\code{\link{validate.lrm}}, \code{\link{calibrate}}
-}
+\code{\link{validate.lrm}}, \code{\link{calibrate}}, \code{\link{Mean.lrm}}}
 \examples{
 #Fit a logistic model containing predictors age, blood.pressure, sex
 #and cholesterol, with age fitted with a smooth 5-knot restricted cubic 
 #spline function and a different shape of the age relationship for males 
-#and females.
+#and females.  As an intermediate step, predict mean cholesterol from
+#age using a proportional odds ordinal logistic model
 #
 n <- 1000    # define sample size
 set.seed(17) # so can reproduce the results
@@ -254,6 +254,17 @@ label(sex)            <- 'Sex'
 units(cholesterol)    <- 'mg/dl'   # uses units.default in Hmisc
 units(blood.pressure) <- 'mmHg'
 
+#To use prop. odds model, avoid using a huge number of intercepts by
+#grouping cholesterol into 40-tiles
+ch <- cut2(cholesterol, g=40, levels.mean=TRUE) # use mean values in intervals
+table(ch)
+f <- lrm(ch ~ age)
+m <- Mean(f)    # see help file for Mean.lrm
+d <- data.frame(age=seq(0,90,by=10))
+m(predict(f, d))
+# Repeat using ols
+f <- ols(cholesterol ~ age)
+predict(f, d)
 
 # Specify population model for log odds that Y=1
 L <- .4*(sex=='male') + .045*(age-50) +

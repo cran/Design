@@ -82,7 +82,7 @@ A comprehensive example demonstrates the use of all of the functions.
 \usage{
 bootcov(fit, cluster, B=200, fitter, 
         coef.reps=FALSE, loglik=coef.reps,
-        pr=FALSE, maxit=15, group)
+        pr=FALSE, maxit=15, group, stat=NULL)
 
 
 bootplot(obj, which, X,
@@ -136,7 +136,8 @@ samples.  Default is taken from the class of \code{fit} if it is
 }
 \item{coef.reps}{
 set to \code{TRUE} if you want to store a matrix of all bootstrap regression
-coefficient estimates in the returned component \code{boot.Coef}.
+coefficient estimates in the returned component \code{boot.Coef}.  For
+\code{models} set \code{loglik=FALSE} to get \code{coef.reps=TRUE} to work.
 }
 \item{loglik}{
 set to \code{TRUE} to store -2 log likelihoods for each bootstrap model, evaluated
@@ -161,6 +162,12 @@ sample will be forced to select the same number of observations from
 each level of group as the number appearing in the original dataset.
 You may specify both \code{group} and \code{cluster}.
 }
+\item{stat}{
+  a single character string specifying the name of a \code{stats}
+  element produced by the fitting function to save over the bootstrap
+  repetitions.  The vector of saved statistics will be in the
+  \code{boot.stats} part of the list returned by \code{bootcov}.
+  }
 \item{which}{
 one or more integers specifying which regression coefficients to
 plot for \code{bootplot}
@@ -227,8 +234,10 @@ the covariance matrix of the original fit.  Also, the original \code{var}
 component is replaced with the new bootstrap estimates.  The component
 \code{boot.coef} is also added.  This contains the mean bootstrap estimates
 of regression coefficients (with a log scale element added if
-applicable).  \code{boot.Coef} is added if \code{coef.reps=TRUE}.  \code{boot.loglik} is
-added if \code{loglik=TRUE}.
+applicable).  \code{boot.Coef} is added if \code{coef.reps=TRUE}.
+\code{boot.loglik} is added if \code{loglik=TRUE}.  If \code{stat} is
+specified an additional vector \code{boot.stats} will be contained in
+the returned object.
 
 
 \code{bootplot} returns a (possible matrix) of quantities of interest and
@@ -471,6 +480,32 @@ var(bootcoef[mono,])   # for constrained estimates
 # from among bootstrap estimates
 g$boot.Coef[order(g$boot.loglik[-length(g$boot.loglik)])[1],]
 # Note closeness to MLE
+
+\dontrun{
+# Get the bootstrap distribution of the difference in two ROC areas for
+# two binary logistic models fitted on the same dataset.  This analysis
+# does not adjust for the bias ROC area (C-index) due to overfitting.
+# The same random number seed is used in two runs to enforce pairing.
+
+set.seed(17)
+x1 <- rnorm(100)
+x2 <- rnorm(100)
+y <- sample(0:1, 100, TRUE)
+f <- lrm(y ~ x1, x=TRUE, y=TRUE)
+g <- lrm(y ~ x1 + x2, x=TRUE, y=TRUE)
+set.seed(3)
+f <- bootcov(f, stat='C')
+set.seed(3)
+g <- bootcov(g, stat='C')
+dif <- g$boot.stats - f$boot.stats
+hist(dif)
+quantile(dif, c(.025,.25,.5,.75,.975))
+# Compute a z-test statistic.  Note that comparing ROC areas is far less
+# powerful than likelihood or Brier score-based methods
+z <- (g$stats['C'] - f$stats['C'])/sd(dif)
+names(z) <- NULL
+c(z=z, P=2*pnorm(-abs(z)))
+}
 }
 \keyword{models}
 \keyword{regression}

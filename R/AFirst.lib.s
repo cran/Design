@@ -1,4 +1,4 @@
-# $Id: AFirst.lib.s,v 1.2 2004/07/11 14:39:08 harrelfe Exp $
+# $Id: AFirst.lib.s 15 2004-07-11 14:39:08Z harrelfe $
 #under.unix   <- !(version$os=='Microsoft Windows' ||
 #                  version$os=='Win32' || version$os=='mingw32')
 .R.          <- TRUE

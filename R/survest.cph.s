@@ -112,7 +112,7 @@ survest.cph <- function(fit, newdata, linear.predictors, x, times, fun,
         upper <- c(NA, g$upper[j]); lower <- c(NA,g$lower[j])
 
         yy <- fit$y; ny <- ncol(yy)
-        str <- oldUnclass(attr(yy, "strata"))
+        str <- oldUnclass(Surv.strata(yy))
         if(length(str)) yy <- yy[str==sreq,ny-1] else yy <- yy[,ny-1]
         maxt <- max(yy)
         if(maxt>tim[length(tim)]) {
@@ -138,14 +138,12 @@ survest.cph <- function(fit, newdata, linear.predictors, x, times, fun,
     }
     else {
       g <- summary.survfit(g, print.it=FALSE, times=times)
-      ##g$surv <- exp(-exp((log(-log(g$upper))+log(-log(g$lower)))/2))
-      if(nf>0) { #delete extra cells added by survfit for strat
+      if(!individual && nf>0) { #delete extra cells added by survfit for strat
         if(length(g$time) != length(times)*num.strata)
           stop('summary.survfit could not compute estimates for all strata at all times requested.\nYou probably requested times where data are limited.')
           
         d <- dim(g$surv); if(length(d)==0) d <- c(length(g$surv),1)
         strata.col <- matrix(rep(sreq,d[1]),ncol=d[2],byrow=TRUE)
-        ## g$strata had dropped unused strata and renumbered codes 7may02
         gs <- factor(g$strata, strata.levels)
         strata.row <- matrix(rep(oldUnclass(gs),d[2]),ncol=d[2]) # was g$strata
         m <- strata.col==strata.row

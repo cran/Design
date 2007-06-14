@@ -48,7 +48,7 @@ hazard.ratio.plot<-function(x,Srv,which,
 	ev<-event[s] & (y[s]<=uft[i+1])
 	if(sum(ev)>nx)			{
       cox <- coxphFit(x[s,,drop=FALSE], cbind(tt,ev),
-                       iter.max=10, eps=.0001, method="efron")
+                       iter.max=10, eps=.0001, method="efron", type=attr(Srv, 'type'))
       if(!is.character(cox))		{
         if(pr)	{
           r <- range(tt)

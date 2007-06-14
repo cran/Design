@@ -178,7 +178,7 @@ for(imp in 1:n.impute) {
   }
 }
 
-if(keep.prop) storage.mode(Propensity) <- 'single'
+if(keep.prop) mode(Propensity) <- 'single'
 if(keep.pfits) {
   dim(pfits) <- c(nt, n.impute)
   dimnames(pfits) <- dimnames(Y)[c(2,4)]

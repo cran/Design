@@ -210,6 +210,9 @@ with censored data. Ann Statist 1991; 19: 1370--402.
 
 
 Hillis SL. Residual plots for the censored data linear regression model.  Stat in Med 1995; 14: 2023--2036.
+
+
+Jin Z, Lin DY, Ying Z. On least-squares regression with censored data.  Biometrika 2006; 93:147--161.
 }
 \seealso{
 \code{\link{Design}}, \code{\link{psm}}, \code{\link{survreg}}, \code{\link{cph}}, \code{\link[survival]{Surv}},

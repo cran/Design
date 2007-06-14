@@ -5,7 +5,6 @@
 \alias{axisf}
 \alias{bj.fit2}
 \alias{coxphFit}
-\alias{cox.zph}
 \alias{des.args}
 \alias{[.Design}
 \alias{DesignAssign}

@@ -93,5 +93,5 @@ attr(x,"name") <- paste(a1$name,"*",a2$name)
 attr(x,"label") <- attr(x,"name")
 attr(x,"colnames") <- name
 attr(x,"class") <- "Design"
-storage.mode(x) <- "single"
+mode(x) <- "single"
 x									}

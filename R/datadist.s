@@ -20,7 +20,7 @@ if(is.data.frame(X[[1]])) {
   X <- X[[1]]
 }
   
-else if(length(Terms <- X[[1]]$terms) && length(D <- attr(Terms,"Design"))){
+else if(is.recursive(X[[1]]) && length(Terms <- X[[1]]$terms) && length(D <- attr(Terms,"Design"))){
    n <- D$name[D$assume!="interaction"]
    X <- list()
    if(missing(data)) for(nm in n) X[[nm]] <- eval(as.name(nm),local=FALSE) #27May99

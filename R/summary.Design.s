@@ -231,33 +231,37 @@ print.summary.Design <- function(x, ...) {
 
 latex.summary.Design <-
   function(object, 
-           title=if(under.unix) paste('summary',attr(object,'obj.name'),sep='.') else
+           title=if(under.unix)
+           paste('summary',attr(object,'obj.name'),sep='.') else
            paste("sum",substring(first.word(attr(object,"obj.name")),
                                  1,5),sep=""),
-           ...) { 
+           ...)
+{ 
 
-    title <- title   # because of lazy evaluation
-    caption <- attr(object, "heading")
-    scale <- attr(object,"scale")
-    if(.SV4.)object <- matrix(oldUnclass(object), nrow=nrow(object),
-                              dimnames=dimnames(object))
-    object <- object[,-8,drop=FALSE]
-    rowl <- dimnames(object)[[1]]
-    rowl <- ifelse(substring(rowl,1,1)==" ",
-                   paste("~~{\\it ",substring(rowl,2),"}",sep=""), rowl) # preserve leading blank
-    rowl <- sedit(rowl, "-", "---")   # was translate
-    cstats <- matrix("", nrow=nrow(object), ncol=ncol(object), 
-                     dimnames=dimnames(object))
-    for(i in 1:3) cstats[,i] <- format(signif(as.single(object[,i]),5))
-    for(i in 4:7) cstats[,i] <- format(round(object[,i],2))
-    cstats[is.na(object)] <- ""
-    caption <- sedit(caption, "    Response","~~~~~~Response") #,multichar=TRUE)
-    cstats <- as.data.frame(cstats)
-    attr(cstats,"row.names") <- rowl
-    names(cstats)[3] <- "$\\Delta$"
-    latex(cstats, caption=caption, title=title, rowlabel="",
-          col.just=rep("r",7), ...)
-  }
+  title <- title   # because of lazy evaluation
+  caption <- latexTranslate(attr(object, "heading"))
+  scale <- attr(object,"scale")
+  if(.SV4.)object <- matrix(oldUnclass(object), nrow=nrow(object),
+                            dimnames=dimnames(object))
+  object <- object[,-8,drop=FALSE]
+  rowl <- latexTranslate(dimnames(object)[[1]])
+  rowl <- ifelse(substring(rowl,1,1)==" ",
+                 paste("~~{\\it ",
+                       substring(rowl,2),"}",sep=""),
+                 rowl) # preserve leading blank
+  rowl <- sedit(rowl, "-", "---")
+  cstats <- matrix("", nrow=nrow(object), ncol=ncol(object), 
+                   dimnames=dimnames(object))
+  for(i in 1:3) cstats[,i] <- format(signif(as.single(object[,i]),5))
+  for(i in 4:7) cstats[,i] <- format(round(object[,i],2))
+  cstats[is.na(object)] <- ""
+  caption <- sedit(caption, "    Response","~~~~~~Response")
+  cstats <- as.data.frame(cstats)
+  attr(cstats,"row.names") <- rowl
+  names(cstats)[3] <- "$\\Delta$"
+  latex(cstats, caption=caption, title=title, rowlabel="",
+        col.just=rep("r",7), ...)
+}
 
 
 plot.summary.Design <-

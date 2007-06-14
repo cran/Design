@@ -17,7 +17,11 @@ lrm <- function(formula,data,subset,na.action=na.delete,
   if(.R.) m$drop.unused.levels <- TRUE
   m[[1]] <- as.name("model.frame")
   nact <- NULL
-  tform <- terms(formula, specials='strat')
+  if(missing(data)) {
+    data <- NULL
+  }
+
+  tform <- terms(formula, specials='strat', data=data)
   offs <- attr(tform, "offset")
   nstrata <- 1
   if(!missing(data) || (
@@ -40,7 +44,7 @@ lrm <- function(formula,data,subset,na.action=na.delete,
     if(length(nact$nmiss)) {
       jia <- grep('%ia%',names(nact$nmiss),fixed=TRUE)
       if(length(jia)) nact$nmiss <- nact$nmiss[-jia]
-      s <- if(length(offs)) names(nact$nmiss) !=  atrx$names[offs] else TRUE
+      s <- names(nact$nmiss) %nin% c(atrx$names[offs],'(weights)')
       names(nact$nmiss)[s] <-
         c(as.character(formula[2]), atr$name[atr$assume.code!=9])
     }

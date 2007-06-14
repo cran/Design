@@ -14,24 +14,18 @@
 #if it is defined, otherwise the name of the calling argument for x.
 #
 #Author: Frank Harrell   8 May 91
-#Modified               18 May 91 - made x general
-#			24 Jun 91 - added loglog argument
-#			 4 Aug 91 - use cut2 for grouping
-#			27 Mar 92 - use Surv()
-#			17 Apr 92 - add lines with err bars, allow conf.int=F,
-#					added lty, add
-#			3 Jun 92  - add cex.subtitle
-#		       23 Jul 92  - add ylab
-#		       05 Sep 92  - added dimension check
+
 groupkm <- function(x, Srv, m=50, g, 
                     cuts, u, pl=FALSE, loglog=FALSE, conf.int=.95, xlab, ylab,
                     lty=1, add=FALSE,
-                    cex.subtitle=.7, ...) {
-  if(.R.) {
-    require('survival')
-    if(!existsFunction('survfit.km'))
-      survfit.km <- getFromNamespace('survfit.km','survival')
-  }
+                    cex.subtitle=.7, ...)
+{
+  if(.R.)
+    {
+      require('survival')
+      if(!existsFunction('survfit.km'))
+        survfit.km <- getFromNamespace('survfit.km','survival')
+    }
   if(missing(u))stop("u (time point) must be given")
   if(missing(xlab)) xlab <- label(x)
   if(xlab=="") xlab <- as.character(sys.call())[2]
@@ -60,67 +54,76 @@ groupkm <- function(x, Srv, m=50, g,
 #else { nstrat <- length(f$strata); stemp <- rep(1:nstrat,f$strata)}
 #This is more efficient but doesn't handle empty strata
 
-  for(i in 1:g) {
-	s <- q==i
-	nobs <- sum(s); ne <- sum(e[s])
-	if(nobs < 2) {   ## was ==0 25apr03
-      numobs[i] <- 0
-      events[i] <- 0
-      pred[i] <- if(nobs==1) mean(x[s], na.rm=TRUE) else NA
-      km[i] <- NA
-      std.err[i] <- NA	} else {
-        pred[i] <- mean(x[s], na.rm=TRUE)
-        ##	f <- surv.fit(y[s], e[s])
-        dummystrat <- rep(1, nobs)
-        attributes(dummystrat) <- list(class="factor",levels="1")
-        f <- survfit.km(dummystrat,Srv[s,], conf.type="log-log") 
-        ##doesn't need conf.int since only need s.e.
-        tt <- c(0, f$time)
-        ss <- c(1, f$surv)
-        se <- c(0, -f$std.err/logb(f$surv))
-        ##	tm <- max((1:length(tt))[max(tt[tt<=u+1e-6])==tt])
-        tm <- max((1:length(tt))[tt<=u+1e-6])
-        km[i] <- ss[tm]
-        std.err[i] <- se[tm]
-        numobs[i] <- nobs
-        events[i] <- ne
-        n <- length(tt)
-        if(u > tt[n]+1e-6 & ss[n]>0) {
+  for(i in 1:g)
+    {
+      s <- q==i
+      nobs <- sum(s); ne <- sum(e[s])
+      if(nobs < 2)
+        {
+          numobs[i] <- 0
+          events[i] <- 0
+          pred[i] <- if(nobs==1) mean(x[s], na.rm=TRUE) else NA
           km[i] <- NA
           std.err[i] <- NA
         }
-      }				}
+      else
+        {
+          pred[i] <- mean(x[s], na.rm=TRUE)
+          dummystrat <- as.factor(rep(1, nobs))
+          f <- survfit.km(dummystrat,Srv[s,], conf.type="log-log") 
+          ##doesn't need conf.int since only need s.e.
+          tt <- c(0, f$time)
+          ss <- c(1, f$surv)
+          se <- c(0, -f$std.err/logb(f$surv))
+          tm <- max((1:length(tt))[tt<=u+1e-6])
+          km[i] <- ss[tm]
+          std.err[i] <- se[tm]
+          numobs[i] <- nobs
+          events[i] <- ne
+          n <- length(tt)
+          if(u > tt[n]+1e-6 & ss[n]>0)
+            {
+              km[i] <- NA
+              std.err[i] <- NA
+            }
+        }
+    }
   z <- cbind(x=pred, n=numobs, events=events, KM=km, 
              std.err=std.err)
 
-  if(pl) {
-	y <- km
-    if(conf.int) {
-      zcrit <- qnorm((conf.int+1)/2)
-      low <- km^exp(zcrit*std.err); hi <- km^exp(-zcrit*std.err)
-    }
-	if(missing(ylab))
-      ylab <- paste("Kaplan-Meier ",format(u),"-",unit," Survival",sep="")
-	if(loglog) {
-      y <- logb(-logb(y))
-      if(conf.int) {
-		low <- logb(-logb(low))
-		hi <- logb(-logb(hi))
-      }
+  if(pl)
+    {
+      y <- km
+      if(conf.int)
+        {
+          zcrit <- qnorm((conf.int+1)/2)
+          low <- km^exp(zcrit*std.err); hi <- km^exp(-zcrit*std.err)
+        }
       if(missing(ylab))
-		ylab <- paste("log(-log Kaplan-Meier ",format(u),unit,
-                      " Survival",sep="")
+        ylab <- paste("Kaplan-Meier ",format(u),"-",unit," Survival",sep="")
+      if(loglog)
+        {
+          y <- logb(-logb(y))
+          if(conf.int)
+            {
+              low <- logb(-logb(low))
+              hi <- logb(-logb(hi))
+            }
+          if(missing(ylab))
+            ylab <- paste("log(-log Kaplan-Meier ",format(u),unit,
+                          " Survival",sep="")
+        }
+      if(!add)plot(pred, y, xlab=xlab, ylab=ylab, type="n", ...)
+      lines(pred, y, lty=lty)
+      if(conf.int)errbar(pred, y, hi, low, add=TRUE, ...)
+      if(!is.logical(cex.subtitle))
+        {
+          nn <- sum(numobs,na.rm=TRUE)
+          mm <- round(nn/g)
+          title(sub=paste("n=",nn," d=",sum(events,na.rm=TRUE),
+                  ", avg. ",mm," patients per group",sep=""),
+                adj=0,cex=cex.subtitle)
+        }
     }
-	if(!add)plot(pred, y, xlab=xlab, ylab=ylab, type="n", ...)
-	lines(pred, y, lty=lty)
-	if(conf.int)errbar(pred, y, hi, low, add=TRUE, ...)
-	if(!is.logical(cex.subtitle)) {
-      nn <- sum(numobs,na.rm=TRUE)
-      mm <- round(nn/g)
-      title(sub=paste("n=",nn," d=",sum(events,na.rm=TRUE),
-              ", avg. ",mm," patients per group",sep=""),
-            adj=0,cex=cex.subtitle)
-    }
-  }
-z
+  z
 }

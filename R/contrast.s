@@ -92,7 +92,6 @@ print.contrast.Design <- function(x, X=FALSE, fun=function(u)u, ...) {
   no[no=='SE'] <- 'S.E.'
   no[no=='Z'] <- sn
   no[no=='Pvalue'] <- pn
-  names(w) <- no
   
   cnames <- x$cnames
   if(!length(cnames)) cnames <- if(x$nvary)rep('',length(x[[1]])) else
@@ -103,6 +102,11 @@ print.contrast.Design <- function(x, X=FALSE, fun=function(u)u, ...) {
   w$SE       <- fun(w$SE)
   w$Lower    <- fun(w$Lower)
   w$Upper    <- fun(w$Upper)
+
+  # Assign modified names to w
+  names(w) <- no
+
+  # Print w
   print(as.matrix(w),quote=FALSE)  ## was print(w) 20may02
   if(length(edf))cat('\nError d.f.=',edf,'\n')
   if(X) {

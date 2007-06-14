@@ -51,7 +51,8 @@ psm <- if(.newSurvival.) {
     if(length(nact$nmiss)) {
       jia <- grep('%ia%',names(nact$nmiss), fixed=TRUE)
       if(length(jia)) nact$nmiss <- nact$nmiss[-jia]
-      s <- if(length(offs)) names(nact$nmiss) !=  atrx$names[offs] else TRUE
+      s <- names(nact$nmiss) %nin% c(atrx$names[offs],'(weights)')
+
       names(nact$nmiss)[s] <- 
         c(as.character(formula[2]), atr$name[atr$assume.code!=9])
     }
@@ -323,7 +324,7 @@ psm <- if(.newSurvival.) {
     Terms <- atrx$terms
     offs <- offset <- attr(Terms, "offset")
     atr   <- atrx$Design
-    s <- if(length(offs)) names(nact$nmiss) !=  atrx$names[offs] else TRUE
+    s <- names(nact$nmiss) %nin% c(atrx$names[offs],'(weights)')
     if(length(nact$nmiss))
       names(nact$nmiss)[s] <- 
         c(as.character(formula[2]), atr$name[atr$assume.code!=9])

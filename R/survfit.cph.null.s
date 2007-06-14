@@ -15,7 +15,7 @@ survfit.cph.null <-
     y <- object$y
     if(is.null(y))stop("must use y=T with fit")
     n <- nrow(y)
-    Strata <- attr(y,"strata")
+    Strata <- Surv.strata(y)
     if(length(object$linear.predictor)==0) score <- rep(1, n)
     else score <- exp(object$linear.predictor)
     

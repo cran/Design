@@ -292,15 +292,15 @@ C-----------------------------------------------------------------------
          END DO
         RETURN
         END
-	LOGICAL FUNCTION logeq(a,b)
-	LOGICAL*4 a,b,aa,bb
-	INTEGER*4 ia,ib
-	EQUIVALENCE (aa,ia),(bb,ib)
-	aa=a
-	bb=b
-	logeq=ia.eq.ib
-	return
-	end
+        LOGICAL FUNCTION logeq(a,b)
+        LOGICAL*4 a,b,aa,bb
+        INTEGER*4 ia,ib
+        EQUIVALENCE (aa,ia),(bb,ib)
+        aa=a
+        bb=b
+        logeq=ia.eq.ib
+        return
+        end
       SUBROUTINE GINV(T, S, L, ne, idx, N, E, NEG, SWEPT, NRANK, IFAULT)
 C
 C     USES SUBROUTINE GSWEEP TO CALCULATE THE INVERSE OF AN NXN SYMMETRIC

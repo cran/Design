@@ -1,4 +1,20 @@
 #Miscellaneous functions to retrieve characteristics of design
+Surv.strata <- function(surv){
+  if(.R.) {
+    attr(surv, 'strata')
+  } else {
+    surv[,3]
+  }
+}
+
+Surv.time <- function(surv) {
+  surv[,1]
+}
+
+Surv.event <- function(surv) {
+  surv[,2]
+}
+
 
 #Function to get the number of intercepts in front of the slope coefficients
 #ols - one intercept

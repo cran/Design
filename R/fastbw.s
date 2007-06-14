@@ -88,7 +88,7 @@ if(dor2) {
   sst <- sum((Y-mean(Y))^2)
   sigma2 <- fit$stats['Sigma']^2
   ## Get X'Y using b=(X'X)^-1 X'Y, X'X^-1 = var matrix / sigma2
-  xpy <- matrix(solve(Cov, beta)*sigma2, ncol=1)
+  xpy <- matrix(solvet(Cov, beta, tol=eps)*sigma2, ncol=1)
   ypy <- sum(Y^2)
 }
 
@@ -119,7 +119,7 @@ for(i in 1:f) {
 	} else {
 ##replace previous 5 statements with following 3 to use slow method
 	   q <- st[k]:en[k]
-	   chisq <- beta[q] %*% solve(cov[q,q], beta[q])
+	   chisq <- beta[q] %*% solvet(cov[q,q], beta[q], tol=eps)
 	   df <- length(q)
      }
 		switch(rule, crit <- chisq-k.aic*df, crit <- pchisq(chisq,df))
@@ -149,7 +149,7 @@ for(i in 1:f) {
 	resid.df <- z$df
 	} else {
 ##replace previous 5 statements with following 2 to use slow method
-	resid <- fit$coef[q] %*% solve(Cov[q,q], fit$coef[q])
+	resid <- fit$coef[q] %*% solvet(Cov[q,q], fit$coef[q], tol=eps)
 	resid.df <- length(q)
   }
 	switch(type,

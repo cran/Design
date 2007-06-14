@@ -41,7 +41,7 @@ ols <- function(formula, data, weights, subset, na.action=na.delete,
 	if(length(nact$nmiss)) {
       jia <- grep('%ia%',names(nact$nmiss), fixed=TRUE)
       if(length(jia)) nact$nmiss <- nact$nmiss[-jia]
-      names(nact$nmiss) <- 
+      names(nact$nmiss)[names(nact$nmiss)!='(weights)'] <- 
 		c(scale,atr$name[atr$assume.code!=9])
     }
 	weights <- model.extract(X, weights)

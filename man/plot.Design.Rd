@@ -1,4 +1,4 @@
-% $Id: plot.Design.Rd,v 1.2 2004/05/21 19:54:06 harrelfe Exp $
+% $Id: plot.Design.Rd 6 2004-05-21 19:54:06Z harrelfe $
 \name{plot.Design}
 \alias{plot.Design}
 \alias{print.plot.Design}
