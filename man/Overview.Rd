@@ -690,9 +690,10 @@ g(treat='b', cholesterol=260, age=50)
 # Use the Hmisc dataRep function to summarize sample
 # sizes for subjects as cross-classified on 2 key
 # predictors
-drep <- dataRep(~ roundN(age,10) + num.diseases)
+\donttest{
+drep <- dataRep(~ roundN(age, 10) + num.diseases)
 print(drep, long=TRUE)
-
+}
 # Some approaches to making a plot showing how
 # predicted values vary with a continuous predictor
 # on the x-axis, with two other predictors varying

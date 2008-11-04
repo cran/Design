@@ -1,6 +1,6 @@
 Package: Design
-Version: 2.1-1
-Date: 2007-06-14
+Version: 2.1-2
+Date: 2008-11-04
 Title: Design Package
 Author: Frank E Harrell Jr <f.harrell@vanderbilt.edu>
 Maintainer: Charles Dupont <charles.dupont@vanderbilt.edu>
@@ -23,4 +23,4 @@ License: GPL version 2 or newer
 URL: http://biostat.mc.vanderbilt.edu/s/Design,
 	http://biostat.mc.vanderbilt.edu/rms
 LazyLoad: yes
-Packaged: Mon Jun 18 14:19:35 2007; dupontct
+Packaged: Tue Nov  4 11:41:46 2008; dupontct
