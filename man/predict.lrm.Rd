@@ -81,7 +81,10 @@ set.seed(1)
 y <- factor(sample(1:3, 400, TRUE), 1:3, c('good','better','best'))
 x1 <- runif(400)
 x2 <- runif(400)
-f <- lrm(y ~ rcs(x1,4)*x2)
+f <- lrm(y ~ rcs(x1,4)*x2, x=TRUE)     #x=TRUE needed for se.fit
+# Get 0.95 confidence limits for Prob[better or best]
+L <- predict(f, se.fit=TRUE)           #omitted kint= so use 1st intercept
+plogis(with(L, linear.predictors + 1.96*cbind(-se.fit,se.fit)))
 predict(f, type="fitted.ind")[1:10,]   #gets Prob(better) and all others
 d <- data.frame(x1=c(.1,.5),x2=c(.5,.15))
 predict(f, d, type="fitted")        # Prob(Y>=j) for new observation

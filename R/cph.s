@@ -141,15 +141,6 @@ cph <- function(formula=formula(data),
         }
 
       offs <- offset<- attr(Terms, "offset")
-      if(length(nact$nmiss))
-        {
-          jia <- grep('%ia%',names(nact$nmiss), fixed=TRUE)
-          if(length(jia)) nact$nmiss <- nact$nmiss[-jia]
-
-          s <- names(nact$nmiss) %nin% c(atrx$names[offs],'(weights)')
-          names(nact$nmiss)[s] <- c(as.character(formula[2]),
-                                    atr$name[atr$assume.code!=9])
-        }
       
       xpres <- length(asm) && any(asm!=8)
       Y <- model.extract(X, 'response')
@@ -776,7 +767,7 @@ if(.SV4.)
                          rank = rank(times),
                          log = log(times),
                          km = {
-                           temp <- survfit.km(factor(rep(1, nrow(fit$y))),
+                           temp <- survfitKM(factor(rep(1, nrow(fit$y))),
                                               fit$y, se.fit = FALSE)
                            ## A nuisance to do left cont KM
                            t1 <- temp$surv[temp$n.event > 0]

@@ -33,17 +33,26 @@ with a confidence interval for this average.  This can be useful for
 "unconditioning" on one of the predictors (see the next to last
 example).
 
+Specifying \code{type="joint"}, and specifying at least as many contrasts
+as needed to span the space of a complex test, one can make
+multiple degree of freedom tests flexibly and simply.  Redundant
+contrasts will be ignored in the joint test.  See the examples below.
+These include an example of an "incomplete interaction test" involving
+only two of three levels of a categorical variable (the test also tests
+the main effect).
+
 When more than one contrast is computed, the list created by
 \code{contrast.Design} is suitable for plotting (with error bars or bands)
-with \code{xYplot} or \code{Dotplot} (see the last example).
+with \code{xYplot} or \code{Dotplot} (see the last example before the
+\code{type="joint"} examples).
 }
 \usage{
 contrast(fit, \dots)
 \method{contrast}{Design}(fit, a, b, cnames=NULL, 
-         type=c("individual", "average"), 
-         weights="equal", conf.int=0.95, \dots)
+         type=c("individual", "average", "joint"), 
+         weights="equal", conf.int=0.95, tol=1e-7, \dots)
 
-\method{print}{contrast.Design}(x, X=FALSE, fun=function(u)u, ...)
+\method{print}{contrast.Design}(x, X=FALSE, fun=function(u)u, jointonly=FALSE, ...)
 }
 \arguments{
 \item{fit}{
@@ -68,7 +77,7 @@ design matrix generated from \code{a} is analyzed alone.
 }
 \item{cnames}{
 vector of character strings naming the contrasts when
-\code{type="individual"}.  Usually \code{cnames} is not necessary as
+\code{type!="average"}.  Usually \code{cnames} is not necessary as
 \code{contrast.Design} tries to name the contrasts by examining which
 predictors are varying consistently in the two lists.  \code{cnames} will
 be needed when you contrast "non-comparable" settings, e.g., you
@@ -77,7 +86,9 @@ compare \code{list(treat="drug", age=c(20,30))} with
 }
 \item{type}{
 set \code{type="average"} to average the individual contrasts (e.g., to
-obtain a Type II or III contrast)
+obtain a Type II or III contrast).  Set \code{type="joint"} to jointly
+test all non-redundant contrasts with a multiple degree of freedom test
+and no averaging.
 }
 \item{weights}{
 a numeric vector, used when \code{type="average"}, to obtain weighted contrasts
@@ -85,6 +96,9 @@ a numeric vector, used when \code{type="average"}, to obtain weighted contrasts
 \item{conf.int}{
 confidence level for confidence intervals for the contrasts
 }
+\item{tol}{tolerance for \code{qr} function for determining which
+  contrasts are redundant, and for inverting the covariance matrix
+  involved in a joint test}
 \item{\dots}{unused}
 \item{x}{result of \code{contrast}}
 \item{X}{
@@ -95,15 +109,21 @@ the average contrast)
 a function to transform the contrast, SE, and lower and upper
 confidence limits before printing.  For example, specify \code{fun=exp} to
 anti-log them for logistic models.
-}}
+}
+\item{jointonly}{set to \code{FALSE} to omit printing of individual
+  contrasts}
+}
 \value{
 a list of class \code{"contrast.Design"} containing the elements
 \code{Contrast}, \code{SE}, \code{Z}, \code{var}, \code{df.residual}
-\code{Lower}, \code{Upper}, \code{Pvalue}, \code{X}, \code{cnames}, which denote the contrast
+\code{Lower}, \code{Upper}, \code{Pvalue}, \code{X}, \code{cnames}, \code{redundant}, which denote the contrast
 estimates, standard errors, Z or t-statistics, variance matrix,
 residual degrees of freedom (this is \code{NULL} if the model was not
 \code{ols}), lower and upper confidence limits, 2-sided P-value, design
-matrix, and contrast names (or \code{NULL}).
+matrix, contrast names (or \code{NULL}), and a logical vector denoting
+which contrasts are redundant with the other contrasts.  If there are
+any redundant contrasts, when the results of \code{contrast} are
+printed, and asterisk is printed at the start of the corresponding lines.
 }
 \author{
 Frank Harrell\cr
@@ -113,7 +133,7 @@ f.harrell@vanderbilt.edu
 }
 \seealso{
 \code{\link{predict.Design}}, \code{\link{gendata}}, \code{\link{bootcov}}, \code{\link{summary.Design}},
-\code{\link{anova.Design}}, \code{\link{plot.Design}}
+\code{\link{anova.Design}}, \code{\link{plot.Design}}, \code{\link{qr}}
 }
 \examples{
 set.seed(1)
@@ -237,8 +257,61 @@ xYplot(Cbind(Contrast, Lower, Upper) ~ age | sex, data=w,
 xYplot(Cbind(Contrast, Lower, Upper) ~ age, groups=sex, data=w,
        ylab='Drug - Placebo', method='alt bars')
 options(datadist=NULL)
+
+
+# Examples of type='joint' contrast tests
+
+set.seed(1)
+x1 <- rnorm(100)
+x2 <- factor(sample(c('a','b','c'), 100, TRUE))
+dd <- datadist(x1, x2); options(datadist='dd')
+y  <- x1 + (x2=='b') + rnorm(100)
+
+# First replicate a test statistic from anova()
+f <- ols(y ~ x2)
+anova(f)
+contrast(f, list(x2=c('b','c')), list(x2='a'), type='joint')
+
+# Repeat with a redundancy; compare a vs b, a vs c, b vs c
+contrast(f, list(x2=c('a','a','b')), list(x2=c('b','c','c')), type='joint')
+
+# Get a test of association of a continuous predictor with y
+# First assume linearity, then cubic
+f <- lrm(y>0 ~ x1 + x2)
+anova(f)
+contrast(f, list(x1=1), list(x1=0), type='joint')  # a minimum set of contrasts
+xs <- seq(-2, 2, length=20)
+contrast(f, list(x1=0), list(x1=xs), type='joint')
+# All contrasts were redundant except for the first, because of
+# linearity assumption
+
+f <- lrm(y>0 ~ pol(x1,3) + x2)
+anova(f)
+contrast(f, list(x1=0), list(x1=xs), type='joint')
+print(contrast(f, list(x1=0), list(x1=xs), type='joint'), jointonly=TRUE)
+# All contrasts were redundant except for the first 3, because of
+# cubic regression assumption
+
+# Now do something that is difficult to do without cryptic contrast
+# matrix operations: Allow each of the three x2 groups to have a different
+# shape for the x1 effect where x1 is quadratic.  Test whether there is
+# a difference in mean levels of y for x2='b' vs. 'c' or whether
+# the shape or slope of x1 is different between x2='b' and x2='c' regardless
+# of how they differ when x2='a'.  In other words, test whether the mean
+# response differs between group b and c at any value of x1.
+# This is a 3 d.f. test (intercept, linear, quadratic effects) and is
+# a better approach than subsetting the data to remove x2='a' then
+# fitting a simpler model, as it uses a better estimate of sigma from
+# all the data.
+
+f <- ols(y ~ pol(x1,2) * x2)
+anova(f)
+contrast(f, list(x1=xs, x2='b'),
+            list(x1=xs, x2='c'), type='joint')
+
+# Note: If using a spline fit, there should be at least one value of
+# x1 between any two knots and beyond the outer knots.
 }
 \keyword{htest}
 \keyword{models}
 \keyword{regression}
-% Converted by Sd2Rd version 1.21.

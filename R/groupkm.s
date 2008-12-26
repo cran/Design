@@ -43,7 +43,7 @@ groupkm <- function(x, Srv, m=50, g,
   events <- integer(g)
   numobs <- events
 
-#f <- survfit.km(q, Srv, conf.int=conf.int, conf.type="log-log")
+#f <- survfitKM(q, Srv, conf.int=conf.int, conf.type="log-log")
 #if(is.null(f$strata)) {nstrat <- 1; stemp <- rep(1, length(f$time))}
 #else { nstrat <- length(f$strata); stemp <- rep(1:nstrat,f$strata)}
 #This is more efficient but doesn't handle empty strata
@@ -64,7 +64,7 @@ groupkm <- function(x, Srv, m=50, g,
         {
           pred[i] <- mean(x[s], na.rm=TRUE)
           dummystrat <- as.factor(rep(1, nobs))
-          f <- survfit.km(dummystrat,Srv[s,], conf.type="log-log") 
+          f <- survfitKM(dummystrat,Srv[s,], conf.type="log-log") 
           ##doesn't need conf.int since only need s.e.
           tt <- c(0, f$time)
           ss <- c(1, f$surv)

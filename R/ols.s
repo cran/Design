@@ -6,9 +6,9 @@ ols <- function(formula, data, weights, subset, na.action=na.delete,
   call <- match.call()
   var.penalty <- match.arg(var.penalty)
   m <- match.call(expand = FALSE)
-  m$method <- m$model <- m$x <- m$y <- m$se.fit <-
-    m$linear.predictors <- m$penalty <- 
-      m$penalty.matrix <- m$tol <- m$sigma <- m$var.penalty <- m$... <- NULL
+  mc <- match(c("formula", "data", "subset", "weights", "na.action"), 
+              names(m), 0)
+  m <- m[c(1, mc)]
   m$na.action <- na.action
   if(.R.) m$drop.unused.levels <- TRUE
   m[[1]] <- as.name("model.frame")
@@ -23,7 +23,7 @@ ols <- function(formula, data, weights, subset, na.action=na.delete,
         options(drop.unused.levels=FALSE)
       }
     }
-    X <- Design(eval(m, sys.parent()))
+    X <- if(.R.) Design(eval.parent(m)) else Design(eval(m, sys.parent()))
     if(.R.) options(drop.unused.levels=dul)
     atrx <- attributes(X)
     atr <- atrx$Design
@@ -41,12 +41,6 @@ ols <- function(formula, data, weights, subset, na.action=na.delete,
 	if(method == "model.frame") return(X)
 	scale <- as.character(formula[2])
 	attr(Terms, "formula") <- formula
-	if(length(nact$nmiss)) {
-      jia <- grep('%ia%',names(nact$nmiss), fixed=TRUE)
-      if(length(jia)) nact$nmiss <- nact$nmiss[-jia]
-      names(nact$nmiss)[names(nact$nmiss)!='(weights)'] <- 
-		c(scale,atr$name[atr$assume.code!=9])
-    }
 	weights <- model.extract(X, weights)
 	if(length(weights) && penpres)
 	  stop('may not specify penalty with weights')

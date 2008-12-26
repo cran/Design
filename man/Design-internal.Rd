@@ -35,6 +35,12 @@
 \alias{.SV4.}
 \alias{.newSurvival.}
 \alias{strgraphwrap}
+\alias{Varcov}
+\alias{Varcov.default}
+\alias{Varcov.fit.mult.impute}
+\alias{Varcov.glm}
+\alias{Varcov.lm}
+\alias{Varcov.multinom}
 \description{Internal Design functions.}
 \details{These are not to be called by the user or are undocumented.}
 \keyword{internal}

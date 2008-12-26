@@ -1,80 +1,81 @@
 \name{plot.xmean.ordinaly}
 \alias{plot.xmean.ordinaly}
 \title{
-Plot Mean X vs. Ordinal Y
+  Plot Mean X vs. Ordinal Y
 }
 \description{
-Separately for each predictor variable \eqn{X} in a formula, plots the mean of
-\eqn{X} vs. levels of \eqn{Y}.  Then under the proportional odds assumption,
-the expected value of the predictor for each \eqn{Y} value is also plotted (as
-a dotted line).  This plot is useful for assessing the ordinality assumption 
-for \eqn{Y} separately for each \eqn{X}, and for assessing the proportional odds
-assumption in a simple univariable way.  If several predictors do not
-distinguish adjacent categories of \eqn{Y}, those levels may need to be 
-pooled.  This display assumes
-that each predictor is linearly related to the log odds of each event in
-the proportional odds model.  There is also an option to plot the
-expected means assuming a forward continuation ratio model.
+  Separately for each predictor variable \var{X} in a formula, plots the mean of
+  \var{X} vs. levels of \var{Y}.  Then under the proportional odds assumption,
+  the expected value of the predictor for each \var{Y} value is also plotted (as
+  a dotted line).  This plot is useful for assessing the ordinality assumption 
+  for \var{Y} separately for each \var{X}, and for assessing the proportional odds
+  assumption in a simple univariable way.  If several predictors do not
+  distinguish adjacent categories of \var{Y}, those levels may need to be 
+  pooled.  This display assumes
+  that each predictor is linearly related to the log odds of each event in
+  the proportional odds model.  There is also an option to plot the
+  expected means assuming a forward continuation ratio model.
 }
 \usage{
 \method{plot}{xmean.ordinaly}(x, data, subset, na.action, subn=TRUE,
                     cr=FALSE, topcats=1, \dots)
 }
 \arguments{
-\item{x}{
-an S formula.  Response variable is treated as ordinal.  For categorical
-predictors, a binary version of the variable is substituted, specifying
-whether or not the variable equals the modal category.  Interactions or
-non-linear effects are not allowed.
+  \item{x}{
+    an S formula.  Response variable is treated as ordinal.  For categorical
+    predictors, a binary version of the variable is substituted, specifying
+    whether or not the variable equals the modal category.  Interactions or
+    non-linear effects are not allowed.
+  }
+  \item{data}{
+    a data frame or frame number
+  }
+  \item{subset}{
+    vector of subscripts or logical vector describing subset of data to
+    analyze
+  }
+  \item{na.action}{
+    defaults to \code{na.keep} so all \code{NA}s are initially retained.  Then \code{NA}s
+    are deleted only for each predictor currently being plotted.
+    Specify \code{na.action=na.delete} to remove observations that are missing
+    on any of the predictors (or the response).
+  }
+  \item{subn}{
+    set to \code{FALSE} to suppress a left bottom subtitle specifying the sample size
+    used in constructing each plot
+  }
+  \item{cr}{
+    set to \code{TRUE} to plot expected values by levels of the response,
+    assuming a forward continuation ratio model holds.  The function is fairly slow
+    when this option is specified.
+  }
+  \item{topcats}{When a predictor is categorical, by default only the
+    proportion of observations in the overall most frequent category will
+    be plotted against response variable strata.  Specify a higher value
+    of \code{topcats} to make separate plots for the proportion in the
+    \var{k} most frequent predictor categories, where \var{k} is
+    \code{min(ncat-1, topcats)} and \var{ncat} is the number of unique
+    values of the predictor.}
+  \item{\dots}{
+    other arguments passed to \code{plot} and \code{lines}
+  }
 }
-\item{data}{
-a data frame or frame number
-}
-\item{subset}{
-vector of subscripts or logical vector describing subset of data to
-analyze
-}
-\item{na.action}{
-defaults to \code{na.keep} so all NAs are initially retained.  Then NAs
-are deleted only for each predictor currently being plotted.
-Specify \code{na.action=na.delete} to remove observations that are missing
-on any of the predictors (or the response).
-}
-\item{subn}{
-set to \code{FALSE} to suppress a left bottom subtitle specifying the sample size
-used in constructing each plot
-}
-\item{cr}{
-set to \code{TRUE} to plot expected values by levels of the response,
-assuming a forward continuation ratio model holds.  The function is fairly slow
-when this option is specified.
-}
-\item{topcats}{When a predictor is categorical, by default only the
-  proportion of observations in the overall most frequent category will
-  be plotted against response variable strata.  Specify a higher value
-  of \code{topcats} to make separate plots for the proportion in the
-  \code{k} most frequent predictor categories, where \code{k} is
-  \code{min(ncat-1, topcats)} and \code{ncat} is the number of unique
-  values of the predictor.}
-\item{...}{
-other arguments passed to \code{plot} and \code{lines}
-}}
 \section{Side Effects}{
-plots
+  plots
 }
 \author{
-Frank Harrell\cr
-Department of Biostatistics\cr
-Vanderbilt University\cr
-f.harrell@vanderbilt.edu
+  Frank Harrell\cr
+  Department of Biostatistics\cr
+  Vanderbilt University\cr
+  \email{f.harrell@vanderbilt.edu}
 }
 \references{
-Harrell FE et al. (1998): Development of a clinical prediction model for
-an ordinal outcome. Stat in Med 17:909--44.
+  Harrell FE et al. (1998): Development of a clinical prediction model for
+  an ordinal outcome. Stat in Med 17:909--44.
 }
 \seealso{
-\code{\link{lrm}}, \code{\link{residuals.lrm}}, \code{\link{cr.setup}},
-\code{\link[Hmisc]{cumcategory}}, \code{\link[Hmisc]{chiSquare}}.
+  \code{\link[Design]{lrm}}, \code{\link[Design]{residuals.lrm}}, \code{\link[Design]{cr.setup}},
+  \code{\link[Hmisc:summary.formula]{cumcategory}}, \code{\link[Hmisc:biVar]{chiSquare}}.
 }
 \examples{
 # Simulate data from a population proportional odds model

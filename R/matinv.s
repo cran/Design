@@ -39,7 +39,7 @@ matinv <- function(a,which,negate=TRUE,eps=1E-12)			{
              as.integer(length(which)),which,
              swept=swept, logical(m), double(m*(m+1)/2), 
              double(m), rank = integer(1), as.double(eps),
-             as.logical(negate))
+             as.logical(negate), PACKAGE="Design")
 	x <- y$x
 	attr(x,"rank") <- y$rank
 	attr(x,"swept") <- y$swept

@@ -43,7 +43,8 @@ W <- matrix(if(.R.)
                      double(p), double(p*p), w=double(p*p),
                      PACKAGE="Design")$w else
             .Fortran("robcovf", n, p, nc, clus.start, clus.size, X, 
-                     double(p), double(p*p), w=double(p*p))$w,
+                     double(p), double(p*p), w=double(p*p),
+                     PACKAGE="Design")$w,
             nrow=p)
 #The following has a small bug but comes close to reproducing what robcovf does
 #W <- tapply(X,list(cluster[row(X)],col(X)),sum)

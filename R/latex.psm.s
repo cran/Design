@@ -7,23 +7,26 @@ latex.psm <- function(object,  title,
   f <- object
   whichNot <- length(which)==0
   
-w <- if(length(caption)) paste('\\begin{center} \\bf',caption,'\\end{center}')
+  w <- if(length(caption)) paste('\\begin{center} \\bf',caption,'\\end{center}')
 
-if(whichNot & !inline)			{
-  if(.SV4. || .R.) {
-    dist <- f$dist
-    w <- c(w, paste("\\[{\\rm Prob}\\{T\\geq t\\} = ",
-	survreg.auxinfo[[dist]]$latex(f$scale),
-	"{\\rm \\ \\ where} \\\\ \\]",sep=""))
-  } else {
-  fam <- f$family[1:2]
-  dist <- fam[1]
-  transform <- fam[2]
-  w <- c(w,paste("\\[{\\rm Prob}\\{T\\geq t\\} = ",
-	survreg.auxinfo[[dist]]$latex(f$parms, transform),
-	"{\\rm \\ \\ where} \\\\ \\]",sep=""))
-}
-}
+  if(whichNot & !inline)
+    {
+      if(.SV4. || .R.) {
+        dist <- f$dist
+        w <- c(w, paste("\\[{\\rm Prob}\\{T\\geq t\\} = ",
+                        survreg.auxinfo[[dist]]$latex(f$scale),
+                        "{\\rm \\ \\ where} \\\\ \\]",sep=""))
+      }
+      else
+        {
+          fam <- f$family[1:2]
+          dist <- fam[1]
+          transform <- fam[2]
+          w <- c(w,paste("\\[{\\rm Prob}\\{T\\geq t\\} = ",
+                         survreg.auxinfo[[dist]]$latex(f$parms, transform),
+                         "{\\rm \\ \\ where} \\\\ \\]",sep=""))
+        }
+    }
 atr <- f$Design
 if(!length(atr)) atr <- getOldDesign(f)
 

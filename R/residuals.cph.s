@@ -77,7 +77,7 @@ residuals.cph <-
          score * weights,
          as.integer(newstrat),
          as.integer(method=='efron'),
-         double(3*nvar))
+         double(3*nvar), PACKAGE="Design")
 
 	deaths <- y[,3]==1
 
@@ -124,7 +124,7 @@ residuals.cph <-
            as.double(weights),
            as.integer(method=='efron'),
            resid= double(n*nvar),
-           double(2*nvar))$resid
+           double(2*nvar), PACKAGE="Design")$resid
 	    }
 	else {
 	    resid <- if(.R.)
@@ -149,7 +149,7 @@ residuals.cph <-
            as.double(weights),
            as.integer(method=='efron'),
            resid=double(n*nvar),
-           double(nvar*6))$resid
+           double(nvar*6), PACKAGE="Design")$resid
       }
 	if (nvar >1) {
 	    rr <- matrix(0, n, nvar)

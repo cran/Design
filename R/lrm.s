@@ -8,13 +8,12 @@ lrm <- function(formula,data,subset,na.action=na.delete,
   call <- match.call()
   var.penalty <- match.arg(var.penalty)
   m <- match.call(expand=FALSE)
-  m$method <- m$model <- m$x <- m$y <- m$... <- m$linear.predictors <- 
-	m$se.fit <-	m$penalty <- m$penalty.matrix <- m$strata.penalty <- 
-      m$tol <- m$var.penalty <- m$normwt <- NULL
-
+  mc <- match(c("formula", "data", "subset", "weights", "na.action"), 
+             names(m), 0)
+  m <- m[c(1, mc)]
   m$na.action <- na.action
-  m$formula <- formula
   if(.R.) m$drop.unused.levels <- TRUE
+  
   m[[1]] <- as.name("model.frame")
   nact <- NULL
   if(missing(data)) {
@@ -34,20 +33,13 @@ lrm <- function(formula,data,subset,na.action=na.delete,
         options(drop.unused.levels=FALSE)
       }
     }
-    X <- Design(eval(m, sys.parent()))
+    X <- if(.R.) Design(eval.parent(m)) else Design(eval(m, sys.parent()))
     atrx <- attributes(X)
     nact <- atrx$na.action
     if(method=="model.frame") return(X)
     Terms <- atrx$terms
     attr(Terms, "formula") <- formula
     atr <- atrx$Design
-    if(length(nact$nmiss)) {
-      jia <- grep('%ia%',names(nact$nmiss),fixed=TRUE)
-      if(length(jia)) nact$nmiss <- nact$nmiss[-jia]
-      s <- names(nact$nmiss) %nin% c(atrx$names[offs],'(weights)')
-      names(nact$nmiss)[s] <-
-        c(as.character(formula[2]), atr$name[atr$assume.code!=9])
-    }
 
     Y <- model.extract(X, response)
     weights <- wt <- model.extract(X, 'weights')

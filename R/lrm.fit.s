@@ -149,7 +149,7 @@ if(ofpres) {
                sumw,kint,
                v=double(kint*kint),double(kint),double(kint),
                double(kint),pivot=integer(kint),opts=opts,ftable,
-               penmat, weights)
+               penmat, weights, PACKAGE="Design")
 ## 17jan03
 ##      .Fortran("lrmfit",coef=initial,as.integer(0),0,x,y,offset,
 ##               u=double(kint),
@@ -157,7 +157,7 @@ if(ofpres) {
 ##               sumw,kint,
 ##               v=double(kint*kint),double(kint),double(kint),
 ##               double(kint),pivot=integer(kint),opts=opts,ftable,
-##               penmat)
+##               penmat, PACKAGE="Design")
 	loglik <- c(loglik,z$loglik)
 	if(z$opts[6] | z$opts[7]<kint) {
       if(.SV4.) return(structure(list(fail=TRUE,fitFunction='lrm'),
@@ -180,13 +180,14 @@ if(nxin>0)	{
                u=double(nvi),
                double(nvi*(nvi+1)/2),loglik=double(1),n,nx,sumw,nvi,
                v=double(nvi*nvi),double(nvi),double(2*nvi),double(nvi),
-               pivot=integer(nvi),opts=opts,ftable,penmat,weights)
+               pivot=integer(nvi),opts=opts,ftable,penmat,weights,
+               PACKAGE="Design")
     ## 17jan03
 ##      .Fortran("lrmfit",coef=initial,nxin,est,x,y,offset,
 ##               u=double(nvi),
 ##               double(nvi*(nvi+1)/2),loglik=double(1),n,nx,sumw,nvi,
 ##               v=double(nvi*nvi),double(nvi),double(2*nvi),double(nvi),
-##               pivot=integer(nvi),opts=opts,ftable,penmat)   #2*nvi 28Jul95
+##               pivot=integer(nvi),opts=opts,ftable,penmat, PACKAGE="Design")   #2*nvi 28Jul95
 	irank <- z$opts[7]
 	if(irank < nvi) {
       cat("singular information matrix in lrm.fit (rank=",irank,
@@ -219,12 +220,13 @@ if(nxin!=nx) {
     .Fortran("lrmfit",coef=initial,nx,1:nx,x,y,offset,
            u=double(nvi),double(nvi*(nvi+1)),double(1),n,nx,
            sumw,nvi,v=double(nvi*nvi),double(nvi),double(nvi),
-           double(nvi),integer(nvi),opts=opts,ftable,penmat,weights)
+           double(nvi),integer(nvi),opts=opts,ftable,penmat,weights,
+             PACKAGE="Design")
   ## 17jan03
 ##    .Fortran("lrmfit",coef=initial,nx,1:nx,x,y,offset,
 ##           u=double(nvi),double(nvi*(nvi+1)),double(1),n,nx,
 ##           sumw,nvi,v=double(nvi*nvi),double(nvi),double(nvi),
-##           double(nvi),integer(nvi),opts=opts,ftable,penmat)
+##           double(nvi),integer(nvi),opts=opts,ftable,penmat, PACKAGE="Design")
 }
 
 ##Invert v with respect to fitted variables
@@ -400,7 +402,7 @@ if(ofpres)	{
            numy,kint,
            v=double(kint*kint),double(kint),double(kint),
            double(kint),pivot=integer(kint),opts=opts,ftable,
-           penmat, weights)
+           penmat, weights, PACKAGE="Design")
   ## 17jan03
 ##    .Fortran("lrmfit",coef=initial,as.integer(0),0,x,y,offset,
 ##           u=double(kint),
@@ -408,7 +410,7 @@ if(ofpres)	{
 ##           numy,kint,
 ##           v=double(kint*kint),double(kint),double(kint),
 ##           double(kint),pivot=integer(kint),opts=opts,ftable,
-##           penmat)
+##           penmat, PACKAGE="Design")
   loglik <- c(loglik,z$loglik)
   if(z$opts[6] | z$opts[7]<kint) return(list(fail=TRUE,class="lrm"))
   initial <- z$coef

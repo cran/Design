@@ -93,7 +93,7 @@ survfit.cph.null <- function(formula, newdata, se.fit=TRUE, conf.int=.95, indivi
                double(2),
                as.integer(1),
                double(1),
-               newrisk= as.double(1))
+               newrisk= as.double(1), PACKAGE="Design")
 
   nsurv <- surv$nsurv[1]
   ntime <- 1:nsurv

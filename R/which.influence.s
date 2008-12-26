@@ -2,12 +2,12 @@ which.influence <- function(fit, cutoff=.2)				{
 
   cox <- inherits(fit,"cph") || (length(fit$fitFunction) &&
                                  any(fit$fitFunction=='cph'))
-                                 ##14Nov00 22May01
 
   stats <- resid(fit, "dfbetas")
-  stats <- stats[!is.na(stats[,1]), ]   ##delete rows added back due to NAs
-  rnam <- dimnames(stats)[[1]]
-  if(!length(rnam)) rnam <- 1:nrow(stats)
+  rnam  <- which(!is.na(stats[,1]))
+  stats <- stats[rnam,,drop=FALSE]   ##delete rows added back due to NAs
+  d <- dimnames(stats)[[1]]
+  if(length(d)) rnam <- d
 
   at <- fit$Design
   if(!length(at)) at <- getOldDesign(fit)
@@ -16,7 +16,6 @@ which.influence <- function(fit, cutoff=.2)				{
   w <- list()
   namw <- NULL
   k <- 0
-#  .Options$warn <- -1   14Sep00
   oldopt <- options(warn=-1)
   on.exit(options(oldopt))
 

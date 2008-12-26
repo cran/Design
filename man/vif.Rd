@@ -1,40 +1,38 @@
 \name{vif}
 \alias{vif}
 \title{
-Variance Inflation Factors
+  Variance Inflation Factors
 }
 \description{
-Computes variance inflation factors from the covariance matrix of
-parameter estimates, using the method of Davis et al. (1986), which
-is based on the correlation matrix from the information matrix.
+  Computes variance inflation factors from the covariance matrix of
+  parameter estimates, using the method of Davis et al. (1986), which
+  is based on the correlation matrix from the information matrix.
 }
 \usage{
 vif(fit)
 }
 \arguments{
-\item{fit}{
-an object created by \code{lrm}, \code{ols}, \code{psm}, \code{cph}, or \code{glm}
-}}
+  \item{fit}{
+    an object created by \code{lrm}, \code{ols}, \code{psm}, \code{cph}, or \code{glm}
+  }
+}
 \value{
-vector of vifs
+  vector of vifs
 }
 \author{
-Frank Harrell
-\cr
-Department of Biostatistics
-\cr
-Vanderbilt University
-\cr
-f.harrell@vanderbilt.edu
+  Frank Harrell\cr
+  Department of Biostatistics\cr
+  Vanderbilt University\cr
+  \email{f.harrell@vanderbilt.edu}
 }
 \references{
-Davis CE, Hyde JE, Bangdiwala SI, Nelson JJ: An example of dependencies 
-among variables in a conditional logistic regression. In Modern
-Statistical Methods in Chronic Disease Epidemiology, Eds SH Moolgavkar and
-RL Prentice, pp. 140--147.  New York: Wiley; 1986.
+  Davis CE, Hyde JE, Bangdiwala SI, Nelson JJ: An example of dependencies 
+  among variables in a conditional logistic regression. In Modern
+  Statistical Methods in Chronic Disease Epidemiology, Eds SH Moolgavkar and
+  RL Prentice, pp. 140--147.  New York: Wiley; 1986.
 }
 \seealso{
-\code{\link{Design.Misc}} (for \code{\link{num.intercepts}} and \code{\link[Hmisc]{Varcov}})
+  \code{\link[Design]{Design.Misc}} (for \code{\link[Design:Design.Misc]{num.intercepts}} and \code{\link[Design:Design-internal]{Varcov}})
 }
 \examples{
 set.seed(1)

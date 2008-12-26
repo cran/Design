@@ -6,9 +6,11 @@ bj <- function(formula=formula(data), data,
     call <- match.call()
     m <- match.call(expand=FALSE)
     if(.R.) require('survival') || stop('survival package not available')
-    m$x <- m$y <- m$control <- m$method <- m$link <- m$time.inc <- NULL
+    mc <- match(c("formula", "data", "subset", "weights", "na.action"), 
+              names(m), 0)
+    m <- m[c(1, mc)]
     m$na.action <- na.action
-    if(.R.) m$drop.unused.levels <- TRUE  ## 31jul02
+    if(.R.) m$drop.unused.levels <- TRUE
     m[[1]] <- as.name("model.frame")
       if(.R.) {
         dul <- .Options$drop.unused.levels
@@ -17,15 +19,12 @@ bj <- function(formula=formula(data), data,
           options(drop.unused.levels=FALSE)
         }
       }
-    X <- Design(eval(m, sys.parent()))    # 24Apr01
+    X <- if(.R.) Design(eval.parent(m)) else Design(eval(m, sys.parent()))
 	if(method=='model.frame') return(X)
     atrx <- attributes(X)
     nact <- atrx$na.action
     Terms <- atrx$terms
-    atr <- atrx$Design              # 24Apr01
-    if(!is.null(nact$nmiss))
-      names(nact$nmiss) <- 
-        c(as.character(formula[2]), atr$name[atr$assume.code!=9])
+    atr <- atrx$Design
 
     lnames <- if(.R.) c("logit","probit","cloglog","identity","log","sqrt",
       "1/mu^2","inverse") else dimnames(glm.links)[[2]]
@@ -49,7 +48,6 @@ bj <- function(formula=formula(data), data,
     Y <- cbind(linkfun(Y[,1]), Y[,2])
 
     X <- model.matrix(Terms, X)
-##	assgn <- attr(X,'assign') 20may02
     assgn <- DesignAssign(atr, 1, Terms)
 
 	if(method=='model.matrix') return(X)
@@ -80,12 +78,12 @@ bj <- function(formula=formula(data), data,
 
     fit <- c(fit, list(maxtime=maxtime, units=time.units,
 	time.inc=time.inc,non.slopes=1,assign=assgn,fitFunction='bj'))
-    oldClass(fit) <-  if(.SV4.)'Design' else c("bj", "Design") ##13Nov00
-    fit$terms <- Terms
+    oldClass(fit) <-  if(.SV4.)'Design' else c("bj", "Design")
+    fit$terms   <- Terms
     fit$formula <- as.vector(attr(Terms, "formula"))
-    fit$call <- call
-    fit$Design <- atr    # 24Apr01
-    if (x)     fit$x <- X
+    fit$call    <- call
+    fit$Design  <- atr
+    if (x) fit$x <- X
     if (y) {
       oldClass(Y) <- 'Surv'
       attr(Y,'type') <- atY$type
@@ -187,7 +185,7 @@ bj.fit <- function(x, y, control = NULL) {
 	state <- status
 	state[ehat == max(ehat)] <- 1
 	S <- structure(cbind(ehat, state), class = "Surv", type = "right")
-	KM.ehat <- survfit.km(dummystrat, S, conf.type = "none", se.fit = FALSE)
+	KM.ehat <- survfitKM(dummystrat, S, conf.type = "none", se.fit = FALSE)
 	n.risk <- KM.ehat$n.risk
 	surv <- KM.ehat$surv
 	repeats <- c(diff( - n.risk), n.risk[length(n.risk)])
@@ -253,7 +251,7 @@ bjplot <- function(fit, which=1:dim(X)[[2]]) {
   m <- order(fit$y[, 1],  - fit$y[, 2])
   resd <- S[m, 1]
   cens <- S[m, 2]
-  KM.ehat <- survfit.km(dummystrat, S, 
+  KM.ehat <- survfitKM(dummystrat, S, 
 						conf.type = "none", se.fit = FALSE)
   repeats <- c(diff( - KM.ehat$n.risk), KM.ehat$n.risk[length(KM.ehat$n.risk)])
   if(length(KM.ehat$time) != N) {

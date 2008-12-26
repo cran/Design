@@ -21,11 +21,13 @@
   \item{fit}{
     a fit derived \code{cph}. The options \code{x=TRUE} and \code{y=TRUE}
     must have been specified. If the model contains any stratification factors
-    and dxy=TRUE,
-    the options \code{surv=TRUE} and \code{time.inc=u} must also have been given,
-    where \code{u} is the same value of \code{u} given to \code{validate}.
+    and \code{dxy=TRUE},
+    the options \code{surv=TRUE} and \code{time.inc=\var{u}} must also have been given,
+    where \code{\var{u}} is the same value of \code{\var{u}} given to \code{validate()}.
   }
-  \item{method}{see \code{\link{validate}}}
+  \item{method}{
+    see \code{\link[Design]{validate}}
+  }
   \item{B}{
     number of repetitions.  For \code{method="crossvalidation"}, is the
     number of groups of omitted observations.
@@ -51,13 +53,13 @@
     residual \eqn{\chi^2}{chi-square}.
   }
   \item{aics}{
-    cutoff on AIC when \code{rule="aic"}.
+    cutoff on \acronym{AIC} when \code{rule="aic"}.
   }
   \item{pr}{
     \code{TRUE} to print results of each repetition
   }
   \item{tol}{}
-  \item{...}{see \code{\link{validate}} or \code{\link{predab.resample}}}
+  \item{\dots}{see \code{\link[Design]{validate}} or \code{\link[Design]{predab.resample}}}
   \item{dxy}{
     set to \code{TRUE} to validate Somers' \eqn{D_{xy}}{Dxy}  using
     \code{rcorr.cens}, which takes longer.
@@ -65,32 +67,32 @@
   \item{u}{
     must be specified if the model has any stratification factors and \code{dxy=TRUE}.
     In that case, strata are not included in \eqn{X\beta}{X beta} and the
-    survival curves may cross.  Predictions at time \code{t=u} are
+    survival curves may cross.  Predictions at time \code{\var{t}=u} are
     correlated with observed survival times.  Does not apply to
     \code{validate.psm}.
   }
 }
 \details{
   Statistics validated include the Nagelkerke \eqn{R^2}, 
-  \eqn{D_{xy}}{Dxy}, slope shrinkage,  the discrimination index \eqn{D}
+  \eqn{D_{xy}}{Dxy}, slope shrinkage,  the discrimination index \var{D}
   [(model L.R. \eqn{\chi^2}{chi-square} - 1)/L], the unreliability index
-  \eqn{U} = (difference in -2 log likelihood between uncalibrated
+  \var{U} = (difference in -2 log likelihood between uncalibrated
   \eqn{X\beta}{X beta} and  
-  \eqn{X\beta}{X beta} with overall slope calibrated to test sample) / L,
+  \eqn{X\beta}{X beta} with overall slope calibrated to test sample) / \var{L},
   and the overall quality index \eqn{Q = D - U}. 
-  L is -2 log likelihood with beta=0.  The "corrected" slope
+  \var{L} is -2 log likelihood with beta=0.  The \dQuote{corrected} slope
   can be thought of as shrinkage factor that takes into account overfitting.
   See \code{predab.resample} for the list of resampling methods.
 }
 \value{
-  matrix with rows corresponding to \eqn{D_{xy}}{Dxy}, Slope, \eqn{D},
-  \eqn{U}, and \eqn{Q}, and columns for the original index, resample estimates, 
+  matrix with rows corresponding to \eqn{D_{xy}}{Dxy}, Slope, \var{D},
+  \var{U}, and \var{Q}, and columns for the original index, resample estimates, 
   indexes applied to whole or omitted sample using model derived from
   resample, average optimism, corrected index, and number of successful
-  resamples.\cr
+  resamples.
 
   The values corresponting to the row \eqn{D_{xy}}{Dxy} are equal to \eqn{2 *
-    (C - 0.5)} where C is the C-index or concordance probability.
+    (C - 0.5)} where \var{C} is the C-index or concordance probability.
   If the user is correlating the linear predictor (predicted log hazard)
   with survival time and she wishes to get the more usual correlation
   using predicted survival time or predicted survival probability,
@@ -103,11 +105,14 @@
 \author{
   Frank Harrell\cr
   Department of Biostatistics, Vanderbilt University\cr
-  f.harrell@vanderbilt.edu
+  \email{f.harrell@vanderbilt.edu}
 }
 \seealso{
-  \code{\link{validate}}, \code{\link{predab.resample}}, \code{\link{fastbw}}, \code{\link{Design}}, \code{\link{Design.trans}}, \code{\link{calibrate}},
-  \code{\link[Hmisc]{rcorr.cens}}, \code{\link{cph}}, \code{\link[survival]{coxph.fit}}
+  \code{\link[Design]{validate}}, \code{\link[Design]{predab.resample}},
+  \code{\link[Design]{fastbw}}, \code{\link[Design]{Design}},
+  \code{\link[Design]{Design.trans}}, \code{\link[Design]{calibrate}},
+  \code{\link[Hmisc]{rcorr.cens}}, \code{\link[Design]{cph}},
+  \code{\link[survival:survival-internal]{coxph.fit}}
 }
 \examples{
 n <- 1000

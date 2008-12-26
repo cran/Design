@@ -113,7 +113,8 @@ for(i in 1:f) {
                    PACKAGE="Design") else
           .Fortran("avia",beta,cov,chisq=double(1),length(beta),
                    st[k]:en[k],
-                   ln[k],df=integer(1),eps,vsub,s1,s2,s3,s4,pivot,NAOK=TRUE)
+                   ln[k],df=integer(1),eps,vsub,s1,s2,s3,s4,pivot,NAOK=TRUE,
+                   PACKAGE="Design")
 		chisq <- z$chisq
 		df <- z$df
 	} else {
@@ -144,7 +145,8 @@ for(i in 1:f) {
                PACKAGE="Design") else
       .Fortran("avia",fit$coef,Cov,chisq=double(1),
                pt,q,as.integer(pt-length(parms.in)),
-               df=integer(1),eps,vsub,s1,s2,s3,s4,pivot,NAOK=TRUE)
+               df=integer(1),eps,vsub,s1,s2,s3,s4,pivot,NAOK=TRUE,
+               PACKAGE="Design")
 	resid <- z$chisq
 	resid.df <- z$df
 	} else {

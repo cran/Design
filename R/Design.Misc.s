@@ -77,62 +77,6 @@ DesignAssign <- function(atr, non.slopes, Terms) {
   assign
 }
   
-#Function to return variance-covariance matrix, optionally deleting
-#rows and columns corresponding to parameters such as scale parameters
-#in parametric survival models
-
-#Varcov <- function(object, ...) UseMethod("Varcov")  in Hmisc
-
-Varcov.lrm <- function(object, regcoef.only=FALSE, ...)
-  Varcov.default(object, regcoef.only, ...)  # for fastbw etc.
-Varcov.ols <- function(object, regcoef.only=FALSE, ...)
-  Varcov.default(object, regcoef.only, ...)
-Varcov.cph <- function(object, regcoef.only=FALSE, ...)
-  Varcov.default(object, regcoef.only, ...)
-Varcov.psm <- function(object, regcoef.only=FALSE, ...)
-  Varcov.default(object, regcoef.only, ...)
-
-#Varcov.default <- function(fit, regcoef.only=F)  Defined in Hmisc
-#{
-#  vc <- fit$Varcov
-#  if(length(vc)) {
-#	if(regcoef.only) return(fit$var) else
-#	return(vc(fit,which='var'))
-#  }
-#   cov <- fit$var
-#   if(is.null(cov)) stop("fit does not have variance-covariance matrix")
-#   if(regcoef.only)
-#   {
-#	p <- length(fit$coefficients)  # 14Sep00
-#	cov <- cov[1:p, 1:p, drop=F]
-#   }
-#   cov
-#}
-
-#Varcov.lm <- function(fit, ...)
-#{
-#   cof <- fit$coefficients
-#   rinv <- solve(fit$R, diag(length(cof)))
-#   cov <- rinv %*% t(rinv)
-#   cov <- sum(fit$residuals^2)*cov/fit$df.residual
-#   nm  <- names(cof)
-#   dimnames(cov) <- list(nm, nm)
-#   cov
-#}
-
-# Varcov.glm was erroneously defined as follows   30Jul99
-#   p <- fit$rank
-#   if(is.null(p)) p <- sum(!is.na(fit$coefficients))  # 14Sep00
-#   R <- fit$R
-#   if(p<max(dim(R))) stop("Varcov does not handle singular matrices")
-#   rinv <- backsolve(R, diag(p))
-#   rinv %*% t(rinv)
-
-#Varcov.glm <- function(fit, ...)
-#{
-#  s <- summary.glm(fit)
-#  s$cov.unscaled * s$dispersion
-#}
 
 ## Functions for Out Of Sample computation of -2 log likelihood
 ## evaluated at parameter estimates of a given fit

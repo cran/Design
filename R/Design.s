@@ -23,15 +23,15 @@
 # Cannot have interactions between two stratification factors. 
 #
 #
-#
+
 
 Design <- function(mf, allow.offset=TRUE, intercept=1)
 {
 
   Terms <- attr(mf, "terms")
   Term.labels <- attr(Terms,'term.labels')
-  iscluster <- if(length(Term.labels)) substring(Term.labels,1,8)=='cluster('
-  else FALSE
+  iscluster <- if(length(Term.labels))
+    substring(Term.labels,1,8)=='cluster('  else FALSE
   ## Handle cluster() for cph
   if(any(iscluster))
     {
@@ -320,6 +320,17 @@ Design <- function(mf, allow.offset=TRUE, intercept=1)
                   assume.code=as.integer(asm), parms=parm, limits=limits,
                   values=values,nonlinear=nonlinear,
                   interactions=structure(ia,dimnames=NULL))
+
+      nact <- attr(mf, 'na.action')
+      if(length(nact) && length(nmiss <- nact$nmiss))
+        {
+          jia <- grep('%ia%',names(nmiss), fixed=TRUE)
+          if(length(jia)) nmiss <- nmiss[-jia]
+          jz <- which(names(nmiss) != '(weights)')
+          if(response.pres) jz <- jz[jz > 1]
+          names(nmiss)[jz] <- fname[asm != 9]
+          attr(mf, 'na.action')$nmiss <- nmiss
+        }
     }
 
   else atr <- list(name=NULL, assume=NULL, assume.code=NULL, parms=NULL)

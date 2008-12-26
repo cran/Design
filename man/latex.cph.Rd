@@ -5,11 +5,11 @@
 \alias{latex.pphsm}
 \alias{latex.psm}
 \title{
-LaTeX Representation of a Fitted Cox Model
+  LaTeX Representation of a Fitted Cox Model
 }
 \description{
-Creates a file containing a LaTeX representation of
-the fitted model. 
+  Creates a file containing a LaTeX representation of
+  the fitted model. 
 }
 \usage{
 \method{latex}{cph}(object, title,
@@ -31,45 +31,45 @@ columns, inline, before, pretrans, caption, \dots) # pphsm fit
 columns, inline, before, pretrans, caption, \dots) # psm fit
 }
 \arguments{
-\item{object}{
-a fit object created by a \code{Design} fitting function.
-}
-\item{title}{ignored}
-\item{file}{}
-\item{append}{see \code{\link[Hmisc]{latex.default}}}
-\item{surv}{
-if \code{surv=TRUE} was specified to \code{cph}, the underlying survival
-probabilities from \code{object$surv.summary} will be placed in a table
-unless \code{surv=FALSE}.
-}
-\item{maxt}{
-if the maximum follow-up time in the data (\code{object$maxtime}) exceeds the
-last entry in \code{object$surv.summary}, underlying survival estimates at
-\code{object$maxtime} will be added to the table if \code{maxt=TRUE}.
-}
-\item{which}{}
-\item{varnames}{}
-\item{columns}{}
-\item{inline}{}
-\item{before}{}
-\item{dec}{}
-\item{pretrans}{see \code{\link[Hmisc]{latex.default}}}
-\item{caption}{a character string specifying a title for the equation to
-  be centered and typeset in bold face.   Default is no title.
+  \item{object}{
+    a fit object created by a \code{Design} fitting function.
   }
-\item{\dots}{ignored}
+  \item{title}{ignored}
+  \item{file}{}
+  \item{append}{see \code{\link[Hmisc]{latex}}}
+  \item{surv}{
+    if \code{surv=TRUE} was specified to \code{cph}, the underlying survival
+    probabilities from \code{object$surv.summary} will be placed in a table
+    unless \code{surv=FALSE}.
+  }
+  \item{maxt}{
+    if the maximum follow-up time in the data (\code{object$maxtime}) exceeds the
+    last entry in \code{object$surv.summary}, underlying survival estimates at
+    \code{object$maxtime} will be added to the table if \code{maxt=TRUE}.
+  }
+  \item{which}{}
+  \item{varnames}{}
+  \item{columns}{}
+  \item{inline}{}
+  \item{before}{}
+  \item{dec}{}
+  \item{pretrans}{see \code{\link[Hmisc]{latex}}}
+  \item{caption}{a character string specifying a title for the equation to
+    be centered and typeset in bold face.   Default is \code{""}.
+  }
+  \item{\dots}{ignored}
 }
 \value{
-the name of the created file, with class \code{c("latex","file")}.  This
-object works with latex viewing and printing commands in Hmisc.
+  the name of the created file, with class \code{c("latex","file")}.  This
+  object works with latex viewing and printing commands in Hmisc.
 }
 \author{
-Frank Harrell\cr
-Department of Biostatistics, Vanderbilt University\cr
-f.harrell@vanderbilt.edu
+  Frank Harrell\cr
+  Department of Biostatistics, Vanderbilt University\cr
+  \email{f.harrell@vanderbilt.edu}
 }
 \seealso{
-\code{\link{latex.Design}}, \code{\link[Hmisc]{rcspline.restate}}, \code{\link[Hmisc]{latex.default}}
+  \code{\link[Design]{latex.Design}}, \code{\link[Hmisc]{rcspline.restate}}, \code{\link[Hmisc]{latex}}
 }
 \examples{
 \dontrun{

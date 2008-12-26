@@ -422,9 +422,12 @@ options(datadist='ddist')
 
 
 f <- lrm(y ~ lsp(age,50)+sex*rcs(cholesterol,4)+blood.pressure)
-nomogram(f, fun=function(x)1/(1+exp(-x)),  # or fun=plogis
+nom <- nomogram(f, fun=function(x)1/(1+exp(-x)),  # or fun=plogis
     fun.at=c(.001,.01,.05,seq(.1,.9,by=.1),.95,.99,.999),
     funlabel="Risk of Death", xfrac=.45)
+
+print(nom)
+
 #Instead of fun.at, could have specified fun.lp.at=logit of
 #sequence above - faster and slightly more accurate
 nomogram(f, age=seq(10,90,by=10), xfrac=.45)

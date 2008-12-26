@@ -10,7 +10,7 @@
   time-dependent covariables, time-dependent strata, and repeated events.
   The \code{Survival} method for an object created by \code{cph} returns an S
   function for computing estimates of the survival function.
-  The \code{Quantile} method for \code{cph} returns an S function for computing
+  The \code{Quantile} method for \code{cph} returns an \R function for computing
   quantiles of survival time (median, by default).
   The \code{Mean} method returns a function for computing the mean survival
   time.  This function issues a warning if the last follow-up time is uncensored,
@@ -51,7 +51,7 @@ cph(formula = formula(data), data=if(.R.) parent.frame() else sys.parent(),
   }
   \item{data}{
     name of an S data frame containing all needed variables.  Omit this to use a
-    data frame already in the S ``search list''.
+    data frame already in the \R \dQuote{search list}.
   }
   \item{weights}{
     case weights
@@ -104,7 +104,7 @@ cph(formula = formula(data), data=if(.R.) parent.frame() else sys.parent(),
     model includes a \code{cluster()} operative, \code{FALSE} otherwise.
   }
   \item{model}{
-    default is \code{FALSE}(false).  Set to \code{TRUE} to return the model frame as element 
+    default is \code{FALSE}.  Set to \code{TRUE} to return the model frame as element 
     \code{model} of the fit object.
   }
   \item{x}{
@@ -218,10 +218,10 @@ cph(formula = formula(data), data=if(.R.) parent.frame() else sys.parent(),
     \code{tmax} must be specified at the time that \code{Mean.cph} is run.
 }}
 \value{
-  For \code{Survival}, \code{Quantile}, or \code{Mean}, an S function is returned.  Otherwise,
+  For \code{Survival}, \code{Quantile}, or \code{Mean}, an \R function is returned.  Otherwise,
   in addition to what is listed below, formula/design information and
   the components 
-  \code{maxtime, time.inc, units, model, x, y, se.fit} are stored, the last 5 
+  \code{maxtime}, \code{time.inc}, \code{units}, \code{model}, \code{x}, \code{y}, \code{se.fit} are stored, the last 5 
   depending on the settings of options by the same names.
   The vectors or matrix stored if \code{y=TRUE} or \code{x=TRUE} have rows deleted according to \code{subset} and
   to missing data, and have names or row names that come from the
@@ -254,7 +254,7 @@ cph(formula = formula(data), data=if(.R.) parent.frame() else sys.parent(),
     value of score statistic at initial values of parameters
   }
   \item{times}{
-    lists of times (if \code{surv="T"})
+    lists of times (if \code{surv=TRUE})
   }
   \item{surv}{
     lists of underlying survival probability estimates
@@ -290,13 +290,13 @@ cph(formula = formula(data), data=if(.R.) parent.frame() else sys.parent(),
   \email{f.harrell@vanderbilt.edu}
 }
 \seealso{
-  \code{\link[survival]{coxph}}, \code{\link[survival]{coxph.fit}}, \code{\link[survival]{Surv}}, \code{\link{residuals.cph}}, \code{\link[survival]{cox.zph}},
-  \code{\link{survfit.cph}},  \code{\link{survest.cph}}, \code{\link[survival]{survfit.coxph}},
-  \code{\link{survplot}}, \code{\link{datadist}},
-  \code{\link{Design}}, \code{\link{Design.trans}}, \code{\link{anova.Design}}, \code{\link{summary.Design}}, \code{\link{predict.Design}},
-  \code{\link{fastbw}}, \code{\link{validate}}, \code{\link{calibrate}}, \code{\link{plot.Design}},
-  \code{\link{specs.Design}}, \code{\link{lrm}}, \code{\link{which.influence}}, \code{\link[Hmisc]{na.delete}}, \code{\link[Hmisc]{na.detail.response}},
-  \code{\link[Hmisc]{naresid}}, \code{\link{print.cph}}, \code{\link{latex.cph}}, \code{\link{vif}}, \code{\link{ie.setup}}
+  \code{\link[survival]{coxph}}, \code{\link[survival:survival-internal]{coxph.fit}}, \code{\link[survival]{Surv}}, \code{\link[Design]{residuals.cph}}, \code{\link[survival]{cox.zph}},
+  \code{\link[Design]{survfit.cph}},  \code{\link[Design]{survest.cph}}, \code{\link[survival]{survfit.coxph}},
+  \code{\link[Design]{survplot}}, \code{\link[Design]{datadist}},
+  \code{\link[Design]{Design}}, \code{\link[Design]{Design.trans}}, \code{\link[Design]{anova.Design}}, \code{\link[Design]{summary.Design}}, \code{\link[Design]{predict.Design}},
+  \code{\link[Design]{fastbw}}, \code{\link[Design]{validate}}, \code{\link[Design]{calibrate}}, \code{\link[Design]{plot.Design}},
+  \code{\link[Design]{specs.Design}}, \code{\link[Design]{lrm}}, \code{\link[Design]{which.influence}}, \code{\link[Hmisc]{na.delete}}, \code{\link[Hmisc]{na.detail.response}},
+  \code{\link[stats:nafns]{naresid}}, \code{\link[Design]{print.cph}}, \code{\link[Design]{latex.cph}}, \code{\link[Design]{vif}}, \code{\link[Design]{ie.setup}}
 }
 \examples{
 # Simulate data from a population model in which the log hazard

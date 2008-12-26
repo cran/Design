@@ -5,36 +5,36 @@
 \alias{plot.anova.Design}
 \alias{latex.anova.Design}
 \title{
-Analysis of Variance (Wald and F Statistics)
+  Analysis of Variance (Wald and F Statistics)
 }
 \description{
-The \code{anova} function automatically tests most meaningful hypotheses in
-a design. For example, suppose that age and cholesterol are
-predictors, and that a general interaction is modeled using a
-restricted spline surface. \code{anova} prints Wald statistics (\eqn{F}
-statistics for an \code{ols} fit) for testing
-linearity of age, linearity of cholesterol, age effect (age + age by
-cholesterol interaction), cholesterol effect (cholesterol + age by
-cholesterol interaction), linearity of the age by cholesterol
-interaction (i.e., adequacy of the simple age * cholesterol 1
-d.f. product), linearity of the interaction in age alone, and
-linearity of the interaction in cholesterol alone. Joint tests of all
-interaction terms in the model and all nonlinear terms in the model
-are also performed.  For any multiple d.f. effects for continuous
-variables that were not modeled through \code{rcs}, \code{pol},
-\code{lsp}, etc., 
-tests of linearity will be omitted.  This applies to matrix predictors
-produced by e.g.  \code{poly} or \code{ns}.  \code{print.anova.Design} is the
-printing method.  \code{text.anova.Design} is the \code{text} method for
-inserting anova tables on graphs.  \code{plot.anova.Design} draws dot
-charts depicting the importance of variables in the model, as measured
-by Wald \eqn{\chi^2}{chi-square}, \eqn{\chi^2}{chi-square} minus d.f., AIC, \eqn{P}-values, partial \eqn{R^2},
-\eqn{R^2} for the whole model after deleting the effects in question, or
-proportion of overall model \eqn{R^2} that is due to each predictor. 
-\code{latex.anova.Design} is the \code{latex} method.  It substitutes
-Greek/math symbols in column headings, uses boldface for \code{TOTAL}
-lines, and constructs a caption.  Then it passes the result to
-\code{latex.default} for conversion to LaTeX.
+  The \code{anova} function automatically tests most meaningful hypotheses in
+  a design. For example, suppose that age and cholesterol are
+  predictors, and that a general interaction is modeled using a
+  restricted spline surface. \code{anova} prints Wald statistics (\eqn{F}
+  statistics for an \code{ols} fit) for testing
+  linearity of age, linearity of cholesterol, age effect (age + age by
+  cholesterol interaction), cholesterol effect (cholesterol + age by
+  cholesterol interaction), linearity of the age by cholesterol
+  interaction (i.e., adequacy of the simple age * cholesterol 1
+  d.f. product), linearity of the interaction in age alone, and
+  linearity of the interaction in cholesterol alone. Joint tests of all
+  interaction terms in the model and all nonlinear terms in the model
+  are also performed.  For any multiple d.f. effects for continuous
+  variables that were not modeled through \code{rcs}, \code{pol},
+  \code{lsp}, etc., 
+  tests of linearity will be omitted.  This applies to matrix predictors
+  produced by e.g.  \code{poly} or \code{ns}.  \code{print.anova.Design} is the
+  printing method.  \code{text.anova.Design} is the \code{text} method for
+  inserting anova tables on graphs.  \code{plot.anova.Design} draws dot
+  charts depicting the importance of variables in the model, as measured
+  by Wald \eqn{\chi^2}{chi-square}, \eqn{\chi^2}{chi-square} minus d.f., AIC, \eqn{P}-values, partial \eqn{R^2},
+  \eqn{R^2} for the whole model after deleting the effects in question, or
+  proportion of overall model \eqn{R^2} that is due to each predictor. 
+  \code{latex.anova.Design} is the \code{latex} method.  It substitutes
+  Greek/math symbols in column headings, uses boldface for \samp{TOTAL}
+  lines, and constructs a caption.  Then it passes the result to
+  \code{latex.default} for conversion to LaTeX.
 }
 \usage{
 \method{anova}{Design}(object, \ldots, main.effect=FALSE, tol=1e-9, 
@@ -55,149 +55,151 @@ lines, and constructs a caption.  Then it passes the result to
       dec.chisq=2, dec.F=2, dec.ss=NA, dec.ms=NA, dec.P=4, \dots)
 }
 \arguments{
-\item{object}{
-a \code{Design} fit object.  \code{object} must
-allow \code{Varcov} to return the variance-covariance matrix.  For
-\code{latex}, is the result of \code{anova}.
-}
-\item{\dots}{
-If omitted, all variables are tested, yielding tests for individual factors
-and for pooled effects. Specify a subset of the variables to obtain tests
-for only those factors, with a pooled Wald tests for the combined effects
-of all factors listed. Names may be abbreviated.  For example, specify
-\code{anova(fit,age,cholesterol)} to get a Wald statistic for testing the joint
-importance of age, cholesterol, and any factor interacting with them.
-
-Can be optional graphical parameters to send to \code{text} or
-\code{dotchart2}, or other parameters to send to \code{latex.default}.
-Ignored for \code{print}.
-}
-\item{main.effect}{
-Set to \code{TRUE} to print the (usually meaningless) main effect tests even when
-the factor is involved in an interaction. The default is \code{FALSE}, to print only
-the effect of the main effect combined with all interactions involving that
-factor.
-}
-\item{tol}{
-singularity criterion for use in matrix inversion
-}
-\item{test}{
-For an \code{ols} fit, set \code{test="Chisq"} to use Wald \eqn{\chi^2} tests rather than F-tests.
-}
-\item{ss}{
-For an \code{ols} fit, set \code{ss=FALSE} to suppress printing partial sums of squares, mean
-squares, and the Error SS and MS.
-}
-\item{x}{for \code{print,plot,text} is the result of \code{anova}.
-}
-\item{which}{
-If \code{which} is not \code{"none"} (the default), \code{print.anova.Design} will
-add to the rightmost column of the output the list of parameters being
-tested by the hypothesis being tested in the current row.  Specifying
-\code{which="subscripts"} causes the subscripts of the regression
-coefficients being tested to be printed (with a subscript of one for
-the first non-intercept term).  \code{which="names"} prints the names of
-the terms being tested, and \code{which="dots"} prints dots for terms being
-tested and blanks for those just being adjusted for.
-}
-\item{at}{
-for \code{text} is a list containing the x- and y-coordinates for the
-upper left corner of the anova table to be drawn on an existing plot,
-e.g. \code{at=locator(1)}
+  \item{object}{
+    a \code{Design} fit object.  \code{object} must
+    allow \code{Varcov} to return the variance-covariance matrix.  For
+    \code{latex}, is the result of \code{anova}.
   }
-\item{cex}{
-character expansion size for \code{text.anova.Design}
-}
-\item{font}{
-font for \code{text.anova.Design}.  Default is 2 (usually Courier).
-}
-\item{what}{
-what type of statistic to plot.  The default is the Wald
-\eqn{\chi^2}{chi-square} 
-statistic for each factor (adding in the effect of higher-ordered
-factors containing that factor) minus its degrees of freedom.  The
-last three choice for \code{what} only apply to \code{ols} models.
-}
-\item{xlab}{
-x-axis label, default is constructed according to \code{what}.
-\code{plotmath} symbols are used for \R, by default.
-}
-\item{pch}{
-character for plotting dots in dot charts.  Default is 16 (solid dot).
-}
-\item{rm.totals}{
-set to \code{FALSE} to keep total \eqn{\chi^2}{chi-square}s (overall, nonlinear, interaction totals)
-in the chart.
-}
-\item{rm.ia}{
-set to \code{TRUE} to omit any effect that has \code{"*"} in its name
-}
-\item{rm.other}{
-a list of other predictor names to omit from the chart
-}
-\item{newnames}{
-a list of substitute predictor names to use, after omitting any.
-}
-\item{sort}{
-default is to sort bars in descending order of the summary statistic
-}
-\item{pl}{
-set to \code{FALSE} to suppress plotting.  This is useful when you only wish to
-analyze the vector of statistics returned.
-}
-\item{title}{
-title to pass to \code{latex}, default is name of fit object passed to \code{anova}
-prefixed with \code{"anova."}.  For Windows, the default is \code{"ano"} followed
-by the first 5 letters of the name of the fit object.
-}
-\item{psmall}{
-The default is \code{psmall=TRUE}, which causes \code{P<0.00005} to print as \code{<0.0001}.
-Set to \code{FALSE} to print as \code{0.0000}.
-}
-\item{dec.chisq}{
-number of places to the right of the decimal place for typesetting
-\eqn{\chi^2}{chi-square} values (default is \code{2}).  Use zero for integer, \code{NA} for
-floating point.
-}
-\item{dec.F}{
-digits to the right for \eqn{F} statistics (default is \code{2})
-}
-\item{dec.ss}{
-digits to the right for sums of squares (default is \code{NA}, indicating
-floating point)
-}
-\item{dec.ms}{
-digits to the right for mean squares (default is \code{NA})
-}
-\item{dec.P}{digits to the right for \eqn{P}-values}
+  \item{\dots}{
+    If omitted, all variables are tested, yielding tests for individual factors
+    and for pooled effects. Specify a subset of the variables to obtain tests
+    for only those factors, with a pooled Wald tests for the combined effects
+    of all factors listed. Names may be abbreviated.  For example, specify
+    \code{anova(fit,age,cholesterol)} to get a Wald statistic for testing the joint
+    importance of age, cholesterol, and any factor interacting with them.
+
+    Can be optional graphical parameters to send to \code{text} or
+    \code{dotchart2}, or other parameters to send to \code{latex.default}.
+    Ignored for \code{print}.
+  }
+  \item{main.effect}{
+    Set to \code{TRUE} to print the (usually meaningless) main effect tests even when
+    the factor is involved in an interaction. The default is \code{FALSE}, to print only
+    the effect of the main effect combined with all interactions involving that
+    factor.
+  }
+  \item{tol}{
+    singularity criterion for use in matrix inversion
+  }
+  \item{test}{
+    For an \code{ols} fit, set \code{test="Chisq"} to use Wald \eqn{\chi^2}{chi-square} tests rather than F-tests.
+  }
+  \item{ss}{
+    For an \code{ols} fit, set \code{ss=FALSE} to suppress printing partial sums of squares, mean
+    squares, and the Error SS and MS.
+  }
+  \item{x}{for \code{print},\code{plot},\code{text} is the result of \code{anova}.
+  }
+  \item{which}{
+    If \code{which} is not \code{"none"} (the default), \code{print.anova.Design} will
+    add to the rightmost column of the output the list of parameters being
+    tested by the hypothesis being tested in the current row.  Specifying
+    \code{which="subscripts"} causes the subscripts of the regression
+    coefficients being tested to be printed (with a subscript of one for
+    the first non-intercept term).  \code{which="names"} prints the names of
+    the terms being tested, and \code{which="dots"} prints dots for terms being
+    tested and blanks for those just being adjusted for.
+  }
+  \item{at}{
+    for \code{text} is a list containing the x- and y-coordinates for the
+    upper left corner of the anova table to be drawn on an existing plot,
+    e.g. \code{at=locator(1)}
+  }
+  \item{cex}{
+    character expansion size for \code{text.anova.Design}
+  }
+  \item{font}{
+    font for \code{text.anova.Design}.  Default is \code{2} (usually Courier).
+  }
+  \item{what}{
+    what type of statistic to plot.  The default is the Wald
+    \eqn{\chi^2}{chi-square} 
+    statistic for each factor (adding in the effect of higher-ordered
+    factors containing that factor) minus its degrees of freedom.  The
+    last three choice for \code{what} only apply to \code{ols} models.
+  }
+  \item{xlab}{
+    x-axis label, default is constructed according to \code{what}.
+    \code{plotmath} symbols are used for \R, by default.
+  }
+  \item{pch}{
+    character for plotting dots in dot charts.  Default is \code{16} (solid dot).
+  }
+  \item{rm.totals}{
+    set to \code{FALSE} to keep total \eqn{\chi^2}{chi-square}s (overall, nonlinear, interaction totals)
+    in the chart.
+  }
+  \item{rm.ia}{
+    set to \code{TRUE} to omit any effect that has \code{"*"} in its name
+  }
+  \item{rm.other}{
+    a list of other predictor names to omit from the chart
+  }
+  \item{newnames}{
+    a list of substitute predictor names to use, after omitting any.
+  }
+  \item{sort}{
+    default is to sort bars in descending order of the summary statistic
+  }
+  \item{pl}{
+    set to \code{FALSE} to suppress plotting.  This is useful when you only wish to
+    analyze the vector of statistics returned.
+  }
+  \item{title}{
+    title to pass to \code{latex}, default is name of fit object passed to \code{anova}
+    prefixed with \code{"anova."}.  For Windows, the default is \code{"ano"} followed
+    by the first 5 letters of the name of the fit object.
+  }
+  \item{psmall}{
+    The default is \code{psmall=TRUE}, which causes \code{P<0.00005} to print as \code{<0.0001}.
+    Set to \code{FALSE} to print as \code{0.0000}.
+  }
+  \item{dec.chisq}{
+    number of places to the right of the decimal place for typesetting
+    \eqn{\chi^2}{chi-square} values (default is \code{2}).  Use zero for integer, \code{NA} for
+    floating point.
+  }
+  \item{dec.F}{
+    digits to the right for \eqn{F} statistics (default is \code{2})
+  }
+  \item{dec.ss}{
+    digits to the right for sums of squares (default is \code{NA}, indicating
+    floating point)
+  }
+  \item{dec.ms}{
+    digits to the right for mean squares (default is \code{NA})
+  }
+  \item{dec.P}{
+    digits to the right for \eqn{P}-values
+  }
 }
 \value{
-\code{anova.Design} returns a matrix of class \code{anova.Design} containing factors 
-as rows and \eqn{\chi^2}{chi-square}, d.f., and \eqn{P}-values as
-columns (or d.f., partial \eqn{SS, MS, F, P}).
-\code{plot.anova.Design} invisibly returns the vector of quantities
-plotted.  This vector has a names attribute describing the terms for
-which the statistics in the vector are calculated.
+  \code{anova.Design} returns a matrix of class \code{anova.Design} containing factors 
+  as rows and \eqn{\chi^2}{chi-square}, d.f., and \eqn{P}-values as
+  columns (or d.f., partial \eqn{SS, MS, F, P}).
+  \code{plot.anova.Design} invisibly returns the vector of quantities
+  plotted.  This vector has a names attribute describing the terms for
+  which the statistics in the vector are calculated.
 }
 \details{
-If the statistics being plotted with \code{plot.anova.Design} are few in
-number and one of them is negative or zero, \code{plot.anova.Design}
-will quit because of an error in \code{dotchart2}.
+  If the statistics being plotted with \code{plot.anova.Design} are few in
+  number and one of them is negative or zero, \code{plot.anova.Design}
+  will quit because of an error in \code{dotchart2}.
 }
 \author{
-Frank Harrell\cr
-Department of Biostatistics, Vanderbilt University\cr
-f.harrell@vanderbilt.edu
+  Frank Harrell\cr
+  Department of Biostatistics, Vanderbilt University\cr
+  \email{f.harrell@vanderbilt.edu}
 }
 \section{Side Effects}{
-\code{print} prints, \code{text} uses \code{tempfile} to get a temporary Unix file name,
-\code{sink}, and \code{unix} (to remove the temporary file).  \code{latex} creates a
-file with a name of the form \code{"title.tex"} (see the \code{title} argument above).
+  \code{print} prints, \code{text} uses \code{tempfile} to get a temporary Unix file name,
+  \code{sink}, and \code{unix} (to remove the temporary file).  \code{latex} creates a
+  file with a name of the form \file{title.tex} (see the \code{title} argument above).
 }
 \seealso{
-\code{\link{Design}}, \code{\link{Design.Misc}}, \code{\link{lrtest}}, \code{\link{Design.trans}}, \code{\link{summary.Design}}, \code{\link[Hmisc]{solvet}}, 
-\code{\link{text}}, \code{\link{locator}}, \code{\link[Hmisc]{dotchart2}}, \code{\link[Hmisc]{latex}}, 
-\code{\link[Hmisc]{Dotplot}}, \code{\link{anova.lm}}, \code{\link{contrast.Design}}
+  \code{\link[Design]{Design}}, \code{\link[Design]{Design.Misc}}, \code{\link[Design:Design.Misc]{lrtest}}, \code{\link[Design]{Design.trans}}, \code{\link[Design]{summary.Design}}, \code{\link[Hmisc]{solvet}}, 
+  \code{\link[graphics]{text}}, \code{\link[graphics]{locator}}, \code{\link[Hmisc]{dotchart2}}, \code{\link[Hmisc]{latex}}, 
+  \code{\link[Hmisc:xYplot]{Dotplot}}, \code{\link[stats]{anova.lm}}, \code{\link[Design:contrast]{contrast.Design}}
 }
 \examples{
 n <- 1000    # define sample size

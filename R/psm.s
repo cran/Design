@@ -23,9 +23,11 @@ psm <- if(.newSurvival.) {
     m <- match.call(expand=FALSE)
     if(dist=='extreme')
       warning('Unlike earlier versions of survreg, dist="extreme" does not fit\na Weibull distribution as it uses an identity link.  To fit the Weibull\ndistribution use the default for dist or specify dist="weibull".')
+    m <- match.call(expand=FALSE)
+    mc <- match(c("formula", "data", "subset", "weights", "na.action"), 
+                names(m), 0)
+    m <- m[c(1, mc)]
     m$na.action <- na.action  ## FEH
-    temp <- c("", "formula", "data", "weights", "subset", "na.action")
-    m <- m[ match(temp, names(m), nomatch=0)]
     if(.R.) m$drop.unused.levels <- TRUE
     m[[1]] <- as.name("model.frame")
     special <- c("strata", "cluster")
@@ -43,19 +45,11 @@ psm <- if(.newSurvival.) {
         options(drop.unused.levels=FALSE)
       }
     }
-    m <- Design(eval(m, if(.R.)parent.frame() else sys.parent()))
+    m <- if(.R.) Design(eval.parent(m)) else Design(m, sys.parent())
     atrx <- attributes(m)
     nact <- atrx$na.action
     Terms <- atrx$terms
     atr   <- atrx$Design
-    if(length(nact$nmiss)) {
-      jia <- grep('%ia%',names(nact$nmiss), fixed=TRUE)
-      if(length(jia)) nact$nmiss <- nact$nmiss[-jia]
-      s <- names(nact$nmiss) %nin% c(atrx$names[offs],'(weights)')
-
-      names(nact$nmiss)[s] <- 
-        c(as.character(formula[2]), atr$name[atr$assume.code!=9])
-    }
     ## End FEH
     
     weights <- model.extract(m, 'weights')

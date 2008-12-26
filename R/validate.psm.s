@@ -203,8 +203,7 @@ survreg.fit2 <- function(x,y,iter=0,dist,fixed=NULL,family,tol,maxiter=15,
 	f <- survreg.fit(as.matrix(x),y,dist=dist,
 		fixed=fixed,
 		controlvals=survreg.control(maxiter=maxiter,
-		  rel.tolerance=rel.tolerance,
-		  failure=2),
+		  rel.tolerance=rel.tolerance),
 		offset=rep(0,length(e)),init=init)
 	if(is.character(f)) { warning(f); return(list(fail=TRUE)) }
     if(!length(f$coefficients)) {

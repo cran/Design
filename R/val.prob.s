@@ -423,7 +423,7 @@ plot.val.surv <- function(x, group, g.group=4,
     nma <- !is.na(est.surv + S[,2])
     est.surv <- est.surv[nma]
     S <- S[nma,,drop=FALSE]
-    f <- survfit.km(factor(rep(1,length(est.surv))),
+    f <- survfitKM(factor(rep(1,length(est.surv))),
                     Surv(1-est.surv,S[,2]),
                     se.fit = FALSE, conf.type = "none")
 	tt <- c(0, f$time)
@@ -444,7 +444,7 @@ plot.val.surv <- function(x, group, g.group=4,
   names(curves) <- c(lg, 'Overall')
   for(i in 1:(ng+1)) {
 	s <- if(i==(ng+1)) rep(TRUE,length(est.surv)) else group==lg[i]
-    f <- survfit.km(factor(rep(1,sum(s))),
+    f <- survfitKM(factor(rep(1,sum(s))),
                     Surv(1-est.surv[s],S[s,2]),
                     se.fit = FALSE, conf.type = "none")
     curves[[i]] <- list(x=c(0,f$time), y=1-c(1,f$surv))

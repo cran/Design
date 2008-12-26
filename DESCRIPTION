@@ -1,12 +1,12 @@
 Package: Design
-Version: 2.2-0
+Version: 2.3-0
 Date: 2008-12-26
 Title: Design Package
 Author: Frank E Harrell Jr <f.harrell@vanderbilt.edu>
 Maintainer: Charles Dupont <charles.dupont@vanderbilt.edu>
 Depends: Hmisc (>= 3.6-0), survival
-Imports: survival
-Suggests: MASS, rpart, nlme
+Imports: survival (>= 2.35-2)
+Suggests: MASS, rpart, nlme, tree
 Description: Regression modeling, testing, estimation, validation,
         graphics, prediction, and typesetting by storing enhanced model
         design attributes in the fit.  Design is a collection of about
@@ -25,6 +25,6 @@ License: GPL (>= 2)
 URL: http://biostat.mc.vanderbilt.edu/s/Design,
         http://biostat.mc.vanderbilt.edu/rms
 LazyLoad: yes
-Packaged: 2009-05-18 14:56:06 UTC; dupontct
+Packaged: 2009-09-14 21:48:16 UTC; dupontct
 Repository: CRAN
-Date/Publication: 2009-05-18 17:01:40
+Date/Publication: 2009-09-18 20:14:57

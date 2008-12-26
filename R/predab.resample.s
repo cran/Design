@@ -248,9 +248,7 @@ predab.resample <-
   }
 
   for(i in 1:B)	{
-    if(!pr) {
-      cat('Iteration',i,'\r')
-    }
+    if(pr) cat('Iteration',i,'\r')
 
     switch(method,
            crossvalidation = {
@@ -407,9 +405,7 @@ predab.resample <-
     } 
   }
 
-  if(!pr){
-    cat("\n\n")
-  }
+  if(pr) cat("\n\n")
 
   if(j != B) {
     cat("\nDivergence or singularity in", B - j, "samples\n")

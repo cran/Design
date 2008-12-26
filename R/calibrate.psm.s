@@ -51,7 +51,7 @@ distance <- function(x,y,fit,iter,u,fit.orig,what="observed",inverse,
   if(what=="observed") dist <- pred.obs[,"KM"]	else
   dist <- pred.obs[,"KM"] - pred.obs[,"x"]
   if(iter==0) 	{
-    print(pred.obs)
+    ## print(pred.obs)
     storeTemp(pred.obs)
     ##Store externally for plotting
   }
@@ -67,7 +67,7 @@ sfit <- function(x,y,u,iter=0,dist,fixed,family,tol=1e-12,
   f <- survreg.fit(as.matrix(x),y,dist=dist,
                    fixed=fixed,offset=rep(0,length(e)),init=NULL,
                    controlvals=
-                   survreg.control(failure=2,maxiter=maxiter,
+                   survreg.control(maxiter=maxiter,
                                    rel.tolerance=rel.tolerance)) #1Jul96
   if(is.character(f)) {warning(f); return(list(fail=TRUE)) }
   
@@ -88,7 +88,8 @@ NULL
 
 b <- min(10,B)
 overall.reps <- max(1,round(B/b)) #Bug in S prevents>10 loops in predab.resample
-cat("\nAveraging ", overall.reps," repetitions of B=",b,"\n\n")
+if(pr)
+  cat("\nAveraging ", overall.reps," repetitions of B=",b,"\n\n")
 rel <- 0
 opt <- 0
 nrel <- 0
@@ -110,15 +111,18 @@ for(i in 1:overall.reps)		{
   opt <- opt + n * reliability[,"optimism"]
   nrel <- nrel + n
   B <- B + max(n)	
-  print(reliability)
+  if(pr) print(reliability)
   ##	cat("Memory used after ",i," overall reps:",memory.size(),"\n")
 					}
 
 mean.corrected <- rel/nrel
 mean.opt <- opt/nrel
 rel <- cbind(mean.optimism=mean.opt,mean.corrected=mean.corrected,n=nrel)
-cat("\nMean over ",overall.reps," overall replications\n\n")
-print(rel)
+if(pr)
+  {
+    cat("\nMean over ",overall.reps," overall replications\n\n")
+    print(rel)
+  }
 
 pred <- pred.obs[,"x"]
 KM <- pred.obs[,"KM"]

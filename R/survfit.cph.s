@@ -193,7 +193,7 @@ survfit.cph <- function(formula, newdata, se.fit=TRUE, conf.int=.95,
                  as.double(y2),
                  as.double(x2),
                  as.double(newrisk),
-                 as.integer(strata2))
+                 as.integer(strata2), PACKAGE="Design")
 
     ntime <- 1:surv$nsurv
     temp <- (matrix(surv$y, ncol=3))[ntime,]
@@ -243,7 +243,7 @@ survfit.cph <- function(formula, newdata, se.fit=TRUE, conf.int=.95,
                  double(3*nvar),
                  as.integer(n2),
                  as.double(x2),
-                 as.double(newrisk))
+                 as.double(newrisk), PACKAGE="Design")
     else
       surv <- .C('S_agsurv2',
                  n = as.integer(n),
@@ -261,7 +261,7 @@ survfit.cph <- function(formula, newdata, se.fit=TRUE, conf.int=.95,
                  d = double(3*nvar),
                  ncurve = as.integer(n2),
                  newx = as.double(x2),
-                 newrisk = as.double(newrisk))
+                 newrisk = as.double(newrisk), PACKAGE="Design")
 
     nsurv <- surv$nsurv[1]
     ntime <- 1:nsurv

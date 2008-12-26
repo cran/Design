@@ -2,63 +2,63 @@
 \alias{rm.impute}
 \alias{pbind}
 \title{
-Imputation of Repeated Measures
+  Imputation of Repeated Measures
 }
 \description{
-NOTE: This function is under development and is not correct at present.
-Uses the method of Lavori, Dawson, and Shera (1995) to analyze
-uniformly (over subjects) collected repeated measurement data subject
-to non-random dropout.  Separately for each imputation and for each
-time period, a binary logistic model is developed (using the Design
-\code{lrm} function) to predict the probability that each subject remains
-in the study at that time period.  Predictors for the first time
-period are those listed in the \code{pformula} formula.  These are assumed
-to be baseline variables that are never missing.  For later time
-periods, predictors include the baseline predictors plus the matrix of
-response (\code{y}) values for all earlier periods.  These "previous
-responses" will have missing values imputed from the earlier steps.
+  NOTE: This function is under development and is not correct at present.
+  Uses the method of Lavori, Dawson, and Shera (1995) to analyze
+  uniformly (over subjects) collected repeated measurement data subject
+  to non-random dropout.  Separately for each imputation and for each
+  time period, a binary logistic model is developed (using the Design
+  \code{lrm} function) to predict the probability that each subject remains
+  in the study at that time period.  Predictors for the first time
+  period are those listed in the \code{pformula} formula.  These are assumed
+  to be baseline variables that are never missing.  For later time
+  periods, predictors include the baseline predictors plus the matrix of
+  response (\code{y}) values for all earlier periods.  These \dQuote{previous
+  responses} will have missing values imputed from the earlier steps.
 
 
-Missing responses for time period i are imputed, for one of the
-\code{n.impute} multiple imputations, as follows.  The period i fitted
-propensity model described above is evaluated to obtain the predicted
-probability that each subject remained in the study until at least
-period i.  The estimated propensity is divided into \code{g} quantile
-groups.  If for period i within a propensity quantile group there are
-\code{a} subjects still in the study and \code{b} subjects who have dropped out,
-Rubin's approximate Bayesian bootstrap is used to estimate the
-predictive distribution of the response values for the \code{b} dropouts,
-given that the propensity for remaining in the study is approximately
-constant for all subjects (dropouts and non-dropouts) in the group.  A
-sample of size \code{a} is selected with replacement from the \code{a} subjects
-still in the study from the propensity group.  Then a sample of size
-\code{b} with replacement is selected from this sample of size \code{a}.  These
-\code{b} responses are used to fill-in the responses for the \code{b} dropouts
-in the quantile group for the current imputation and current time
-period.
+  Missing responses for time period i are imputed, for one of the
+  \code{n.impute} multiple imputations, as follows.  The period \var{i} fitted
+  propensity model described above is evaluated to obtain the predicted
+  probability that each subject remained in the study until at least
+  period i.  The estimated propensity is divided into \code{g} quantile
+  groups.  If for period \var{i} within a propensity quantile group there are
+  \var{a} subjects still in the study and \var{b} subjects who have dropped out,
+  Rubin's approximate Bayesian bootstrap is used to estimate the
+  predictive distribution of the response values for the \var{b} dropouts,
+  given that the propensity for remaining in the study is approximately
+  constant for all subjects (dropouts and non-dropouts) in the group.  A
+  sample of size \var{a} is selected with replacement from the \var{a} subjects
+  still in the study from the propensity group.  Then a sample of size
+  \var{b} with replacement is selected from this sample of size \var{a}.  These
+  \var{b} responses are used to fill-in the responses for the \var{b} dropouts
+  in the quantile group for the current imputation and current time
+  period.
 
 
-If the right-hand-side of a formula is specified for a univariate
-response summary (which may be the last response, mean, or area under
-the time-response curve), \code{rm.impute} goes on to fit \code{rformula} to
-this response summary for each of the multiple imputations using a
-fitting function \code{fitter}.  After all \code{n.impute} imputations have been
-done, the average "apparent" covariance matrix and the
-between-imputation covariance matrix are computed to derive Rubin's
-multiple-imputation-corrected covariance matrix for the average of
-\code{n.impute} sets of regression coefficients.  See \code{fit.mult.impute} for
-more details.
+  If the right-hand-side of a formula is specified for a univariate
+  response summary (which may be the last response, mean, or area under
+  the time-response curve), \code{rm.impute} goes on to fit \code{rformula} to
+  this response summary for each of the multiple imputations using a
+  fitting function \code{fitter}.  After all \code{n.impute} imputations have been
+  done, the average \dQuote{apparent} covariance matrix and the
+  between-imputation covariance matrix are computed to derive Rubin's
+  multiple-imputation-corrected covariance matrix for the average of
+  \code{n.impute} sets of regression coefficients.  See \code{fit.mult.impute} for
+  more details.
 
 
-The response variable \code{y} may be an array to handle multiple responses
-at each time period.  This array has number of rows equal to the
-number of subjects, number of columns equal to the number of periods,
-and number of "pages" equal to the number of different response
-measurements.  A utility function \code{pbind} is supplied for creating
-such arrays from a series of matrices.  When multiple responses are
-present, all responses are used in the current propensity model, and
-the \code{which}, \code{nk}, \code{rinteraction}, and \code{rint.with} arguments will
-apply equally to all responses.
+  The response variable \code{y} may be an array to handle multiple responses
+  at each time period.  This array has number of rows equal to the
+  number of subjects, number of columns equal to the number of periods,
+  and number of \dQuote{pages} equal to the number of different response
+  measurements.  A utility function \code{pbind} is supplied for creating
+  such arrays from a series of matrices.  When multiple responses are
+  present, all responses are used in the current propensity model, and
+  the \code{which}, \code{nk}, \code{rinteraction}, and \code{rint.with} arguments will
+  apply equally to all responses.
 }
 \usage{
 rm.impute(pformula, y, last, 
@@ -72,146 +72,143 @@ rm.impute(pformula, y, last,
 pbind(\dots)
 }
 \arguments{
-\item{pformula}{
-right-hand-side propensity formula, e.g., ~ treatment + x1 + x2 +
-x3*x4.  This formula (as well as \code{rformula} if \code{fitter} is one of the Design
-library fitting functions) can contain any of the Design library's
-transformation functions such as \code{rcs}, \code{pol}, etc.
+  \item{pformula}{
+    right-hand-side propensity formula, e.g., \code{~ treatment + x1 + x2 +
+    x3*x4}.  This formula (as well as \code{rformula} if \code{fitter} is one of the Design
+    library fitting functions) can contain any of the Design library's
+    transformation functions such as \code{rcs}, \code{pol}, etc.
+  }
+  \item{y}{
+    matrix of responses over time periods.  To use \code{which="auc"}, column
+    names of \code{y} must contain numeric measurement times.
+  }
+  \item{last}{
+    an integer vector whose value for the jth subject is the last period
+    before the subject dropped out.  A subject who never had a follow-up
+    response measured will have \code{last=0}.
+  }
+  \item{...}{
+    a series of matrices to \dQuote{page bind} into an array.  New names may be
+    supplied using the notation \code{pbind(newname1=y1,newname2=y2)}.  The
+    \code{dimnames} of the first argument (which will be converted to a matrix
+    if it is a vector, for the unusual one-period case) will be used as
+    the first two \code{dimnames} of the resulting array, and the names of the
+    matrices will form the third vector of \code{dimnames}.
+  }
+  \item{rformula}{
+    right-hand-side response formula, e.g., \code{~ x1 + pol(x2) + treatment}.
+    If omitted, \code{rm.impute} will return only the multiple response imputations.
+  }
+  \item{fitter}{
+    any S-Plus or Design library fitting function for a univariate
+    response summary.  The default is \code{ols}.  If there are multiple
+    response variables at each time period and you want to use a different
+    fitter for different response variables, specify a list of \var{nr}
+    fitting functions as this argument, where \var{nr} is the number of
+    response variables.
+  }
+  \item{which}{
+    which response summary is used if \code{rformula} is given.  The default is
+    the last column of the response matrix.
+  }
+  \item{data}{
+    usually a data frame, if the variables in \code{pformula} and \code{rformula}
+    are not already available via \code{attach()}
+  }
+  \item{n.impute}{
+    number of imputations.  The more missing data, the higher \code{n.impute}
+    should be.
+  }
+  \item{g}{
+    number of propensity quantile groups
+  }
+  \item{nk}{
+    number of knots to use in expanding each previous response into a
+    restricted cubic spline in the propensity model.  Default is \code{0}
+    (assume linearity).
+  }
+  \item{rinteraction}{
+    a character vector specifying the names of baseline variables that
+    should be interacted with each response in the propensity model.
+    Default is \code{c()}.
+  }
+  \item{rint.with}{
+    set to \code{"recent"} to allow the variables in \code{rinteraction} to only
+    interact with the response for the most recent time period, and not with
+    the most recent and all previous responses (the default)
+  }
+  \item{pr}{
+    set to \code{TRUE} to print each logistic propensity model fit.
+  }
+  \item{pra}{
+    if \code{pr=TRUE}, you can also set \code{pra=TRUE} to print the Design \code{anova()}
+    results for each propensity model fit.
+  }
+  \item{npr}{
+    if \code{pr=TRUE}, printing will be done for the first \code{npr} imputations
+  }
+  \item{keep.prop}{
+    set to \code{TRUE} to store the array \code{propensity} in the returned list.  The
+    dimensions for \code{propensity} are the same as \code{y}.
+  }
+  \item{keep.pfits}{
+    set to \code{TRUE} to store all propensity model fits from \code{lrm} in the result
+    returned by \code{rm.impute}
+  }
 }
-\item{y}{
-matrix of responses over time periods.  To use \code{which="auc"}, column
-names of \code{y} must contain numeric measurement times.
-}
-\item{last}{
-an integer vector whose value for the jth subject is the last period
-before the subject dropped out.  A subject who never had a follow-up
-response measured will have \code{last=0}.
-}
-\item{...}{
-a series of matrices to "page bind" into an array.  New names may be
-supplied using the notation \code{pbind(newname1=y1,newname2=y2)}.  The
-\code{dimnames} of the first argument (which will be converted to a matrix
-if it is a vector, for the unusual one-period case) will be used as
-the first two \code{dimnames} of the resulting array, and the names of the
-matrices will form the third vector of \code{dimnames}.
-}
-\item{rformula}{
-right-hand-side response formula, e.g., ~ x1 + pol(x2) + treatment.
-If omitted, \code{rm.impute} will return only the multiple response imputations.
-}
-\item{fitter}{
-any S-Plus or Design library fitting function for a univariate
-response summary.  The default is \code{ols}.  If there are multiple
-response variables at each time period and you want to use a different
-fitter for different response variables, specify a list of \code{nr}
-fitting functions as this argument, where \code{nr} is the number of
-response variables.
-}
-\item{which}{
-which response summary is used if \code{rformula} is given.  The default is
-the last column of the response matrix.
-}
-\item{data}{
-usually a data frame, if the variables in \code{pformula} and \code{rformula}
-are not already available via \code{attach()}
-}
-\item{n.impute}{
-number of imputations.  The more missing data, the higher \code{n.impute}
-should be.
-}
-\item{g}{
-number of propensity quantile groups
-}
-\item{nk}{
-number of knots to use in expanding each previous response into a
-restricted cubic spline in the propensity model.  Default is zero
-(assume linearity).
-}
-\item{rinteraction}{
-a character vector specifying the names of baseline variables that
-should be interacted with each response in the propensity model.
-Default is no such interactions.
-}
-\item{rint.with}{
-set to \code{"recent"} to allow the variables in \code{rinteraction} to only
-interact with the response for the most recent time period, and not with
-the most recent and all previous responses (the default)
-}
-\item{pr}{
-set to \code{TRUE} to print each logistic propensity model fit.
-}
-\item{pra}{
-if \code{pr=TRUE}, you can also set \code{pra=TRUE} to print the Design \code{anova()}
-results for each propensity model fit.
-}
-\item{npr}{
-if \code{pr=TRUE}, printing will be done for the first \code{npr} imputations
-}
-\item{keep.prop}{
-set to \code{TRUE} to store the array \code{propensity} in the returned list.  The
-dimensions for \code{propensity} are the same as \code{Y}.
-}
-\item{keep.pfits}{
-set to \code{TRUE} to store all propensity model fits from \code{lrm} in the result
-returned by \code{rm.impute}
-}}
 \value{
-a list with elements \code{Y} and optionally \code{fit} (if \code{rformula} is given)
-and \code{propensity} (if \code{keep.prop=TRUE}).  \code{Y} and \code{propensity} are arrays
-whose last dimension
-corresponds to the multiple imputations and whose first two dimensions
-correspond to \code{y}.  \code{Y} is the multiply-imputed response
-array and \code{fit} is the imputation-corrected fit object.  Note: Aside
-from the regression coefficient vector and covariance matrix, this fit
-object will have parameters from the fit of the response summary for
-the last imputation.  If \code{keep.pfits=TRUE}, the returned list will also
-have an array of propensity fit objects (\code{lrm} objects) for all
-response periods and imputations.  If there is more than one response
-variable at each time period, \code{fit} will be a list of \code{nr} fit objects
-for \code{nr} response variables.
+  a list with elements \code{Y} and optionally \code{fit} (if \code{rformula} is given)
+  and \code{propensity} (if \code{keep.prop=TRUE}).  \code{Y} and \code{propensity} are arrays
+  whose last dimension
+  corresponds to the multiple imputations and whose first two dimensions
+  correspond to \code{y}.  \code{Y} is the multiply-imputed response
+  array and \code{fit} is the imputation-corrected fit object.  Note: Aside
+  from the regression coefficient vector and covariance matrix, this fit
+  object will have parameters from the fit of the response summary for
+  the last imputation.  If \code{keep.pfits=TRUE}, the returned list will also
+  have an array of propensity fit objects (\code{lrm} objects) for all
+  response periods and imputations.  If there is more than one response
+  variable at each time period, \code{fit} will be a list of \var{nr} fit objects
+  for \var{nr} response variables.
 }
 \section{Side Effects}{
-prints, and creates variables such as y.1, y.2, \dots and in.period.i in
-the session database (frame 0)
+  prints, and creates variables such as \code{y.1}, \code{y.2}, \ldots and in.period.i in
+  the session database (frame 0)
 }
 \details{
-The algorithm used here will not correct for non-random dropout due to
-variables that are not included in the propensity model.  A worst-case
-would be having dropouts at period i due to unmeasured responses at
-period i.
+  The algorithm used here will not correct for non-random dropout due to
+  variables that are not included in the propensity model.  A worst-case
+  would be having dropouts at period i due to unmeasured responses at
+  period i.
 
 
-Ironically, there must be a sufficient number of dropouts for the
-propensity score method to work, as the propensity models must have
-adequate numbers of dropouts and non-dropouts at each time period.
+  Ironically, there must be a sufficient number of dropouts for the
+  propensity score method to work, as the propensity models must have
+  adequate numbers of dropouts and non-dropouts at each time period.
 }
 \author{
-Frank Harrell
-\cr
-Department of Biostatistics
-\cr
-Vanderbilt University School of Medicine
-\cr
-f.harrell@vanderbilt.edu
-\cr
-Much valuable input was received from Chris Barker (Roche
-Pharmaceuticals) and Phil Lavori (Stanford University).
+  Frank Harrell  \cr
+  Department of Biostatistics  \cr
+  Vanderbilt University School of Medicine  \cr
+  \email{f.harrell@vanderbilt.edu}\cr
+  Much valuable input was received from Chris Barker (Roche
+  Pharmaceuticals) and Phil Lavori (Stanford University).
 }
 \references{
-Lavori PW, Dawson R, Shera, D: A multiple imputation strategy for
-clinical trials with truncation of patient data.  Stat in Med
-14:1913--1925, 1995. 
+  Lavori PW, Dawson R, Shera, D: A multiple imputation strategy for
+  clinical trials with truncation of patient data.  Stat in Med
+  14:1913--1925, 1995. 
 
 
-Rubin D, Shenker N: Multiple imputation in health-care data bases: An
-overview and some applications.  Stat in Med 10:585--598, 1991.
+  Rubin D, Shenker N: Multiple imputation in health-care data bases: An
+  overview and some applications.  Stat in Med 10:585--598, 1991.
 
 
-Engels JM, Diehr P: Imputation of missing longitudinal data: a
-comparison of methods.  J Clin Epi 56:968--976, 2003.
+  Engels JM, Diehr P: Imputation of missing longitudinal data: a
+  comparison of methods.  J Clin Epi 56:968--976, 2003.
 }
 \seealso{
-\code{\link[Hmisc]{transcan}}, \code{\link[Hmisc]{fit.mult.impute}}, \code{\link{lrm}}, \code{\link[Hmisc]{rm.boot}}, \code{\link[Hmisc]{reShape}}
+  \code{\link[Hmisc]{transcan}}, \code{\link[Hmisc:transcan]{fit.mult.impute}}, \code{\link[Design]{lrm}}, \code{\link[Hmisc]{rm.boot}}, \code{\link[Hmisc]{reShape}}
 }
 \examples{
 \dontrun{

@@ -83,7 +83,7 @@ if(ofpres)	{
                numy,kint,
                v=double(kint*kint),double(kint),double(kint),
                double(kint),pivot=integer(kint),opts=opts,ftable,
-               penmat)
+               penmat, PACKAGE="Design")
 	loglik <- c(loglik,z$loglik)
 	if(z$opts[6] | z$opts[7]<kint) return(list(fail=TRUE,class="lrm"))
 	initial <- z$coef

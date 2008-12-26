@@ -616,7 +616,7 @@ if(FALSE) var.inner <- function(formula)
           n = as.integer(maxch),
           expr = character(maxch),
           as.logical(TRUE),
-          NAOK = TRUE)
+          NAOK = TRUE, PACKAGE="Design")
   z$labels[1:z$n]
 }
 
