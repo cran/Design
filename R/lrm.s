@@ -135,6 +135,11 @@ lrm <- function(formula,data,subset,na.action=na.delete,
 	}
 	  else stop(paste("unimplemented method:", method))
   }
+
+  if(f$fail) {
+    stop("Unable to fit model using ", dQuote(method))
+  }
+  
   f$call <- NULL
   if(model) f$model <- m
   if(x) {

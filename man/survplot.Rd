@@ -2,6 +2,7 @@
 \alias{survplot}
 \alias{survplot.Design}
 \alias{survplot.survfit}
+\alias{survdiffplot}
 \title{
 Plot Survival Curves and Hazard Functions
 }
@@ -15,6 +16,13 @@ specified with the \code{label.curves} parameter.  For example, different
 plotting symbols can be placed at constant x-increments and a legend
 linking the symbols with category labels can automatically positioned on
 the most empty portion of the plot.
+
+For the case of a two stratum analysis by \code{survfit},
+\code{survdiffplot} plots the difference in two Kaplan-Meier estimates
+along with approximate confidence bands for the differences, with a
+reference line at zero.  The number of subjects at risk is optionally
+plotted.  This number is taken as the minimum of the number of subjects
+at risk over the two strata.
 }
 \usage{
 survplot(fit, \dots)
@@ -42,10 +50,20 @@ survplot(fit, \dots)
          grid=FALSE,
          srt.n.risk=0,sep.n.risk=.056,adj.n.risk=1,
          y.n.risk,cex.n.risk=.6, pr=FALSE, \dots)
+survdiffplot(fit, order=1:2,
+           xlim, ylim, xlab, ylab="Difference in Survival Probability",
+           time.inc, conf.int=.95,
+           conf=c("shaded", "bands","none"),
+           add=FALSE, lty=1, lwd=par('lwd'), col=1,
+           n.risk=FALSE, grid=FALSE,
+           srt.n.risk=0, adj.n.risk=1,
+           y.n.risk, cex.n.risk=.6)
 }
 \arguments{
 \item{fit}{
-result of fit (\code{cph}, \code{psm}, \code{survfit}, \code{survest.psm})
+result of fit (\code{cph}, \code{psm}, \code{survfit},
+\code{survest.psm}).  For \code{survdiffplot}, \code{fit} must be the
+result of \code{survfit}.
 }
 \item{\dots}{
 list of factors with names used in model. For fits from \code{survfit}, these
@@ -227,7 +245,15 @@ to plot solid lines.  Default is \code{.05} if \code{TRUE}.
 }
 \item{pr}{
 set to \code{TRUE} to print survival curve coordinates used in the plots
-}}
+}
+\item{order}{
+  an integer vector of length two specifying the order of groups when
+  computing survival differences.  The default of \code{1:2} indicates
+  that the second group is subtracted from the first.  Specify
+  \code{order=2:1} to instead subtract the first from the second.  A
+  subtitle indicates what was done.
+  }
+}
 \value{
 list with components adjust (text string specifying adjustment levels)
 and \code{curve.labels} (vector of text strings corresponding to levels of factor
@@ -310,7 +336,7 @@ survplot(f, age=quantile(age,seq(0,1,by=.2)), sex="male")
 
 
 #Plot survival Kaplan-Meier survival estimates for males
-f <- survfit(S, subset=sex=="male")
+f <- survfit(S ~ 1, subset=sex=="male")
 survplot(f)
 
 
@@ -321,6 +347,8 @@ survplot(f)
 survplot(f, fun=qnorm, ylab="Inverse Normal Transform")
 survplot(f, fun=function(y)log(y/(1-y)), ylab="Logit S(t)")
 
+#Plot the difference between sexes
+survdiffplot(f)
 
 options(datadist=NULL)
 }

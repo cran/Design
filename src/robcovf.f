@@ -1,7 +1,7 @@
       subroutine robcovf(n, p, nc, start, len, u, s, v, w)
-      implicit real*8 (a-h,o-z)
+      implicit DOUBLE PRECISION (a-h,o-z)
       integer p, start(p), len(p)
-      real*8 u(n,p), s(p), v(p,p), w(p,p)
+      DOUBLE PRECISION u(n,p), s(p), v(p,p), w(p,p)
       do 23000 i=1,p
       do 23002 j=1,p
       w(i,j)=0d0

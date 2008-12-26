@@ -30,7 +30,9 @@ here solve that problem.
 
 \code{asis} is the identity transformation, \code{pol} is an ordinary (non-orthogonal) polynomial, \code{rcs} is
 a linear tail-restricted cubic spline function (natural spline, for which the
-\code{rcspline.eval} function generates the design matrix),
+\code{rcspline.eval} function generates the design matrix and the
+presence of system option \code{rcspc} causes \code{rcspline.eval} to be
+invoked with \code{pc=TRUE}),
 \code{catg} is for a categorical
 variable, \code{scored} is for an ordered categorical
 variable, \code{strat} is for a stratification factor
@@ -86,6 +88,8 @@ number of knots (if scalar), or vector of knot locations (if \code{>2} elements)
 The default number is the \code{nknots} system option if \code{parms} is not given.
 If the number of knots is given,
 locations are computed for that number of knots.
+If system option \code{rcspc} is \code{TRUE} the \code{parms} vector has
+an attribute defining the principal components transformation parameters.
 For \code{catg}, \code{parms} is the
 category labels (not needed if variable is an S category or factor variable). If
 omitted, \code{catg} will use \code{unique(x)}, or \code{levels(x)} if \code{x} is a \code{category}

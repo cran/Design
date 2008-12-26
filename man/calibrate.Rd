@@ -54,10 +54,10 @@ calibrate(fit, \dots)
 \method{print}{calibrate.default}(x, \dots)
 
 \method{plot}{calibrate}(x, xlab, ylab, subtitles=TRUE, conf.int=TRUE,
-\dots)
+ cex.subtitles=.75, \dots)
 
 \method{plot}{calibrate.default}(x, xlab, ylab, xlim, ylim,
-  legend=TRUE, subtitles=TRUE, \dots)
+  legend=TRUE, subtitles=TRUE, scat1d.opts=NULL, \dots)
 }
 \arguments{
 \item{fit}{
@@ -140,13 +140,17 @@ and \code{ols} the mean absolute error and original sample size
 set to \code{FALSE} to suppress plotting 0.95 confidence intervals for
 Kaplan-Meier estimates
 }
+\item{cex.subtitles}{character size for plotting subtitles}
 \item{legend}{
 set to \code{FALSE} to suppress legends (for \code{lrm}, \code{ols}
 only) on the calibration plot, or specify a list with elements \code{x}
 and \code{y} containing the coordinates of the upper left corner of the
 legend.  By default, a legend will be drawn in the lower right 1/16th of
 the plot.
-}}
+}
+\item{scat1d.opts}{a list containing additional arguments to
+  \code{\link[Hmisc]{scat1d}}}
+}
 \value{
 matrix specifying mean predicted survival in each interval, the
 corresponding estimated bias-corrected Kaplan-Meier estimates,
@@ -170,7 +174,9 @@ Vanderbilt University\cr
 f.harrell@vanderbilt.edu
 }
 \seealso{
-\code{\link{validate}}, \code{\link{predab.resample}}, \code{\link{groupkm}}, \code{\link[Hmisc]{errbar}}, \code{\link{cph}}, \code{\link{psm}},
+\code{\link{validate}}, \code{\link{predab.resample}},
+  \code{\link{groupkm}}, \code{\link[Hmisc]{errbar}},
+  \code{\link[Hmisc]{scat1d}}, \code{\link{cph}}, \code{\link{psm}},
 \code{\link{lowess}}
 }
 \examples{

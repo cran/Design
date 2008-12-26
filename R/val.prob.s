@@ -359,9 +359,6 @@ plot.val.surv <- function(x, group, g.group=4,
                           type=c('l','b','p'),
                           xlab, ylab, xlim, ylim, datadensity=TRUE,
                           ...) {
-  if(.R. && !existsFunction('survfit.km'))
-    survfit.km <- getFromNamespace('survfit.km','survival')
-  
   S <- x$S
   est.surv <- x$est.surv
   censor.est.surv <- x$censor.est.surv

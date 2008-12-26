@@ -1,4 +1,4 @@
-% $Id: plot.Design.Rd 6 2004-05-21 19:54:06Z harrelfe $
+% $Id: plot.Design.Rd 118 2008-08-31 14:28:08Z harrelfe $
 \name{plot.Design}
 \alias{plot.Design}
 \alias{print.plot.Design}
@@ -52,7 +52,7 @@ perimeter(x, y, xinc=diff(range(x))/10,
      method=c("persp","contour","image","dotchart","default"),
      sortdot=c('neither','ascending','descending'),
      nlevels=10, name, zlim=range(zmat,na.rm=TRUE),
-     vnames=c('labels','names'), abbrev=FALSE)
+     vnames=c('labels','names'), abbrev=FALSE, forceLines=FALSE)
 # Just say plot(fit, ...)
 
 \method{print}{plot.Design}(x, \dots)
@@ -226,7 +226,9 @@ variable is on the x-axis or when \code{method="dotchart"}.  Default is 1
 }
 \item{col}{
 S color number for displaying curves.  Default is \code{1} (black).  Specify
-a vector of integers to assign different colors to different curves.
+a vector to assign different colors to different curves or to components
+of 3-d plots, e.g. \code{col=rainbow(30)} when \code{method='image'}.
+\code{col} is ignored if it is of length one and \code{method='image'}.
 }
 \item{adj.subtitle}{
 Set to \code{FALSE} to suppress subtitling the graph with the list of settings of non-graphed adjustment values. Default is \code{TRUE} if \code{ <= 6} non-plotted factors.
@@ -304,7 +306,9 @@ to use \code{image()}. Specify \code{method="dotchart"} to make a horizontal dot
 chart to represent predicted values associated with categorical predictors.
 The \code{log} argument does not apply to these plot types.
 You can specify \code{method="default"} to get the default behaviour.
-For \code{"dotchart"}, the \code{dotchart2} function in the Hmisc library is used.
+For \code{"dotchart"}, the \code{dotchart2} function in the Hmisc
+library is used.  If \code{method='image'} and \code{col} is of length
+one, \code{col} is ignored.
 }
 \item{sortdot}{
 applies when \code{method="dotchart"}.  The default is to plot the points in
@@ -337,9 +341,13 @@ being plotted).  To override the default x-axis label in that case
 }
 \item{object}{an object created by \code{plot.Design}}
 \item{abbrev}{
-Set to \code{TRUE} to use the \code{abbreviate} function to abbreviate levels of
-categorical factors for labeling tick marks on the x-axis.
+  Set to \code{TRUE} to use the \code{abbreviate} function to abbreviate
+  levels of categorical factors for labeling tick marks on the x-axis.
 }
+\item{forceLines}{
+  Set to \code{TRUE} to force a discrete numeric predictor to be drawn
+  with a line plot instead of points.
+  }
 \item{size}{
 }
 \item{horizontal}{
@@ -507,6 +515,7 @@ plot(fit, age=seq(20,80,length=100), sex='male')  # works if datadist not used
 plot(fit, age=NA, cholesterol=NA)# 3-dimensional perspective plot for age,
                          # cholesterol, and log odds using default
                          # ranges for both variables
+# add perspArgs=list(ticktype='detailed') in R to draw normal tick marks
 boundaries <- perimeter(age, cholesterol, lowess=TRUE)
 plot(age, cholesterol)   # show bivariate data density
 lines(boundaries)        # and perimeter that will be used for 3-D plot

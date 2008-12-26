@@ -33,7 +33,7 @@ maximum no. iterations (default=\code{12}). Specifying \code{maxit=1}
 causes logist to compute statistics at initial estimates.
 }
 \item{eps}{
-difference in \code{-2  log} likelihood for declaring convergence.
+difference in \preformatted{-2  log} likelihood for declaring convergence.
 Default is \code{.025}.
 }
 \item{tol}{
@@ -50,7 +50,7 @@ fraction, and rank of variance matrix at each iteration
   a vector (same length as \code{y}) of possibly fractional case weights
 }
 \item{normwt}{
- set to code{TRUE} to scale \code{weights} so they sum to the length of
+ set to \code{TRUE} to scale \code{weights} so they sum to the length of
  \code{y}; useful for sample surveys as opposed to the default of
  frequency weighting 
  }

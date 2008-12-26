@@ -22,23 +22,21 @@ cph <- function(formula=formula(data),
                 conf.type,
                 ...) {
 
-  if(.R.) {
-    require('survival')
-    getN <- function(obj) {
-      if(existsFunction(obj))
-        get(obj)
-      else
-        getFromNamespace(obj, 'survival')
+  if(.R.)
+    {
+      require('survival')
+      getN <- function(obj)
+        {
+          if(existsFunction(obj)) get(obj)
+          else getFromNamespace(obj, 'survival')
+        }
     }
-  }
-  else {
-    getN <- function(obj) get(obj)
-  }
-
+  else getN <- function(obj) get(obj)
+  
   method <- match.arg(method)
   call <- match.call()
   m <- match.call(expand=FALSE)
-  m$na.action <- na.action    ## 30apr02
+  m$na.action <- na.action
   m$method <- m$model <- m$x <- m$y <- m$... <- m$se.fit <-
     m$type <- m$vartype <-
       m$surv <- m$time.inc <- m$eps <- m$init <- m$iter.max <- m$tol <-
@@ -69,128 +67,125 @@ cph <- function(formula=formula(data),
   nstrata <- 0
   Strata <- NULL
 
-  if(!missing(data) || (length(z <- attr(terms(formula),"term.labels"))>0 &&
-                        any(z!="."))) { #X's present
-    if(.R.) {
-      dul <- .Options$drop.unused.levels
-      if(!length(dul) || dul) {
-        on.exit(options(drop.unused.levels=dul))
-        options(drop.unused.levels=FALSE)
+  if(!missing(data) || (length(z <- attr(terms(formula, allowDotAsName=TRUE),"term.labels"))>0 &&
+                        any(z!=".")))
+    { #X's present
+      if(.R.) {
+        dul <- .Options$drop.unused.levels
+        if(!length(dul) || dul) {
+          on.exit(options(drop.unused.levels=dul))
+          options(drop.unused.levels=FALSE)
+        }
       }
-    }
+      X <- Design(eval(m, if(.R.) parent.frame() else sys.parent()))
+      atrx <- attributes(X)
+      atr  <- atrx$Design
+      nact <- atrx$na.action
+      if(method=="model.frame")
+        return(X)
 
-    X <- Design(eval(m, if(.R.) parent.frame() else sys.parent()))
-    atrx <- attributes(X)
-    atr  <- atrx$Design
-    nact <- atrx$na.action
-    if(method=="model.frame")
-      return(X)
+      Terms <- if(missing(data))
+        terms(formula, specials=c("strat","cluster"))
+      else
+        terms(formula, specials=c("strat","cluster"), data=data)
 
-#    atr <- attr(attr(X,'terms'),'Design')
-    Terms <- if(missing(data))
-      terms(formula, specials=c("strat","cluster"))
-    else
-      terms(formula, specials=c("strat","cluster"), data=data)
+      asm   <- atr$assume.code
+      name  <- atr$name
 
-    asm   <- atr$assume.code
-    name  <- atr$name
+      cluster <- attr(Terms, "specials")$cluster
+      stra    <- attr(Terms, "specials")$strat
 
-    cluster <- attr(Terms, "specials")$cluster
-    stra <- attr(Terms, "specials")$strat
-    Terms.ns <- Terms
+      if(length(cluster))
+        {
+          if(missing(robust)) robust <- TRUE
+          Terms <- Terms[-(cluster - 1)]
+          cluster <- attr(X, 'cluster')
+          attr(X, 'cluster') <- NULL
+        }
 
-    if(length(cluster)) {
-      if(missing(robust))
-        robust <- TRUE
+      Terms.ns <- Terms
+      if(length(stra))
+        {
+          temp <- untangle.specials(Terms.ns, "strat", 1)
+          Terms.ns <- Terms.ns[-temp$terms]	#uses [.terms function
+          ##  Set all factors=2
+          ## (-> interaction effect not appearing in main effect
+          ##  that was deleted strata effect)
+          if(!.R.)
+            {
+              tfac <- attr(Terms,'factors')
+              ## For some reason attr(...) <- pmin(attr(...)) changed a detail
+              ## in factors attribute in R but doesn't seem to be needed in
+              ## R or SV4 anyway
+              if(length(tfac) && any(tfac > 1))
+                attr(Terms,'factors') <- pmin(tfac, 1)
+              
+              tfac <- attr(Terms.ns,'factors')
+              
+              if(length(tfac) && any(tfac > 1))
+                attr(Terms.ns,'factors') <-  pmin(tfac, 1)
+            }
+          
+          Strata <- list()
+          
+          for(i in (1:length(asm))[asm==8])
+            {
+              nstrata <- nstrata+1
+              xi <- X[[i+1]]
+              levels(xi) <- paste(name[i],"=",levels(xi),sep="")
+              Strata[[nstrata]] <- xi
+            }
+
+          names(Strata) <- paste("S",1:nstrata,sep="")
+          Strata <- interaction(as.data.frame(Strata),drop=TRUE)
+        }
+
+      offs <- offset<- attr(Terms, "offset")
+      if(length(nact$nmiss))
+        {
+          jia <- grep('%ia%',names(nact$nmiss), fixed=TRUE)
+          if(length(jia)) nact$nmiss <- nact$nmiss[-jia]
+
+          s <- names(nact$nmiss) %nin% c(atrx$names[offs],'(weights)')
+          names(nact$nmiss)[s] <- c(as.character(formula[2]),
+                                    atr$name[atr$assume.code!=9])
+        }
       
-      tempc <- untangle.specials(Terms.ns, "cluster", 1:10)
-      ord <- attr(Terms, 'order')[tempc$terms]
-      if(any(ord>1))
-        stop("Cluster can not be used in an interaction")
+      xpres <- length(asm) && any(asm!=8)
+      Y <- model.extract(X, 'response')
+      if(!inherits(Y,"Surv"))
+        stop("response variable should be a Surv object")
+    
+      weights <- model.extract(X, 'weights')
+      tt <- length(offset)
+      offset <- if(tt == 0) rep(0, nrow(Y))
+      else if(tt == 1) X[[offset]]
+      else {
+        ff <- X[[offset[1]]]
+        for(i in 2:tt)   # for case with multiple offset terms
+          ff <- ff + X[[offset[i]]]
+        ff
+      }
+    
+      if(model)
+        m <- X
+
+      ##No mf if only strata factors
+      if(!xpres)
+        {
+          X <- if(.R.) matrix(nrow=0,ncol=0)
+          else NULL
+          assign <- NULL
+        }
+      else
+        {
+          X <- model.matrix(Terms.ns, X)[,-1,drop=FALSE]
+          assign <- attr(X, "assign")
+          assign[[1]] <- NULL  # remove intercept position, renumber
+        }
       
-      cluster <- strata(X[,tempc$vars], shortlabel=TRUE)  #allow multiples
-      Terms.ns <- Terms.ns[-tempc$terms]
+      nullmod <- FALSE
     }
-
-    if(length(stra)) {
-      temp <- untangle.specials(Terms.ns, "strat", 1)
-      Terms.ns <- Terms.ns[-temp$terms]	#uses [.terms function
-      ##  Set all factors=2 (-> interaction effect not appearing in main effect
-      ##  that was deleted strata effect
-      if(!.R.) {
-        tfac <- attr(Terms,'factors')
-        ## For some reason attr(...) <- pmin(attr(...)) changed a detail
-        ## in factors attribute in R but doesn't seem to be needed in
-        ## R or SV4 anyway 30apr02
-        if(length(tfac) && any(tfac > 1))
-          attr(Terms,'factors') <- pmin(tfac, 1)
-
-        tfac <- attr(Terms.ns,'factors')
-
-        if(length(tfac) && any(tfac > 1))
-          attr(Terms.ns,'factors') <-  pmin(tfac, 1)
-      }
-
-      ##added 21Apr94, if( ) 28Apr02
-      Strata <- list()
-
-      for(i in (1:length(asm))[asm==8])	{
-        nstrata <- nstrata+1
-        xi <- X[[i+1]]
-        levels(xi) <- paste(name[i],"=",levels(xi),sep="")
-        Strata[[nstrata]] <- xi
-      }
-
-      names(Strata) <- paste("S",1:nstrata,sep="")
-      Strata <- interaction(as.data.frame(Strata),drop=TRUE)
-    }
-
-    offs <- offset<- attr(Terms, "offset")  ## offs 23nov02 moved up 6dec02
-    ## 23nov02
-    if(length(nact$nmiss)) {
-      jia <- grep('%ia%',names(nact$nmiss), fixed=TRUE)
-      if(length(jia)) nact$nmiss <- nact$nmiss[-jia]
-
-      s <- names(nact$nmiss) %nin% c(atrx$names[offs],'(weights)')
-      names(nact$nmiss)[s] <- c(as.character(formula[2]),
-                                atr$name[atr$assume.code!=9])
-    }
-
-    ## [s] 23nov02
-    xpres <- length(asm) && any(asm!=8)
-    Y <- model.extract(X, 'response')
-    if(!inherits(Y,"Surv"))
-      stop("response variable should be a Surv object")
-    
-    weights <- model.extract(X, 'weights')
-    tt <- length(offset)
-    offset <- if(tt == 0) rep(0, nrow(Y))
-              else if(tt == 1) X[[offset]]
-              else {
-                ff <- X[[offset[1]]]
-                for(i in 2:tt)   # for case with multiple offset terms
-                  ff <- ff + X[[offset[i]]]
-                ff
-              }
-    
-    if(model)
-      m <- X
-
-    ##No mf if only strata factors
-
-    if(!xpres) {
-      X <- if(.R.) matrix(nrow=0,ncol=0)
-           else NULL
-      assign <- NULL
-    }
-    else {
-      X <- model.matrix(Terms.ns, X)[,-1,drop=FALSE]
-      assign <- attr(X, "assign")
-      assign[[1]] <- NULL  # remove intercept position, renumber
-    }
-
-    nullmod <- FALSE
-  }
   else {	# model with no right-hand side
     X <- NULL
     Terms <- terms(formula)
@@ -280,8 +275,8 @@ cph <- function(formula=formula(data),
       return(structure(list(fail=TRUE),class="cph"))
   }
   else {
-    if(length(f$coef) && any(is.na(f$coef))) {
-      vars <- names(f$coef)[is.na(f$coef)]
+    if(length(f$coefficients) && any(is.na(f$coefficients))) {
+      vars <- names(f$coefficients)[is.na(f$coefficients)]
       msg <- paste("X matrix deemed to be singular; variable",
                    paste(vars, collapse=" "))
       if(singular.ok)
@@ -303,14 +298,14 @@ cph <- function(formula=formula(data),
     ## Terry gets a little tricky here, calling resid before adding
     ## na.action method to avoid re-inserting NAs.  Also makes sure
     ## X and Y are there
-    if(missing(cluster))
+    if(!length(cluster))
       cluster <- FALSE
     
     fit2 <- c(f, list(x=X, y=Y, method=method))
     if(length(stra))
       fit2$strata <- Strata
     
-    temp <- residuals.coxph(fit2, type='dfbeta', collapse=cluster)
+    temp <- getN('residuals.coxph')(fit2, type='dfbeta', collapse=cluster)
     f$var <- t(temp) %*% temp
   }
   
@@ -354,7 +349,7 @@ cph <- function(formula=formula(data),
   f$method <- NULL
   if(xpres)
     dimnames(f$var) <- list(atr$colnames, atr$colnames)
-  
+
   f <- c(f, list(call=call, Design=atr,
                  assign=DesignAssign(atr, 0, atrx$terms),
                  na.action=nact,
@@ -363,7 +358,7 @@ cph <- function(formula=formula(data),
                  units = time.units, fitFunction=c('cph','coxph')))
 
   if(xpres) {
-    f$center <- sum(f$means*f$coef)
+    f$center <- sum(f$means*f$coefficients)
     f$scale.pred <- c("log Relative Hazard","Hazard Ratio")
     attr(f$linear.predictors,"strata") <- Strata
     names(f$linear.predictors) <- rnam
@@ -523,29 +518,28 @@ if(.R. || .SV4.) {
                        init=NULL, toler.chol=1e-9, eps=.0001, iter.max=10,
                        type) {
 
-    if( method == "breslow" || method == "efron") {
-      if (type == 'right') fitter <- getFromNamespace('coxph.fit', 'survival')
-      else                 fitter <- getFromNamespace('agreg.fit', 'survival')
+    if( method == "breslow" || method == "efron")
+      {
+        fitter <- if (type == 'right')
+          getFromNamespace('coxph.fit', 'survival')
+        else getFromNamespace('agreg.fit', 'survival')
     }
-    else if (method == 'exact') fitter <- getFromNamespace('agexact.fit', 'survival')
+    else if (method == 'exact')
+      fitter <- getFromNamespace('agexact.fit', 'survival')
     else stop("Unkown method ", method)
 
-    if(!existsFunction('coxph.control')) {
-      coxph.control <- getFromNamespace('coxph.control', 'survival')
-    }
+    if(!existsFunction('coxph.control'))
+        coxph.control <- getFromNamespace('coxph.control', 'survival')
 
     res <- fitter(..., strata=strata, rownames=rownames,
                   offset=offset, init=init, method=method,
                   control=coxph.control(toler.chol=toler.chol, toler.inf=1,
                     eps=eps, iter.max=iter.max))
 
-    if(is.character(res)) {
-      return(list(fail=TRUE))
-    }
+    if(is.character(res)) return(list(fail=TRUE))
 
-    if(iter.max > 1 && res$iter >= iter.max) {
+    if(iter.max > 1 && res$iter >= iter.max)
       return(list(fail=TRUE))
-    }
 
     res$fail <- FALSE
     res
@@ -556,30 +550,31 @@ if(.R. || .SV4.) {
 
     nf <- names(coxph.fit)
     res <-
-      if(any(nf=='control')) {
-        coxph.fit(..., strata=strata, rownames=rownames,
-                  offset=offset, init=init,
-                  control=coxph.control(toler.chol=toler.chol, toler.inf=1,
-                    eps=eps, iter.max=iter.max))
-      } else if(all(c('toler.chol', 'eps', 'iter.max') %in% nf)) {
-        coxph.fit(..., strata=strata, rownames=rownames,
-                  offset=offset, init=init, toler.chol=toler.chol,
-                  eps=eps, iter.max=iter.max)
-      } else if(all(c('iter.max', 'eps') %in% nf)) {
-        coxph.fit(..., strata=strata, rownames=rownames,
-                  offset=offset, init=init, eps=eps, iter.max=iter.max)
-      } else {
-        coxph.fit(..., strata=strata, rownames=rownames,
-                  offset=offset, init=init)
-      }
+      if(any(nf=='control'))
+        {
+          coxph.fit(..., strata=strata, rownames=rownames,
+                    offset=offset, init=init,
+                    control=coxph.control(toler.chol=toler.chol, toler.inf=1,
+                      eps=eps, iter.max=iter.max))
+        }
+      else if(all(c('toler.chol', 'eps', 'iter.max') %in% nf))
+        {
+          coxph.fit(..., strata=strata, rownames=rownames,
+                    offset=offset, init=init, toler.chol=toler.chol,
+                    eps=eps, iter.max=iter.max)
+        }
+      else if(all(c('iter.max', 'eps') %in% nf))
+        {
+          coxph.fit(..., strata=strata, rownames=rownames,
+                    offset=offset, init=init, eps=eps, iter.max=iter.max)
+        }
+      else coxph.fit(..., strata=strata, rownames=rownames,
+                     offset=offset, init=init)
 
-    if(is.character(res)) {
-      return(list(fail=TRUE))
-    }
+    if(is.character(res)) return(list(fail=TRUE))
 
-    if(length(res$iter) && iter.max > 1 && res$iter >= iter.max) {
+    if(length(res$iter) && iter.max > 1 && res$iter >= iter.max)
       return(list(fail=TRUE))
-    }
 
     res$fail <- FALSE
     res
@@ -587,154 +582,175 @@ if(.R. || .SV4.) {
 }
 
 Survival.cph <- function(object, ...) {
-if(!length(object$time) || !length(object$surv))
-  stop("did not specify surv=T with cph")
-f <- function(times, lp=0, stratum=1, type=c("step","polygon"),
-              time, surv) {
-  type <- match.arg(type)
-  if(length(stratum)>1) stop("does not handle vector stratum")
-  if(length(times)==0) {
-    if(length(lp)>1) stop("lp must be of length 1 if times=NULL")
-    return(surv[[stratum]]^exp(lp))
+  if(!length(object$time) || !length(object$surv))
+    stop("did not specify surv=T with cph")
+  f <- function(times, lp=0, stratum=1, type=c("step","polygon"),
+                time, surv) {
+    type <- match.arg(type)
+    if(length(stratum)>1) stop("does not handle vector stratum")
+    if(length(times)==0) {
+      if(length(lp)>1) stop("lp must be of length 1 if times=NULL")
+      return(surv[[stratum]]^exp(lp))
+    }
+    s <- matrix(NA, nrow=length(lp), ncol=length(times),
+                dimnames=list(names(lp), format(times)))
+    if(is.list(time)) {time <- time[[stratum]]; surv <- surv[[stratum]]}
+  if(type=="polygon")
+    {
+      if(length(lp)>1 && length(times)>1)
+        stop('may not have length(lp)>1 & length(times>1) when type="polygon"')
+      su <- approx(time, surv, times)$y
+      return(su ^ exp(lp))
+    }
+  for(i in 1:length(times))
+    {
+      tm <- max((1:length(time))[time <= times[i]+1e-6])
+      su <- surv[tm]
+      if(times[i] > max(time)+1e-6) su <- NA
+      s[,i] <- su^exp(lp)
+    }
+    drop(s)
   }
-  s <- matrix(NA, nrow=length(lp), ncol=length(times),
-              dimnames=list(names(lp), format(times)))
-  if(is.list(time)) {time <- time[[stratum]]; surv <- surv[[stratum]]}
-  if(type=="polygon") {
-    if(length(lp)>1 && length(times)>1)
-      stop('may not have length(lp)>1 & length(times>1) when type="polygon"')
-    su <- approx(time, surv, times)$y
-    return(su ^ exp(lp))
-  }
-  for(i in 1:length(times)) {
-    tm <- max((1:length(time))[time <= times[i]+1e-6])
-    su <- surv[tm]
-    if(times[i] > max(time)+1e-6) su <- NA
-    s[,i] <- su^exp(lp)
-  }
-  drop(s)
-}
-formals(f) <- list(times=NULL, lp=0, stratum=1,
-                   type=c("step","polygon"),
-                   time=object$time, surv=object$surv)
-f
+  formals(f) <- list(times=NULL, lp=0, stratum=1,
+                     type=c("step","polygon"),
+                     time=object$time, surv=object$surv)
+  f
 }
 
 Quantile.cph <- function(object, ...) {
-if(!length(object$time) || !length(object$surv))
-  stop("did not specify surv=T with cph")
-f <- function(q=.5, lp=0, stratum=1, type=c("step","polygon"), time, surv) {
-  type <- match.arg(type)
-  if(length(stratum)>1) stop("does not handle vector stratum")
-  if(is.list(time)) {time <- time[[stratum]]; surv <- surv[[stratum]]}
-  Q <- matrix(NA, nrow=length(lp), ncol=length(q),
-              dimnames=list(names(lp), format(q)))
-  for(j in 1:length(lp)) {
-    s <- surv^exp(lp[j])
-    if(type=="polygon") Q[j,] <- approx(s, time, q)$y
-    else for(i in 1:length(q))
-      if(any(s <= q[i])) Q[j,i] <- min(time[s<=q[i]])  #is NA if none
+  if(!length(object$time) || !length(object$surv))
+    stop("did not specify surv=T with cph")
+  f <- function(q=.5, lp=0, stratum=1, type=c("step","polygon"), time, surv) {
+    type <- match.arg(type)
+    if(length(stratum)>1) stop("does not handle vector stratum")
+    if(is.list(time)) {time <- time[[stratum]]; surv <- surv[[stratum]]}
+    Q <- matrix(NA, nrow=length(lp), ncol=length(q),
+                dimnames=list(names(lp), format(q)))
+    for(j in 1:length(lp))
+      {
+        s <- surv^exp(lp[j])
+        if(type=="polygon") Q[j,] <- approx(s, time, q)$y
+        else for(i in 1:length(q))
+          if(any(s <= q[i])) Q[j,i] <- min(time[s<=q[i]])  #is NA if none
+      }
+    drop(Q)
   }
-  drop(Q)
-}
-formals(f) <- list(q=.5, lp=0, stratum=1,
-                   type=c('step','polygon'),
-                   time=object$time, surv=object$surv)
-f
+  formals(f) <- list(q=.5, lp=0, stratum=1,
+                     type=c('step','polygon'),
+                     time=object$time, surv=object$surv)
+  f
 }
 
 
 Mean.cph <- function(object, method=c("exact","approximate"),
-type=c("step","polygon"), n=75, tmax, ...) {
-method <- match.arg(method)
-type   <- match.arg(type)
+                     type=c("step","polygon"), n=75, tmax, ...) {
+  method <- match.arg(method)
+  type   <- match.arg(type)
 
-if(!length(object$time) || !length(object$surv))
-  stop("did not specify surv=T with cph")
-
-if(method=="exact") {
-  f <- function(lp=0, stratum=1, type=c("step","polygon"),
-                tmax=NULL, time, surv) {
-    type <- match.arg(type)
-    if(length(stratum)>1) stop("does not handle vector stratum")
-    if(is.list(time)) {time <- time[[stratum]]; surv <- surv[[stratum]]}
-    Q <- lp
-    if(!length(tmax)) {
-      if(min(surv)>1e-3)
-        warning(paste("Computing mean when survival curve only defined down to",
-                      format(min(surv)),"\n Mean is only a lower limit"))
-      k <- rep(TRUE,length(time))
-    } else {
-      if(tmax>max(time)) stop(paste("tmax=",format(tmax),
-                                    "> max follow-up time=",format(max(time))))
-      k <- (1:length(time))[time<=tmax]
-    }
-    for(j in 1:length(lp)) {
-      s <- surv^exp(lp[j])
-      Q[j] <- if(type=="step") sum(c(diff(time[k]),0) * s[k]) else 
-      trap.rule(time[k], s[k])
-    }
-    Q
-  }
-  formals(f) <- alist(lp=0, stratum=1,
-                     type=if(!missing(type))type else c("step","polygon"),
-                     tmax=tmax,
-                     time=object$time, surv=object$surv)
-##    if(!missing(tmax)) f$tmax <- tmax ??
-} else {
-  lp     <- object$linear.predictors
-  lp.seq <- if(length(lp)) lp.seq <- seq(min(lp), max(lp), length=n) else 0
+  if(!length(object$time) || !length(object$surv))
+    stop("did not specify surv=T with cph")
   
-  time   <- object$time
-  surv   <- object$surv
-  nstrat <- if(is.list(time)) length(time) else 1
-  areas  <- list()
-
-  for(is in 1:nstrat) {
-    tim <- if(nstrat==1) time else time[[is]]
-    srv <- if(nstrat==1) surv else surv[[is]]
-    if(!length(tmax)) {
-      if(min(srv)>1e-3)
-        warning(paste("Computing mean when survival curve only defined down to",
-                      format(min(srv)),"\n Mean is only a lower limit"))
-      k <- rep(TRUE,length(tim))
-    } else {
-      if(tmax>max(tim)) stop(paste("tmax=",format(tmax),
-                                   "> max follow-up time=",format(max(tim))))
-      k <- (1:length(tim))[tim<=tmax]
+  if(method=="exact")
+    {
+      f <- function(lp=0, stratum=1, type=c("step","polygon"),
+                    tmax=NULL, time, surv)
+        {
+          type <- match.arg(type)
+          if(length(stratum)>1) stop("does not handle vector stratum")
+          if(is.list(time)) {time <- time[[stratum]]; surv <- surv[[stratum]]}
+          Q <- lp
+          if(!length(tmax))
+            {
+              if(min(surv)>1e-3)
+                warning(paste("Computing mean when survival curve only defined down to",
+                              format(min(surv)),"\n Mean is only a lower limit"))
+              k <- rep(TRUE,length(time))
     }
-    ymean <- lp.seq
-    for(j in 1:length(lp.seq)) {
-      s <- srv^exp(lp.seq[j])
-      ymean[j] <- if(type=="step") sum(c(diff(tim[k]),0) * s[k]) else 
-      trap.rule(tim[k], s[k])
+          else
+            {
+              if(tmax>max(time)) stop(paste("tmax=",format(tmax),
+                                            "> max follow-up time=",
+                                            format(max(time))))
+              k <- (1:length(time))[time<=tmax]
+            }
+          for(j in 1:length(lp))
+            {
+              s <- surv^exp(lp[j])
+              Q[j] <- if(type=="step") sum(c(diff(time[k]),0) * s[k]) else 
+              trap.rule(time[k], s[k])
+            }
+          Q
+        }
+      formals(f) <- alist(lp=0, stratum=1,
+                          type=if(!missing(type))type else c("step","polygon"),
+                          tmax=tmax,
+                          time=object$time, surv=object$surv)
     }
-    if(!.R.) storage.mode(ymean) <- "single"
-    areas[[is]] <- ymean
-  }
-  if(nstrat>1) names(areas) <- names(time)
+  else
+    {
+      lp     <- object$linear.predictors
+      lp.seq <- if(length(lp)) lp.seq <- seq(min(lp), max(lp), length=n) else 0
+  
+      time   <- object$time
+      surv   <- object$surv
+      nstrat <- if(is.list(time)) length(time) else 1
+      areas  <- list()
 
-  f <- function(lp=0, stratum=1, lp.seq, areas) {
+      for(is in 1:nstrat)
+        {
+          tim <- if(nstrat==1) time else time[[is]]
+          srv <- if(nstrat==1) surv else surv[[is]]
+          if(!length(tmax))
+            {
+              if(min(srv)>1e-3)
+                warning(paste("Computing mean when survival curve only defined down to",
+                              format(min(srv)),
+                              "\n Mean is only a lower limit"))
+              k <- rep(TRUE,length(tim))
+            }
+          else
+            {
+              if(tmax>max(tim)) stop(paste("tmax=",format(tmax),
+                                           "> max follow-up time=",
+                                           format(max(tim))))
+              k <- (1:length(tim))[tim<=tmax]
+            }
+          ymean <- lp.seq
+          for(j in 1:length(lp.seq))
+            {
+              s <- srv^exp(lp.seq[j])
+              ymean[j] <- if(type=="step") sum(c(diff(tim[k]),0) * s[k]) else 
+              trap.rule(tim[k], s[k])
+            }
+          if(!.R.) storage.mode(ymean) <- "single"
+          areas[[is]] <- ymean
+        }
+      if(nstrat>1) names(areas) <- names(time)
 
-    if(length(stratum)>1) stop("does not handle vector stratum")
-    area <- areas[[stratum]]
-    if(length(lp.seq)==1 && all(lp==lp.seq)) ymean <- rep(area,length(lp)) else
-    ymean <- approx(lp.seq, area, xout=lp)$y
-    if(any(is.na(ymean)))
-      warning("means requested for linear predictor values outside range of linear\npredictor values in original fit")
-    names(ymean) <- names(lp)
-    ymean
-  }
-if(!.R.) storage.mode(lp.seq) <- "single"
-formals(f) <- list(lp=0, stratum=1, lp.seq=lp.seq, areas=areas)
-}
-eval(f)
+      f <- function(lp=0, stratum=1, lp.seq, areas)
+        {
+
+          if(length(stratum)>1) stop("does not handle vector stratum")
+          area <- areas[[stratum]]
+          if(length(lp.seq)==1 && all(lp==lp.seq))
+            ymean <- rep(area,length(lp)) else
+          ymean <- approx(lp.seq, area, xout=lp)$y
+          if(any(is.na(ymean)))
+            warning("means requested for linear predictor values outside range of linear\npredictor values in original fit")
+          names(ymean) <- names(lp)
+          ymean
+        }
+      if(!.R.) storage.mode(lp.seq) <- "single"
+      formals(f) <- list(lp=0, stratum=1, lp.seq=lp.seq, areas=areas)
+    }
+  eval(f)
 }
 
 ## cox.zph demands that the fit object inherit 'coxph'
 ## The following slightly changed cox.zph also explicitly invokes
 ## residuals.cph
-if(.SV4.) {
+if(.SV4.)
+{
   cox.zph <- function(fit, transform = "km", global = TRUE) {
     call <- match.call()
     clas <- c(oldClass(fit), fit$fitFunction)  ##FEH
@@ -743,7 +759,7 @@ if(.SV4.) {
     if('coxph.null' %in% clas)               ##FEH + next 5
       stop("The are no score residuals for a Null model")
     sresid <- resid(fit, "schoenfeld")
-
+    
     varnames <- names(fit$coef)
     nvar <- length(varnames)
     ndead <- length(sresid)/nvar
@@ -752,26 +768,27 @@ if(.SV4.) {
     else
       times <- as.numeric(dimnames(sresid)[[1]])
 
-    if(is.character(transform)) {
-      tname <- transform
-      ttimes <- switch(transform,
-                       identity = times,
-                       rank = rank(times),
-                       log = log(times),
-                       km = {
-                         temp <- survfit.km(factor(rep(1, nrow(fit$y))),
-                                            fit$y, se.fit = FALSE)
-                         ## A nuisance to do left cont KM
-                         t1 <- temp$surv[temp$n.event > 0]
-                         t2 <- temp$n.event[temp$n.event > 0]
-                         km <- rep(c(1, t1), c(t2, 0))
-                       if(!length(attr(sresid, "strata")))
-                         1 - km
-                       else
-                         (1 - km[sort.list(sort.list(times))])
-                     },
-                     stop("Unrecognized transform"))
-    }
+    if(is.character(transform))
+      {
+        tname <- transform
+        ttimes <- switch(transform,
+                         identity = times,
+                         rank = rank(times),
+                         log = log(times),
+                         km = {
+                           temp <- survfit.km(factor(rep(1, nrow(fit$y))),
+                                              fit$y, se.fit = FALSE)
+                           ## A nuisance to do left cont KM
+                           t1 <- temp$surv[temp$n.event > 0]
+                           t2 <- temp$n.event[temp$n.event > 0]
+                           km <- rep(c(1, t1), c(t2, 0))
+                           if(!length(attr(sresid, "strata")))
+                             1 - km
+                           else
+                             (1 - km[sort.list(sort.list(times))])
+                         },
+                         stop("Unrecognized transform"))
+      }
     else {
       tname <- deparse(substitute(transform))
       if(length(tname) > 1)
@@ -782,26 +799,27 @@ if(.SV4.) {
     xx <- ttimes - mean(ttimes)
     r2 <- sresid %*% fit$var * ndead
     test <- xx %*% r2
-
+    
     ## time weighted col sums
     corel <- c(cor(xx, r2))
     z <- c(test^2/(diag(fit$var) * ndead * sum(xx^2)))
     Z.ph <- cbind(corel, z, 1 - pchisq(z, 1))
 
-    if(global && nvar > 1) {
-      test <- c(xx %*% sresid)
-      z <- (c(test %*% fit$var %*% test) * ndead)/sum(xx^2)
-      Z.ph <- rbind(Z.ph, c(NA, z, 1 - pchisq(z, ncol(sresid))))
-      dimnames(Z.ph) <- list(c(varnames, "GLOBAL"),
-                             c("rho", "chisq", "p"))
-    }
+    if(global && nvar > 1)
+      {
+        test <- c(xx %*% sresid)
+        z <- (c(test %*% fit$var %*% test) * ndead)/sum(xx^2)
+        Z.ph <- rbind(Z.ph, c(NA, z, 1 - pchisq(z, ncol(sresid))))
+        dimnames(Z.ph) <- list(c(varnames, "GLOBAL"),
+                               c("rho", "chisq", "p"))
+      }
     else
       dimnames(Z.ph) <- list(varnames, c("rho", "chisq", "p"))
 
     dimnames(r2) <- list(times, names(fit$coef))
     temp <- list(table = Z.ph, x = ttimes,
-               y = r2 + outer(rep(1,ndead),fit$coef),
-               var = fit$var, call = call, transform = tname)
+                 y = r2 + outer(rep(1,ndead),fit$coef),
+                 var = fit$var, call = call, transform = tname)
 
     oldClass(temp) <- "cox.zph"
     temp
@@ -810,7 +828,7 @@ if(.SV4.) {
 
 predict.cph <- function(object, newdata=NULL,
                         type=c("lp", "x", "data.frame", "terms", "adjto",
-                               "adjto.data.frame", "model.frame"),
+                          "adjto.data.frame", "model.frame"),
                         se.fit=FALSE, conf.int=FALSE,
                         conf.type=c('mean','individual'),
                         incl.non.slopes=NULL, non.slopes=NULL, kint=1,
@@ -820,4 +838,3 @@ predict.cph <- function(object, newdata=NULL,
                 incl.non.slopes, non.slopes, kint,
                 na.action, expand.na, center.terms, ...)
 }
-

@@ -20,12 +20,6 @@ groupkm <- function(x, Srv, m=50, g,
                     lty=1, add=FALSE,
                     cex.subtitle=.7, ...)
 {
-  if(.R.)
-    {
-      require('survival')
-      if(!existsFunction('survfit.km'))
-        survfit.km <- getFromNamespace('survfit.km','survival')
-    }
   if(missing(u))stop("u (time point) must be given")
   if(missing(xlab)) xlab <- label(x)
   if(xlab=="") xlab <- as.character(sys.call())[2]

@@ -31,7 +31,10 @@ ols <- function(formula, data, weights, subset, na.action=na.delete,
 	Terms <- atrx$terms
     assig <- DesignAssign(atr, 1, Terms)
     
-	penpres <- !(missing(penalty) && missing(penalty.matrix))
+    penpres <- FALSE
+    if(!missing(penalty) && any(unlist(penalty) != 0)) penpres <- TRUE
+    if(!missing(penalty.matrix) && any(penalty.matrix != 0)) penpres <- TRUE
+    
     if(penpres && missing(var.penalty))
       warning('default for var.penalty has changed to "simple"')
     

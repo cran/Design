@@ -93,7 +93,7 @@ Surv <- function(time, time2, event,
     oldClass(ss) <- "Surv"
     attr(ss, "type")  <- type
     ## Below is all FEH
-    uni <- attr(tvar,"units")
+    uni <- valueUnit(tvar)
     if(is.null(uni)) {
       uni <- "Day"
 ##	warning('Time variable has no units() attribute. Assuming Day.\nFor cph with surv=T may need to specify time.inc.')
@@ -102,7 +102,7 @@ Surv <- function(time, time2, event,
     if(is.null(tlab)) tlab <- nam[1]
     elab <- attr(svar,"label")
     if(is.null(elab) & length(nam)>1) elab <- nam[2]
-    attr(ss,"units") <- uni
+    valueUnit(ss) <- uni
     attr(ss,"time.label") <- tlab
     attr(ss,"event.label") <- elab
     ss

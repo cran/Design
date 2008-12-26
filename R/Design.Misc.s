@@ -267,40 +267,47 @@ lim
 #Set type="direct" to only include factors interacting with i
 #This function is used by nomogram.Design
 
-related.predictors <- function(at, type=c("all","direct")) {
-type <- match.arg(type)
-f <- sum(at$assume.code<9)
-if(any(at$assume.code==10))stop("does not work with matrix factors")
-ia <- at$interactions
-x <- rep(NA,f)
-mode(x) <- "list"
-if(length(ia)==0) {
-  for(i in 1:f) x[[i]] <- integer(0)
-  return(x)
-  }
-for(i in 1:f) {
-  r <- integer(0)
-  for(j in 1:ncol(ia)) {
-    w <- ia[,j]
-    if(any(w==i)) r <- c(r,w[w>0 & w!=i])
-  }
-  x[[i]] <- r
-}
-if(type=="direct") return(x)
-
-while(TRUE) {
-  bigger <- FALSE
-  for(j in 1:f) {
-    xj <- x[[j]]
-    y <- unlist(x[xj])
-    y <- y[y != j]
-    new <- unique(c(y, xj))
-    bigger <- bigger | length(new) > length(xj)
-    x[[j]] <- new
-  }
-if(!bigger) break
-}
-x
+related.predictors <- function(at, type=c("all","direct"))
+{
+  type <- match.arg(type)
+  f <- sum(at$assume.code < 9)
+  if(any(at$assume.code == 10)) stop("does not work with matrix factors")
+  ia <- at$interactions
+  x <- rep(NA,f)
+  names(x) <- at$name[at$assume.code < 9]
+  mode(x) <- "list"
+  if(length(ia)==0)
+    {
+      for(i in 1:f) x[[i]] <- integer(0)
+      return(x)
+    }
+  for(i in 1:f)
+    {
+      r <- integer(0)
+      for(j in 1:ncol(ia))
+        {
+          w <- ia[,j]
+          if(any(w==i)) r <- c(r,w[w>0 & w!=i])
+        }
+      x[[i]] <- r
+    }
+  if(type=="direct") return(x)
+  
+  while(TRUE)
+    {
+      bigger <- FALSE
+      for(j in 1:f)
+        {
+          xj <- x[[j]]
+          y <- unlist(x[xj])
+          y <- y[y != j]
+          new <- unique(c(y, xj))
+          bigger <- bigger | length(new) > length(xj)
+          x[[j]] <- new
+        }
+      if(!bigger) break
+    }
+  x
 }
 
 

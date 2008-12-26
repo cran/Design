@@ -137,7 +137,7 @@ survest.cph <- function(fit, newdata, linear.predictors, x, times, fun,
       }
     }
     else {
-      g <- summary.survfit(g, print.it=FALSE, times=times)
+      g <- summary(g, print.it=FALSE, times=times)
       if(!individual && nf>0) { #delete extra cells added by survfit for strat
         if(length(g$time) != length(times)*num.strata)
           stop('summary.survfit could not compute estimates for all strata at all times requested.\nYou probably requested times where data are limited.')

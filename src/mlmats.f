@@ -2,7 +2,7 @@
 C-----------------------------------------------------------------------------
 C     Computes subscript in lower triangular matrix corresponding to (i,j)
 C-----------------------------------------------------------------------------
-      INTEGER*4 i,j,isub
+      INTEGER i,j,isub
       IF(i-j)10,10,20
 10    isub=i+j*(j-1)/2
       RETURN
@@ -17,7 +17,7 @@ C       k=2 : converts lower triangular matrix vtri to n x n uncompressed
 C               square matrix
 C       F. Harrell 6Sep90
 C----------------------------------------------------------------------------
-        REAL*8 vsq(n,n),vtri(*)
+        DOUBLE PRECISION vsq(n,n),vtri(*)
         IF(k.EQ.1) THEN
                 l=0
                 DO i=1,n
@@ -39,7 +39,7 @@ C----------------------------------------------------------------------------
 C-----------------------------------------------------------------------------
 C     Computes dot product of b and x, each of length n, returns result in z
 C-----------------------------------------------------------------------------
-      real*8 b(1),x(1),z
+      DOUBLE PRECISION b(1),x(1),z
       z=0D0
         DO i=1,n
         z=z+b(i)*x(i)
@@ -51,8 +51,8 @@ C-----------------------------------------------------------------------------
 C     MULTIPLIES N*N SYMMETRIC MATRIX M STORED IN COMPRESSED FORMAT BY
 C     THE N*1 VECTOR V AND RETURNS THE N*1 VECTOR PRODUCT P
 C-----------------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8 M(1),V(1),P(1)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      DOUBLE PRECISION M(1),V(1),P(1)
       DO 20 I=1,N
       PI=0D0
       II=I*(I-1)/2
@@ -71,8 +71,8 @@ C-----------------------------------------------------------------------------
 C     V IS AN N X N SYMMETRIC MATRIX AND A IS AN N X 1 VECTOR.
 C     THIS ROUTINE RETURNS P=A'VA
 C-----------------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8  A(1),V(1)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      DOUBLE PRECISION  A(1),V(1)
       P=0D0
       K=0
       DO 10 I=1,N
@@ -105,7 +105,7 @@ C
 C       F. Harrell 20 Nov 90
 C
 C----------------------------------------------------------------------------
-        REAL*8 a(n),wv1(nidx),wv2(nidx),wv3(*),wv4(nidx),
+        DOUBLE PRECISION a(n),wv1(nidx),wv2(nidx),wv3(*),wv4(nidx),
      &          v(n,n),eps,vsub(nidx,nidx),p
         INTEGER idx(nidx),pivot(nidx),dim(2)
         k=nidx
@@ -151,16 +151,16 @@ C     V IS AN N X N SYMMETRIC square MATRIX AND A IS AN
 C     N X 1 VECTOR.
 C     THIS ROUTINE RETURNS P=a' vinverse a and nrank=rank(v) where
 C     a=A(idx(i),i=1,...,nidx), v=V(idx(i),idx(i),i=1,...,nidx).
-C     S(nidx) is real*8 scratch vector, SWEPT(nidx) is logical*4 scratch 
-C     vector, VSUB(nidx*(nidx+1)/2) is real*8 scratch vector
+C     S(nidx) is DOUBLE PRECISION scratch vector, SWEPT(nidx) is LOGICAL scratch 
+C     vector, VSUB(nidx*(nidx+1)/2) is DOUBLE PRECISION scratch vector
 C     eps is singularity criterion, e.g. 1D-6
 C
 C     F. Harrell 6 Sep90
 C----------------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8  A(n),V(n,n),s(nidx),vsub(*)
-      INTEGER*4 idx(nidx)
-      LOGICAL*4 swept(nidx)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      DOUBLE PRECISION  A(n),V(n,n),s(nidx),vsub(*)
+      INTEGER idx(nidx)
+      LOGICAL swept(nidx)
         l=0
                 DO i=1,nidx
                 swept(i)=.FALSE.
@@ -205,13 +205,13 @@ C-----------------------------------------------------------------------
 C       Uses same Fortran subroutines as S function solve to accurately
 C       compute aib=a inverse * b, for k x k symmetric matrix a stored in
 C       lower triangular form and k x 1 vector b.  wv1(k,k), wv2(k), wv3(2*k)
-C       are real*8 scratch arrays and pivot(k) is integer*4 scratch vector. 
+C       are DOUBLE PRECISION scratch arrays and pivot(k) is INTEGER scratch vector. 
 C       tol is tolerance, e.g. 1d-7.
 C       IF irank (output) < k, result is not computed.  Index of singular
 C       column will be stored in pivot(k) if irank<k.
 C-----------------------------------------------------------------------
-        REAL*8 a(1),b(k),aib(k),tol,wv1(k,k),wv2(k),wv3(*)
-        INTEGER*4 pivot(k),dim(2)
+        DOUBLE PRECISION a(1),b(k),aib(k),tol,wv1(k,k),wv2(k),wv3(*)
+        INTEGER pivot(k),dim(2)
         CALL sqtria(wv1, a, k, 2)
         dim(1)=k
         dim(2)=k
@@ -253,19 +253,19 @@ C       Uses subroutine GINV to invert n*n symmetric matrix x stored in
 C       full form, and returns the result in x and rank of the matrix
 C       in nrank.  If collinearities are detected, nrank will be <n
 C       and the appropriate row and column of x are set to 0D0.
-C       t(n(n+1)/2) (real*8), s(n) (real*8) are scratch areas.
+C       t(n(n+1)/2) (DOUBLE PRECISION), s(n) (DOUBLE PRECISION) are scratch areas.
 C       Inversion is done with respect to elements idx(1)...idx(ne).
 C       Swept should be initialized to all .FALSE. before the first call
-C       to matinv for x.  Swept and lswept are n-element logical*4
+C       to matinv for x.  Swept and lswept are n-element LOGICAL
 C       Eps is singularity criterion, e.g. .0001
-C       Negate is LOGICAL*4 - .TRUE. to negate inverted part so that it
+C       Negate is LOGICAL - .TRUE. to negate inverted part so that it
 C       is immediately usable.  Use .FALSE. if further inversions will
 C       be done.
 C-----------------------------------------------------------------------
-        IMPLICIT REAL*8 (a-h, o-z)
-        REAL*8 x(n,n), t(1), s(1), eps
-        INTEGER*4 idx(ne)
-        LOGICAL*4 swept(1),lswept(1),negate
+        IMPLICIT DOUBLE PRECISION (a-h, o-z)
+        DOUBLE PRECISION x(n,n), t(1), s(1), eps
+        INTEGER idx(ne)
+        LOGICAL swept(1),lswept(1),negate
         LOGICAL logeq
         k=0
          DO i=1,n
@@ -293,8 +293,8 @@ C-----------------------------------------------------------------------
         RETURN
         END
         LOGICAL FUNCTION logeq(a,b)
-        LOGICAL*4 a,b,aa,bb
-        INTEGER*4 ia,ib
+        LOGICAL a,b,aa,bb
+        INTEGER ia,ib
         EQUIVALENCE (aa,ia),(bb,ib)
         aa=a
         bb=b
@@ -317,7 +317,7 @@ C     COLLINEAR.
 C     E (INPUT) IS A SMALL POSITIVE CONSTANT SPECIFYING THE LEVEL AT
 C     WHICH A MULTIPLE CORRELATION COEFFICIENT IS ASSUMED TO BE CLOSE
 C     ENOUGH TO UNITY TO INDICATE COLLINEARITY.
-C     SWEPT (INPUT AND OUTPUT) is a LOGICAL*4 array with N elements.
+C     SWEPT (INPUT AND OUTPUT) is a LOGICAL array with N elements.
 C     Before inverting, it should be set to .FALSE., and should not
 C     be otherwise changed by the caller.
 C     NRANK is the rank of the portion of the matrix inverted
@@ -329,10 +329,10 @@ C     This causes all elements for the idx portion to be negated to be
 C     in usual form (this assumes you are through calling ginv for the
 C     matrix).
 C
-      REAL*8 T(*),S(N),E
-      INTEGER*4 idx(ne)
-      LOGICAL*4 SWEPT(N)
-      LOGICAL*4 NEG,trick
+      DOUBLE PRECISION T(*),S(N),E
+      INTEGER idx(ne)
+      LOGICAL SWEPT(N)
+      LOGICAL NEG,trick
       DATA ZERO/0D0/
       trick=idx(1).EQ.0
       L=0
@@ -387,8 +387,8 @@ C     S should be set to diagonal elements of T on input.
 C     Modified F. Harrell 25Sep90 to allow E=0 to effectively turn
 C     off singularity checking.
 C
-      REAL*8 A,B,E,S(N),T(*),ZERO,ONE
-      LOGICAL*4 SWEPT(N)
+      DOUBLE PRECISION A,B,E,S(N),T(*),ZERO,ONE
+      LOGICAL SWEPT(N)
       DATA ZERO,ONE /0.0D0,1.0E0/
 C
       IFAULT=1

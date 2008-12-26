@@ -114,7 +114,7 @@ print.calibrate.default <- function(x, ...)
 }
 
 plot.calibrate.default <- function(x, xlab, ylab, xlim, ylim, legend=TRUE, 
-                                   subtitles=TRUE, ...)
+                                   subtitles=TRUE, scat1d.opts=NULL, ...)
 {
   at <- attributes(x)
   if(missing(ylab))
@@ -152,7 +152,7 @@ plot.calibrate.default <- function(x, xlab, ylab, xlim, ylim, legend=TRUE,
         format(quantile(abs(err),.9,na.rm=TRUE)),	   '\n\n',sep='')
     if(subtitles) title(sub=paste('Mean absolute error=',format(mae),
                                   ' n=',n,sep=''), cex=.65, adj=1)
-    scat1d(predicted)
+    do.call('scat1d', c(list(x=predicted), scat1d.opts))
   }
   
   lines(p, p.app, lty=3)

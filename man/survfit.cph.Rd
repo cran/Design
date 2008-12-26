@@ -12,12 +12,12 @@ is the same one used for basing predictions. Unlike \code{survfit.coxph},
 the default basis for confidence intervals is \code{"log-log"}.
 }
 \usage{
-survfit.cph(object, newdata, se.fit=TRUE, conf.int=0.95, 
-            individual=FALSE, type, vartype,
-            conf.type=c("log-log", "log", "plain", "none"))
+\method{survfit}{cph}(formula, newdata, se.fit=TRUE, conf.int=0.95, 
+        individual=FALSE, type, vartype,
+        conf.type=c("log-log", "log", "plain", "none"), \dots)
 }
 \arguments{
-\item{object}{
+\item{formula}{
 a fit object from \code{cph} or \code{coxph}
 see \code{\link[survival]{survfit.coxph}}
 }
@@ -28,6 +28,7 @@ see \code{\link[survival]{survfit.coxph}}
 \item{type}{}
 \item{vartype}{}
 \item{conf.type}{see \code{\link[survival]{survfit}}}
+\item{\dots}{Not used}
 }
 \value{
 see \code{survfit.coxph}

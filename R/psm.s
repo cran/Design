@@ -636,7 +636,7 @@ survplot.residuals.psm.censored.normalized <-
   r <- fit
 
   if(missing(x)) {
-    survplot(survfit(r), conf='none', xlab='Residual', 
+    survplot(survfit(r ~ 1), conf='none', xlab='Residual', 
              col=if(missing(col))par('col') else col, ...)
     if(!missing(main)) title(main)
   } else {

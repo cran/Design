@@ -98,8 +98,6 @@ bj <- function(formula=formula(data), data,
     }
 
 bj.fit <- function(x, y, control = NULL) {
-  if(.R. && !existsFunction('survfit.km'))
-    survfit.km <- getFromNamespace('survfit.km','survival')
   
   if(ncol(y) != 2)
 	stop("y is not a right-censored Surv object")

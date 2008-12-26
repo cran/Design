@@ -92,8 +92,7 @@ survreg.fit2 <- function(x,y,iter=0,dist,parms=NULL,tol,maxiter=15,
                       survreg.fit <- getFromNamespace('survreg.fit','survival')
     survreg.fit(as.matrix(x),y,dist=dlist,parms=parms,
                 controlvals=survreg.control(maxiter=maxiter,
-                  rel.tolerance=rel.tolerance,
-                  failure=2),
+                  rel.tolerance=rel.tolerance),
                 offset=rep(0,length(e)),init=init)
                   }
 	if(is.character(f)) { warning(f); return(list(fail=TRUE)) }

@@ -68,7 +68,7 @@ residuals.cph <-
          score * weights,
          as.integer(newstrat),
          as.integer(method=='efron'),
-         double(3*nvar), PACKAGE="survival") else
+         double(3*nvar), PACKAGE="Design") else
       .C(if(.SV4.)'S_coxscho' else "coxscho",  ##14Nov00
          n=as.integer(n),
          as.integer(nvar),
@@ -113,7 +113,7 @@ residuals.cph <-
              as.double(weights),
              as.integer(method=='efron'),
              resid= double(n*nvar),
-             double(2*nvar), PACKAGE="survival")$resid else
+             double(2*nvar), PACKAGE="Design")$resid else
         .C(if(.SV4.)'S_coxscore' else "coxscore",
            as.integer(n),
            as.integer(nvar),
@@ -138,7 +138,7 @@ residuals.cph <-
              as.double(weights),
              as.integer(method=='efron'),
              resid=double(n*nvar),
-             double(nvar*6), PACKAGE="survival")$resid
+             double(nvar*6), PACKAGE="Design")$resid
         .C(if(.SV4.)'S_agscore' else "agscore",
            as.integer(n),
            as.integer(nvar),

@@ -1,4 +1,4 @@
-## $Id: plot.Design.s 88 2007-05-07 19:53:37Z harrelfe $
+## $Id: plot.Design.s 125 2008-12-26 20:47:05Z dupontct $
 ## First variable in ... cannot be named x - S methods try to call plot.default
 
 plot.Design <-
@@ -11,13 +11,13 @@ plot.Design <-
            method=c("persp","contour","image", "dotchart","default"),
            sortdot=c('neither','ascending','descending'), nlevels=10, name,
            zlim=range(zmat,na.rm=TRUE),
-           vnames=c('labels','names'), abbrev=FALSE)
+           vnames=c('labels','names'), abbrev=FALSE, forceLines=FALSE)
 {
 
   fit <- x
   conf.type <- match.arg(conf.type)
   vnames <- match.arg(vnames)
-    
+  
   dotlist <- list(...)
   fname  <- if(missing(name)) '' else name
   at     <- fit$Design
@@ -63,12 +63,12 @@ plot.Design <-
     }
 
   f <- sum(assume!=9)	##limit list to main effects factors
-  parms <- at$parms
-  label <- at$label
+  parms  <- at$parms
+  label  <- at$label
   values <- at$values
   yunits <- fit$units
   units  <- at$units
-  scale <- fit$scale.pred
+  scale  <- fit$scale.pred
   if(!length(scale)) scale <- "X * Beta"
 
   Center <- fit$center
@@ -104,7 +104,7 @@ plot.Design <-
   }
   
   nf <- length(factors)
-
+  
   if(nf<1) stop("must specify 1 or 2 factors to plot")
 
   which <- charmatch(names(factors), name, 0)
@@ -173,7 +173,7 @@ plot.Design <-
       else if(length(V <- Limval$values[[name[i]]]) & is.character(V))
         xadj[[i]] <- V[1]
       else xadj[[i]] <- 0
-  }
+    }
 
   ##Use default adjusted to, replace some later.  Will be NA if 
   ## datadist doesn't have the variable
@@ -253,7 +253,7 @@ plot.Design <-
   if(is.factor(xseq)) xseq <- as.character(xseq)
 
   if(missing(xlab))
-    xlab <- labelPlotmath(label[ix],units[ix],
+    xlab <- labelPlotmath(label[ix],units[name[ix]],
                           plotmath=!(plot.type=='3d' && method=='persp'))
 
   ##No intercept in model -> expand factors at adjustment values for later
@@ -283,142 +283,142 @@ plot.Design <-
         stop(paste("variables not set to values here or defined with datadist:"
                    , paste(name[nna],collapse=" ")))
 
-    if(missing(lty)) lty <- 1
+      if(missing(lty)) lty <- 1
 
       ##Expand xadj to ##rows=length(xseq), replace col. ix with xseq
       adj <- oldUnclass(xadj)  ##so can expand one column
       adj[[name[ix]]] <- xseq
       adj <- expand.grid(adj)
-    if(!length(time))
-      {
-        xx <- predictDesign(fit, adj, type="x",non.slopes=non.slopes)
-        if(length(attr(xx,"strata")) && any(is.na(attr(xx,"strata"))))
-          warning("Computed stratum NA.  Requested stratum may not\nexist or reference values may be illegal strata combination\n")
-
-        if(length(xx)==0)
-          stop("model has no covariables and survival not plotted")
-
-      xb <- matxv(xx, beta) - Center
-
-      if(conf.int>0)
+      if(!length(time))
         {
-          ##Subtract from rows if need to center for variance
-          if(nrp==0) xxx <- sweep(xx,2,xsub)
-          else xxx <- xx
+          xx <- predictDesign(fit, adj, type="x",non.slopes=non.slopes)
+          if(length(attr(xx,"strata")) && any(is.na(attr(xx,"strata"))))
+            warning("Computed stratum NA.  Requested stratum may not\nexist or reference values may be illegal strata combination\n")
 
-        var <- ((xxx %*% cov) * xxx) %*% rep(1,ncol(xxx))
-        lower <- xb - zcrit*sqrt(vconstant + var)
-        upper <- xb + zcrit*sqrt(vconstant + var)
+          if(length(xx)==0)
+            stop("model has no covariables and survival not plotted")
+
+          xb <- matxv(xx, beta) - Center
+
+          if(conf.int>0)
+            {
+              ##Subtract from rows if need to center for variance
+              if(nrp==0) xxx <- sweep(xx,2,xsub)
+              else xxx <- xx
+
+              var <- ((xxx %*% cov) * xxx) %*% rep(1,ncol(xxx))
+              lower <- xb - zcrit*sqrt(vconstant + var)
+              upper <- xb + zcrit*sqrt(vconstant + var)
+            }
+          if(ref.zero)
+            {
+              xb <- xb-ycenter
+              if(conf.int>0)
+                {
+                  lower <- lower-ycenter;
+                  upper <- upper-ycenter
+                }
+            }
         }
-      if(ref.zero)
+      else
         {
-          xb <- xb-ycenter
-        if(conf.int>0)
-          {
-            lower <- lower-ycenter;
-            upper <- upper-ycenter
-          }
+          xb <- survest(fit, adj, times=time,loglog=loglog, 
+                        conf.int=conf.int)
+          lower <- xb$lower; upper <- xb$upper; xb <- xb$surv
         }
-      }
-    else
-      {
-        xb <- survest(fit, adj, times=time,loglog=loglog, 
-                      conf.int=conf.int)
-        lower <- xb$lower; upper <- xb$upper; xb <- xb$surv
-      }
-
-    if(!missing(fun))
-      {
-        xb <- fun(xb)
-        if(conf.int>0)
-          {
-            lower <- fun(lower)
-            upper <- fun(upper)
-          }	
-      }
+      
+      if(!missing(fun))
+        {
+          xb <- fun(xb)
+          if(conf.int>0)
+            {
+              lower <- fun(lower)
+              upper <- fun(upper)
+            }	
+        }
       if(missing(ylim))
         {
           if(conf.int>0) ylim <- range(c(lower,upper),na.rm=TRUE)
           else ylim <- range(xb,na.rm=TRUE)
         }
 
-      if((ixt==5 | ixt==8 | (length(xval))) & !val.lev)
-        {
-      if(method=='dotchart')
-        {
-          w <- xb
-          names(w) <- if(is.numeric(xseq)) format(xseq)
-          else if(abbrev)abbreviate(xseq) else xseq
-
-          isd <- switch(sortdot,
-                        ascending=order(w),
-                        descending=order(-w),
-                        neither=1:length(w))
-        }
-      
-      if(add)
-        {
-          if(method=='dotchart') 
-            dotchart2(w[isd], add=TRUE, pch=pch, reset.par=FALSE)
-          else points(xseqn,xb,col=col[1],pch=pch)
-      }
-      else
-        {
-          labs <- format(xseq)
-          if(is.character(xseq) ||
-             ((ixt==5 | ixt==8) || 
-              (length(xseq)==length(xval) &&
-               all(abs(xseq-as.numeric(xval))<.00001)))) {
-            att <- 1
-            at <- xseqn
-          }
-        else
-          {
-            att <- 2
-            at <- Pretty(xseqn)
-          }
-          
-	xlm <- if(missing(xlim)) range(at) else xlim
-
-          if(method=='dotchart')
-            dotchart2(w[isd], pch=pch, reset.par=FALSE,
-                      xlim=ylim, xlab=trlab(ylab), ylab='')
-        else
-          {
-            plot(xseqn,xb,xlab=xlab, xlim=xlm, ##Handle NAs in Y
-                 axes=FALSE, ylim=ylim, ylab=trlab(ylab), log=log, type='n')
-            points(xseqn,xb,col=col[1],pch=pch)
-            if(att==1)
-              mgp.axis(1,at=at,
-                       labels=if(abbrev && ixt %in% c(5,8))
-                       abbreviate(labs)
-                       else labs)
-            else mgp.axis(1,at=at)
-            mgp.axis(2,at=pretty(ylim))
-          }
-        }
-
-      if(conf.int>0)
+      if((ixt==5 | ixt==8 | (!forceLines & length(xval))) & !val.lev)
         {
           if(method=='dotchart')
             {
-              dotchart2(lower[isd], add=TRUE, pch='[', reset.par=FALSE)
-              dotchart2(upper[isd], add=TRUE, pch=']', reset.par=FALSE)
-        }
+              w <- xb
+              names(w) <- if(is.numeric(xseq)) format(xseq)
+              else if(abbrev)abbreviate(xseq) else xseq
+
+              isd <- switch(sortdot,
+                            ascending=order(w),
+                            descending=order(-w),
+                            neither=1:length(w))
+            }
+          
+          if(add)
+            {
+              if(method=='dotchart') 
+                dotchart2(w[isd], add=TRUE, pch=pch, reset.par=FALSE)
+              else points(xseqn,xb,col=col[1],pch=pch)
+            }
           else
             {
-              points(xseqn,lower,pch="-",col=col[1])
-              points(xseqn,upper,pch="-",col=col[1])
+              labs <- format(xseq)
+              if(is.character(xseq) ||
+                 ((ixt==5 | ixt==8) || 
+                  (length(xseq)==length(xval) &&
+                   all(abs(xseq-as.numeric(xval))<.00001)))) {
+                att <- 1
+                at <- xseqn
+              }
+              else
+                {
+                  att <- 2
+                  at <- Pretty(xseqn)
+                }
+              
+              xlm <- if(missing(xlim)) range(at) else xlim
+              
+              if(method=='dotchart')
+                dotchart2(w[isd], pch=pch, reset.par=FALSE,
+                          xlim=ylim, xlab=trlab(ylab), ylab='')
+              else
+                {
+                  plot(xseqn,xb,xlab=xlab, xlim=xlm, ##Handle NAs in Y
+                       axes=FALSE, ylim=ylim, ylab=trlab(ylab), log=log, type='n')
+                  points(xseqn,xb,col=col[1],pch=pch)
+                  if(att==1)
+                    mgp.axis(1,at=at,
+                             labels=if(abbrev && ixt %in% c(5,8))
+                             abbreviate(labs)
+                             else labs)
+                  else mgp.axis(1,at=at)
+                  mgp.axis(2,at=pretty(ylim))
+                }
+            }
+          
+          if(conf.int>0)
+            {
+              if(method=='dotchart')
+                {
+                  dotchart2(lower[isd], add=TRUE, pch='[', reset.par=FALSE)
+                  dotchart2(upper[isd], add=TRUE, pch=']', reset.par=FALSE)
+                }
+              else
+                {
+                  points(xseqn,lower,pch="-",col=col[1])
+                  points(xseqn,upper,pch="-",col=col[1])
+                }
             }
         }
-    }
       else
         {
           if(!add)
             {
               xlm <- if(missing(xlim)) range(Pretty(xseqn))
               else xlim
-
+              
               plot(xseqn,xb,xlab=xlab, xlim=xlm, ylim=ylim,
                    ylab=trlab(ylab), log=log,
                    type='n', axes=FALSE)
@@ -426,12 +426,12 @@ plot.Design <-
               mgp.axis(2, at=pretty(ylim))
             }
           lines(xseqn,xb,lty=lty[1],lwd=lwd[1],col=col[1])
-
-      if(conf.int>0)
-        {
-          lines(xseqn,lower,lty=2,col=col[1],lwd=lwd.conf)
-          lines(xseqn,upper,lty=2,col=col[1],lwd=lwd.conf)
-        }
+          
+          if(conf.int>0)
+            {
+              lines(xseqn,lower,lty=2,col=col[1],lwd=lwd.conf)
+              lines(xseqn,upper,lty=2,col=col[1],lwd=lwd.conf)
+            }
         }
       
       xx <- list(); xx[[name[ix]]] <- xseq
@@ -461,203 +461,208 @@ plot.Design <-
       else
         xb <- matxv(xx, beta) - Center
 
-    if(length(time))
-      {
-        xb <- survest(fit, adj, times=time, loglog=loglog, 
-                      conf.int=conf.int)
-        lower <- xb$lower; upper <- xb$upper; xb <- xb$surv
-      }
-    else {
-      if(conf.int>0)
+      if(length(time))
         {
-          if(nrp==0)
-            xxx <- sweep(xx,2,xsub)
-          else xxx <- xx
-          
-          var <- ((xxx %*% cov) * xxx) %*% rep(1,ncol(xxx))
-          lower <- xb - zcrit*sqrt(vconstant + var)
-          upper <- xb + zcrit*sqrt(vconstant + var)			
+          xb <- survest(fit, adj, times=time, loglog=loglog, 
+                        conf.int=conf.int)
+          lower <- xb$lower; upper <- xb$upper; xb <- xb$surv
         }
-      
-      if(ref.zero)
-        {
-          xb <- xb-ycenter
-          if(conf.int>0)
-            {
-              lower <- lower-ycenter;
-              upper <- upper-ycenter
-            }	
-        }
-    }
-
-    if(!missing(fun))
-      {
-        xb <- fun(xb)
+      else {
         if(conf.int>0)
           {
-            lower <- fun(lower)
-            upper <- fun(upper)
+            if(nrp==0)
+              xxx <- sweep(xx,2,xsub)
+            else xxx <- xx
+            
+            var <- ((xxx %*% cov) * xxx) %*% rep(1,ncol(xxx))
+            lower <- xb - zcrit*sqrt(vconstant + var)
+            upper <- xb + zcrit*sqrt(vconstant + var)			
+          }
+        
+        if(ref.zero)
+          {
+            xb <- xb-ycenter
+            if(conf.int>0)
+              {
+                lower <- lower-ycenter;
+                upper <- upper-ycenter
+              }	
           }
       }
+      
+      if(!missing(fun))
+        {
+          xb <- fun(xb)
+          if(conf.int>0)
+            {
+              lower <- fun(lower)
+              upper <- fun(upper)
+            }
+        }
 
-    if(!missing(perim) && plot.type=="3d")
-      {
-        if(.SV4.)
-          perim <- matrix(oldUnclass(perim), nrow=nrow(perim),
-                          dimnames=dimnames(perim))
+      if(!missing(perim) && plot.type=="3d")
+        {
+          if(.SV4.)
+            perim <- matrix(oldUnclass(perim), nrow=nrow(perim),
+                            dimnames=dimnames(perim))
 
-        Ylo <- approx(perim[,1],perim[,2],adj[[name[ix]]])$y
-        Yhi <- approx(perim[,1],perim[,3],adj[[name[ix]]])$y
-        Ylo[is.na(Ylo)] <-  1e30
-        Yhi[is.na(Yhi)] <- -1e30
-        xb[adj[[name[iy]]] < Ylo] <- NA
-        xb[adj[[name[iy]]] > Yhi] <- NA
-      }
+          Ylo <- approx(perim[,1],perim[,2],adj[[name[ix]]])$y
+          Yhi <- approx(perim[,1],perim[,3],adj[[name[ix]]])$y
+          Ylo[is.na(Ylo)] <-  1e30
+          Yhi[is.na(Yhi)] <- -1e30
+          xb[adj[[name[iy]]] < Ylo] <- NA
+          xb[adj[[name[iy]]] > Yhi] <- NA
+        }
+      
 
-
-    if(missing(ylim))
-      {
-        if(conf.int>0) ylim <- range(c(lower,upper),na.rm=TRUE)
-        else ylim <- range(xb,na.rm=TRUE)
-      }
-
+      if(missing(ylim))
+        {
+          if(conf.int>0) ylim <- range(c(lower,upper),na.rm=TRUE)
+          else ylim <- range(xb,na.rm=TRUE)
+        }
+      
       xx <- adj[,c(name[ix],name[iy])]
-
+      
       if(plot.type=="3d")
         {
           zmat <- matrix(pmin(ylim[2],pmax(ylim[1],xb)),
                          nrow=length(xseqn),
                          ncol=ny, byrow=TRUE)
-
-          laby <- labelPlotmath(label[iy],units[iy],
+          
+          laby <- labelPlotmath(label[iy],units[name[iy]],
                                 plotmath=method!='persp')
           if(method=="contour")
             {
               contour(xseqn, y, zmat,
-                      nlevels=nlevels, xlab=xlab, ylab=laby)
-      }
+                      nlevels=nlevels, xlab=xlab, ylab=laby, col=col)
+            }
           else if(method=="persp")
             {
               a <- c(list(xseqn, y, zmat, zlim=zlim, xlab=xlab, ylab=laby,
-                          zlab=trlab(ylab), box=TRUE), perspArgs)
+                          zlab=trlab(ylab), box=TRUE, col=col), perspArgs)
               a <- c(a,
                      if(.R.) list(theta=theta, phi=phi)
                      else if(!missing(eye)) list(eye=eye))
               
               do.call('persp', a)
             }
-          else image(xseqn, y, zmat, xlab=xlab, ylab=laby)
-    }
+          else
+            {
+              if(length(col) > 1)
+                image(xseqn, y, zmat, xlab=xlab, ylab=laby, col=col)
+              else image(xseqn, y, zmat, xlab=xlab, ylab=laby)
+            }
+        }
       else
         {
           ## One curve for each value of y, excl style used for C.L.
           
           lty <- if(missing(lty)) seq(ny+1)[-2]
           else rep(lty, length=ny)
-
+          
           i <- 0
           if(labelc)
             curves <- vector('list',ny)
 
           col <- rep(col, length=ny)
           lwd <- rep(lwd, length=ny)
-      for(ay in y)
-        {
-          i <- i+1
-          index.y <- (1:nrow(xx))[xx[,2]==ay]
-          xseq <- xx[index.y, name[ix]]
-          if(is.factor(xseq))
-            xseq <- as.character(xseq)
-
-          xl <- if(val.lev) as.single(xseq)
-          else if(is.character(xseq)) match(xseq, parmx)
-        else xseq
-
-        curve.labels <-c(curve.labels, format(ay))
-        if(!missing(perim))
-          {
-            if(!is.function(perim))
-              stop('perim must be a function')
-
-            show.pt <- perim(xl, ay)
-            xb[index.y][!show.pt] <- NA
-            if(conf.int)
-              {
-                lower[index.y][!show.pt] <- NA
-                upper[index.y][!show.pt] <- NA
-              }
-          }
-          if(labelc) curves[[i]] <- list(xl, xb[index.y])
-
-          if(i>1 | add)
-            lines(xl,xb[index.y],
-                  lty=lty[i],col=col[i],lwd=lwd[i])
-        else
-          {
-            if((ixt==5 | ixt==8 | (length(xval))) &
-               !val.lev)
-              {
-                labs <- format(xseq)
-                if(is.character(xseq) || 
-                   ((ixt==5 | ixt==8) || (length(xseq)== length(xval) &&
-                                all(abs(xseq-as.numeric(xval))<.00001))))
-                  {
-                    att <- 1
-                    at <- xl
-                  }
-                else
-                  {
-                    att <- 2
-                    at <- Pretty(xl)
-                  }
-
-            xlm <- if(missing(xlim)) range(at) else xlim
-
-            plot(xl,xb[index.y],log=log,
-                 xlab=xlab,ylab=trlab(ylab),
-                 xlim=xlm, ylim=ylim,
-                 type='n', axes=FALSE)
-                lines(xl,xb[index.y],lty=lty[i],lwd=lwd[i],
-                      col=col[i])
-                if(att==1) mgp.axis(1,at=at,
-                     label=if(abbrev && ixt %in% c(5,8))
-                     abbreviate(labs)
-                     else labs)
-                else mgp.axis(1,at=at)
-
-                mgp.axis(2,at=pretty(ylim))
-              }
-          else
+          for(ay in y)
             {
-              xlm <- if(missing(xlim)) range(Pretty(xl)) else xlim
-
-            plot(xl,xb[index.y],xlab=xlab,
-                 ylab=trlab(ylab),
-                 xlim=xlm,ylim=ylim,log=log,type='n',
-                 axes=FALSE)
-              mgp.axis(1,at=pretty(xlm))
-              mgp.axis(2,at=pretty(ylim))
-              lines(xl,xb[index.y],col=col[i],
-                  lwd=lwd[i],lty=lty[i])
+              i <- i+1
+              index.y <- (1:nrow(xx))[xx[,2]==ay]
+              xseq <- xx[index.y, name[ix]]
+              if(is.factor(xseq))
+                xseq <- as.character(xseq)
+              
+              xl <- if(val.lev) as.single(xseq)
+              else if(is.character(xseq)) match(xseq, parmx)
+              else xseq
+              
+              curve.labels <-c(curve.labels, format(ay))
+              if(!missing(perim))
+                {
+                  if(!is.function(perim))
+                    stop('perim must be a function')
+                  
+                  show.pt <- perim(xl, ay)
+                  xb[index.y][!show.pt] <- NA
+                  if(conf.int)
+                    {
+                      lower[index.y][!show.pt] <- NA
+                      upper[index.y][!show.pt] <- NA
+                    }
+                }
+              if(labelc) curves[[i]] <- list(xl, xb[index.y])
+              
+              if(i>1 | add)
+                lines(xl,xb[index.y],
+                      lty=lty[i],col=col[i],lwd=lwd[i])
+              else
+                {
+                  if((ixt==5 | ixt==8 | (length(xval))) &
+                     !val.lev)
+                    {
+                      labs <- format(xseq)
+                      if(is.character(xseq) || 
+                         ((ixt==5 | ixt==8) || (length(xseq)== length(xval) &&
+                                      all(abs(xseq-as.numeric(xval))<.00001))))
+                        {
+                          att <- 1
+                          at <- xl
+                        }
+                      else
+                        {
+                          att <- 2
+                          at <- Pretty(xl)
+                        }
+                      
+                      xlm <- if(missing(xlim)) range(at) else xlim
+                      
+                      plot(xl,xb[index.y],log=log,
+                           xlab=xlab,ylab=trlab(ylab),
+                           xlim=xlm, ylim=ylim,
+                           type='n', axes=FALSE)
+                      lines(xl,xb[index.y],lty=lty[i],lwd=lwd[i],
+                            col=col[i])
+                      if(att==1) mgp.axis(1,at=at,
+                           label=if(abbrev && ixt %in% c(5,8))
+                           abbreviate(labs)
+                           else labs)
+                      else mgp.axis(1,at=at)
+                      
+                      mgp.axis(2,at=pretty(ylim))
+                    }
+                  else
+                    {
+                      xlm <- if(missing(xlim)) range(Pretty(xl)) else xlim
+                      
+                      plot(xl,xb[index.y],xlab=xlab,
+                           ylab=trlab(ylab),
+                           xlim=xlm,ylim=ylim,log=log,type='n',
+                           axes=FALSE)
+                      mgp.axis(1,at=pretty(xlm))
+                      mgp.axis(2,at=pretty(ylim))
+                      lines(xl,xb[index.y],col=col[i],
+                            lwd=lwd[i],lty=lty[i])
+                    }
+                }
+              if(conf.int>0)
+                {
+                  lines(xl,lower[index.y],
+                        lty=2,col=col[i],lwd=lwd.conf)
+                  lines(xl,upper[index.y],
+                        lty=2,col=col[i],lwd=lwd.conf) 
+                }
             }
-          }
-        if(conf.int>0)
-          {
-            lines(xl,lower[index.y],
-                  lty=2,col=col[i],lwd=lwd.conf)
-            lines(xl,upper[index.y],
-                  lty=2,col=col[i],lwd=lwd.conf) 
-          }
-        }
-
+          
           if(labelc)
             labcurve(curves, curve.labels, 
                      opts=label.curves, lty=lty, lwd=lwd, col=col)
         }
     }
-
+  
   xx[[if(ylab=="")"Z" else ylab]] <- xb
-
+  
   if(conf.int>0)
     {
       xx$lower <- lower;
@@ -688,7 +693,7 @@ print.plot.Design <- function(x, ...)
   print(x$x.xbeta)
   if(x$adjust!="")
     cat("Adjust to:",x$adjust,"\n")
-
+  
   if(length(cl <- x$curve.labels))
     cat("Curves:",cl,"\n")
 
@@ -701,7 +706,7 @@ Legend.plot.Design <- function(object, x, y, size = c(1, 1),
                                horizontal = TRUE, nint = 50, fun, at, 
                                zlab,  ...)
 {
-
+  
   if(missing(x)) 
     if(object$method=="image" && missing(size))
       {
@@ -713,13 +718,13 @@ Legend.plot.Design <- function(object, x, y, size = c(1, 1),
         cat("Using function \"locator(1)\" to place upper left corner of legend\n")
         x <- locator(1)
       }
-
+  
   if(!missing(y)) x <- list(x=x,y=y)
   xb <- object$x.xbeta
-
+  
   if(object$method!="image")
     stop('expecting to use results from method="image"')
-
+  
   z <- xb[,3]
   irgz <- seq(min(z,na.rm=TRUE), max(z,na.rm=TRUE), length = nint)
   lirgz <- length(irgz)
@@ -728,18 +733,18 @@ Legend.plot.Design <- function(object, x, y, size = c(1, 1),
       f <- expression({
         if(length(list(...)))
           par(...) ##axis() does not respect mgp
-
+        
         image(x=irgz, y=1:lirgz, z=matrix(irgz, lirgz, lirgz), yax="n",
               xaxt=if(missing(fun))"s"
               else "n")
-
+        
         if(!missing(fun))
           mgp.axis(1,
                    if(missing(at)) pretty(irgz)
                    else at,
                    labels=format(fun(if(missing(at)) pretty(irgz)
                    else at)))
-
+        
         title(xlab=if(missing(zlab)) names(xb)[3]
         else zlab)
       })
@@ -750,20 +755,20 @@ Legend.plot.Design <- function(object, x, y, size = c(1, 1),
       f <- expression({
         if(length(list(...)))
           par(...)
-
+        
         image(x = 1:lirgz, y = irgz, z = matrix(irgz, lirgz, lirgz,byrow=TRUE), 
               xaxt = "n", yaxt=if(missing(fun))"s" else "n")
         
         if(!missing(fun))
           mgp.axis(2, if(missing(at)) pretty(irgz) else at,
                    labels=format(fun(if(missing(at)) pretty(irgz) else at)))
-
+        
         title(ylab=if(missing(zlab)) names(xb)[3] else zlab)
       })
-
+      
       subplot(x = x, y = y, size = size, fun = f, hadj=0, vadj=1)
     }
-
+  
   invisible(if(missing(y))x else list(x=x,y=y))
 }
 
@@ -827,14 +832,14 @@ datadensity.plot.Design <- function(object, x1, x2, ...)
 {
   if(missing(x1))
     stop('must specify x1')
-
+  
   r <- object$x.xbeta
   nam <- names(r)
   x1.name <- deparse(substitute(x1))
   if(x1.name!=nam[1])
     warning(paste(x1.name,
                   ' is not first variable mentioned in plot() (',nam[1],')',sep=''))
-
+  
   if(missing(x2))
     {
       x <- r[[1]]
@@ -844,7 +849,7 @@ datadensity.plot.Design <- function(object, x1, x2, ...)
       scat1d(x1, y=y.x1, ...)
       return(invisible())
     }
-
+  
   x2.name <- deparse(substitute(x2))
   if(x2.name!=nam[2])
     warning(paste(x2.name,

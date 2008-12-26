@@ -265,56 +265,58 @@ lsp <- function(...) {
 }
 
 ## Restricted cubic spline expansion
-rcs <- function(...) {
+rcs <- function(...)
+{
   
   cal <- sys.call()
   xx <- list(...)
   z <- des.args(xx,TRUE,cal)
   x <- xx[[1]]
-  if(!is.numeric(x)) {
-    stop(paste(z$name,"is not numeric"))
-  }
+  if(!is.numeric(x)) stop(paste(z$name,"is not numeric"))
+
   nknots <- .Options$nknots
-  if(!length(nknots)) {
-    nknots <- 5
-  }
+  if(!length(nknots)) nknots <- 5
+
   parms <- z$parms
-  if(!length(parms)) {
-    parms <- nknots
-  }
-  if(length(parms)==1)	{
-    nknots <- parms
-    knots <- NULL
-    if(nknots==0) {
-      attributes(x) <- set.atr(x, x, z, z$name, "asis", 1, NULL, FALSE)
-      return(x)
+  if(!length(parms)) parms <- nknots
+
+  if(length(parms)==1)
+    {
+      nknots <- parms
+      knots <- NULL
+      if(nknots==0)
+        {
+          attributes(x) <- set.atr(x, x, z, z$name, "asis", 1, NULL, FALSE)
+          return(x)
+        }
     }
-  }
-  else {
-    nknots <- length(parms)
-    knots <- parms
-  }
+  else
+    {
+      nknots <- length(parms)
+      knots <- parms
+    }
 
-  if(!length(knots)) {
-    xd <- rcspline.eval(x,nk=nknots,inclx=TRUE)
-    knots <- attr(xd,"knots")
-  } else {
-    xd <- rcspline.eval(x,knots=knots,inclx=TRUE)
-  }
-  parms <- knots
+  pc <- length(.Options$rcspc) && .Options$rcspc
+  
+  if(!length(knots))
+    {
+      xd <- rcspline.eval(x, nk=nknots, inclx=TRUE, pc=pc)
+      knots <- attr(xd,"knots")
+    }
+  else xd <- rcspline.eval(x, knots=knots, inclx=TRUE, pc=pc)
+
+  parms  <- knots
   nknots <- length(parms)
-  name <- character(nknots-1)
-  nam <- z$name
-  name[1] <- nam
-  suffix <- NULL
-  for(j in 1:(nknots-2)) {
-    suffix <- paste(suffix,"'",sep="")
-    name[j+1] <- paste(nam,suffix,sep="")
-  }
+  nam    <- z$name
+  primes <- paste(rep("'",nknots-1), collapse="")
+  name   <- if(pc)
+    paste(nam, substring(primes, 1, 1:(nknots-1)), sep="")
+  else c(nam, paste(nam, substring(primes, 1, 1:(nknots-2)), sep=""))
 
+  if(pc) attr(parms, 'pcparms') <- attr(xd, 'pcparms')
   attributes(xd) <-
-    set.atr(xd,x,z,name,"rcspline",4,parms,
-            c(FALSE,rep(TRUE,nknots-2)))
+    set.atr(xd, x, z, name, "rcspline", 4, parms,
+            if(pc) rep(TRUE, nknots-1) else c(FALSE,rep(TRUE,nknots-2)))
   xd
 }
 

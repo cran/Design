@@ -1,54 +1,73 @@
-ols         Ordinary least squares linear model
-lrm         Binary and ordinal logistic regression model
-psm         Accelerated failure time parametric survival model
-cph         Cox proportional hazards regression
-bj          Buckley-James censored least squares linear model
-specs       Detailed specifications of fit
-robcov      Robust covariance matrix estimates
-bootcov     Bootstrap covariance matrix estimates
-summary     Summary of effects of predictors
-plot.summary    
-            Plot continuously shaded confidence
-             bars for results of summary 
-anova       Wald tests of most meaningful hypotheses
-contrast    General contrasts, C.L., tests           
-plot.anova  Depict results of anova graphically
-plot        Plot effects of predictors
-gendata     Generate data frame with predictor
-             combinations (optionally interactively)
-predict     Obtain predicted values or design matrix
-fastbw      Fast backward step-down variable
-             selection
-residuals   Residuals, influence statistics from fit
-which.influence 
-            Which observations are overly influential
-sensuc      Sensitivity of one binary predictor in
-             lrm and cph models to an unmeasured
-             binary confounder
-latex       LaTeX representation of fitted
-             model or anova() table
-Function    S function analytic representation
-             of a fitted regression model (X*Beta)
-Hazard      S function analytic representation
-             of a fitted hazard function (for psm)
-Survival    S function analytic representation of
-             fitted survival function (for psm,cph)
-Quantile    S function analytic representation of
-             fitted function for quantiles of
-             survival time (for psm, cph)
-nomogram    Draws a nomogram for the fitted model
-survest     Estimate survival probabilities (for psm, cph)
-survplot    Plot survival curves (psm, cph)
-validate    Validate indexes of model fit using resampling
-calibrate   Estimate calibration curve for model using resampling
-vif         Variance inflation factors for a fit
-naresid     Bring elements corresponding to missing 
-             data back into predictions and residuals
-naprint     Print summary of missing values
-pentrace    Find optimum penality for penalized MLE
-effective.df    
-            Print effective d.f. for each type of 
-             variable in model, for penalized fit or pentrace result
-rm.impute   Impute repeated measures data with
-             non-random dropout (experimental function, not working
-             correctly)
+anova.Design            Analysis of Variance (Wald and F Statistics)
+bj                      Buckley-James Multiple Regression Model
+bootcov                 Bootstrap Covariance and Distribution for
+                        Regression Coefficients
+calibrate               Resampling Model Calibration
+contrast.Design         General Contrasts of Regression Coefficients
+cph                     Cox Proportional Hazards Model and Extensions
+cr.setup                Continuation Ratio Ordinal Logistic Setup
+datadist                Distribution Summaries for Predictor Variables
+Design                  Design Methods and Generic Functions
+Design.Misc             Miscellaneous Design Attributes and Utility
+                        Functions
+DesignOverview          Overview of Design Library
+Design.trans            Design Special Transformation Functions
+fastbw                  Fast Backward Variable Selection
+Function.Design         Compose an S Function to Compute X beta from a
+                        Fit
+gendata                 Generate Data Frame with Predictor Combinations
+glmD                    Design Version of glm
+glsD                    Fit Linear Model Using Generalized Least
+                        Squares
+groupkm                 Kaplan-Meier Estimates vs. a Continuous
+                        Variable
+hazard.ratio.plot       Hazard Ratio Plot
+ie.setup                Intervening Event Setup
+latex.cph               LaTeX Representation of a Fitted Cox Model
+latex.Design            LaTeX Representation of a Fitted Model
+lrm                     Logistic Regression Model
+lrm.fit                 Logistic Model Fitter
+matinv                  Total and Partial Matrix Inversion using
+                        Gauss-Jordan Sweep Operator
+nomogram                Draw a Nomogram
+ols                     Linear Model Estimation Using Ordinary Least
+                        Squares
+pentrace                Trace AIC and BIC vs. Penalty
+plot.Design             Plot Effects of Variables
+plot.xmean.ordinaly     Plot Mean X vs. Ordinal Y
+pphsm                   Parametric Proportional Hazards form of AFT
+                        Models
+predab.resample         Predictive Ability using Resampling
+predict.Design          Predicted Values from Model Fit
+predict.lrm             Predicted Values for Binary and Ordinal
+                        Logistic Models
+print.cph               Print cph Results
+print.cph.fit           Print cph.fit
+print.lrm               Print lrm
+print.ols               Print ols
+psm                     Parametric Survival Model
+residuals.cph           Residuals for a cph Fit
+residuals.lrm           Residuals from a Logistic Regression Model Fit
+residuals.ols           Residuals for ols
+rm.impute               Imputation of Repeated Measures
+robcov                  Robust Covariance Matrix Estimates
+sensuc                  Sensitivity to Unmeasured Covariables
+specs.Design            Design Specifications for Models
+summary.Design          Summary of Effects in Model
+survest.cph             Cox Survival Estimates
+survest.psm             Parametric Survival Estimates
+Surv.event              Accessors for survivals Surv object.
+survfit.cph             Cox Predicted Survival
+survfit.formula         Compute a Survival Curve for Censored Data
+survplot                Plot Survival Curves and Hazard Functions
+validate                Resampling Validation of a Fitted Model's
+                        Indexes of Fit
+validate.cph            Validation of a Fitted Cox or Parametric
+                        Survival Model's Indexes of Fit
+validate.lrm            Resampling Validation of a Logistic Model
+validate.ols            Validation of an Ordinary Linear Model
+validate.tree           Dxy and Mean Squared Error by Cross-validating
+                        a Tree Sequence
+val.prob                Validate Predicted Probabilities
+vif                     Variance Inflation Factors
+which.influence         Which Observations are Influential

@@ -11,7 +11,7 @@ C       VSQ is nvi*nvi uncompressed version of V (output)
 C       EPS (input) is singularity criterion, e.g. 1D-7
 C       C(NVI), wv(2*nvi), and DELTAB(NVI) are scratch vectors
 C       pivot(NVI) is integer logical vector
-C       wt is a real*8 vector of case weights
+C       wt is a DOUBLE PRECISION vector of case weights
 C       If V is singular, pivot(nvi) has offending column #
 C       Uses all observations in analysis.
 C      numy is rounded sum of weights for each y level if .NOT. normwt
@@ -21,13 +21,13 @@ C     REQUIRES SUBROUTINES LLOGIT, ainvb (this uses qr-decomposition
 C       for solving system of equations using Fortran routines called
 C       by S function solve).
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8 BETA(*),U(*),V(*),LOGLIK,C(nvi),wv(*),
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      DOUBLE PRECISION BETA(*),U(*),V(*),LOGLIK,C(nvi),wv(*),
      &     deltab(nvi),vsq(nvi,nvi),penalt(*),wt(*)
-      REAL*8 opts(*),prc(2)
-      REAL*8 X(*),offset(*)
+      DOUBLE PRECISION opts(*),prc(2)
+      DOUBLE PRECISION X(*),offset(*)
 C     Dimensions of X, penalt, wt not needed until inside LLOGIT
-      INTEGER*4 IDX(*),R(*),ftable(501,*),numy(*),pivot(nvi)
+      INTEGER IDX(*),R(*),ftable(501,*),numy(*),pivot(nvi)
       LOGICAL DVRG,ofpres,piter,normwt
       eps=opts(1)
       dlike=opts(2)
@@ -134,10 +134,11 @@ C     Penalt is the penalty matrix (center of quadratic form)
 C     Penalties for intercept terms assumed to be zero
 C     Log likelihood is penalized by 0.5 times beta'*penalt*beta
 C
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8 BETA(*),U(*),V(*),C(*),LOGLIK,penalt(nvi,nvi),wt(nmax)
-      REAL*8 X(NMAX,NXm),offset(nmax)
-      INTEGER*4 IDX(*),R(NMAX),ftable(501,*)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      DOUBLE PRECISION BETA(*),U(*),V(*),C(*),LOGLIK,penalt(nvi,nvi),
+     & wt(nmax)
+      DOUBLE PRECISION X(NMAX,NXm),offset(nmax)
+      INTEGER IDX(*),R(NMAX),ftable(501,*)
       LOGICAL DVRG,ofpres,calcc,normwt
       PROB(BB)=1D0/(1D0+DEXP(-DMIN1(DMAX1(BB,-30D0),30D0)))
       NV=NVI
@@ -318,7 +319,7 @@ C     0<IY<KINT
       SUBROUTINE gcorr(ftable, kint, numy, nx, c, somer,
      &     gamma, taua)
       INTEGER ftable(501,*),numy(*)
-      REAL*8 fn,c,somer,gamma,taua,con,dis,tie,k,ic,nn
+      DOUBLE PRECISION fn,c,somer,gamma,taua,con,dis,tie,k,ic,nn
       kint1=kint+1
       con=0d0
       dis=0d0

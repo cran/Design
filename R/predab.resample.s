@@ -1,24 +1,25 @@
 #Requires fastbw
 
-predab.resample <- function(fit.orig,
-                            fit,
-                            measure, 
-                            method=c("boot","crossvalidation",".632","randomization"),
-                            bw=FALSE,
-                            B=50,
-                            pr=FALSE,
-                            rule="aic",
-                            type="residual",
-                            sls=.05,
-                            aics=0,
-                            strata=FALSE,
-                            tol=1e-12, 
-                            non.slopes.in.x=TRUE,
-                            kint=1,
-                            cluster,
-                            subset,
-                            group=NULL,
-                            ...) {
+predab.resample <-
+  function(fit.orig,
+           fit,
+           measure, 
+           method=c("boot","crossvalidation",".632","randomization"),
+           bw=FALSE,
+           B=50,
+           pr=FALSE,
+           rule="aic",
+           type="residual",
+           sls=.05,
+           aics=0,
+           strata=FALSE,
+           tol=1e-12, 
+           non.slopes.in.x=TRUE,
+           kint=1,
+           cluster,
+           subset,
+           group=NULL,
+           ...) {
 
   method <- match.arg(method)
   ## .Options$digits <- 4  14Sep00
@@ -183,7 +184,7 @@ predab.resample <- function(fit.orig,
     fit.orig <- fit(x[,xcol,drop=FALSE], y, stra=stra, iter=0, tol=tol, xcol=xcol, ...)
 
   }	else {
-    orig.col.kept <- seq(fit.orig$coef)
+    orig.col.kept <- seq(along=fit.orig$coef)
   }
 
   b <- fit.orig$coef
@@ -317,7 +318,7 @@ predab.resample <- function(fit.orig,
       attr(f, "class") <- clf
       if(!bw) {
         coef <- f$coef
-        col.kept <- seq(coef)
+        col.kept <- seq(along=coef)
       }	else	{
         f <- fastbw(f, rule=rule, type=type, sls=sls, aics=aics, eps=tol)
 

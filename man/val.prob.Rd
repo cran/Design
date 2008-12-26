@@ -345,6 +345,10 @@ Miller ME, Hui SL, Tierney WM (1991): Validation techniques for
 logistic regression models.  Stat in Med 10:1213--1226.
 
 
+Stallard N (2009): Simple tests for th external validation of mortality
+prediction scores.  Stat in Med 28:377--388.
+
+
 Harrell FE, Lee KL (1985):  A comparison of the
 \emph{discrimination}
 of discriminant analysis and logistic regression under multivariate
